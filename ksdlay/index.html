@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="승도🧡아영 결혼식에 초대합니다.">
+	<meta property="og:title" content="승도🧡아영 결혼식에 초대합니다.">
+	<meta property="og:description" content="2024.03.09 16:30 인천 아시아드 웨딩컨벤션 브릴리에 홀">
+	<meta property="og:image" content="./share/share_800x400.jpg">
+	<meta property="og:url" content=" "> 
+	
+	<meta name="twitter:title" content="승도🧡아영 결혼식에 초대합니다.">
+	<meta name="twitter:description" content="2024.03.09 16:30 인천 아시아드 웨딩컨벤션 브릴리에 홀">
+	<meta name="twitter:image" content="./share/share_800x400.jpg">
+    <title>승도🧡아영 결혼식에 초대합니다.</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.7/dayjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.7/plugin/dayOfYear.min.js"></script>
+    <script src="./js/gsap.min.js"></script>
+    <script src="./js/ScrollTrigger.min.js"></script>
+    <script src="./js/sakura.js"></script>
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0620e36fd8d72e9232529fb736f53dc9"></script>
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=z7iut62rgg"></script>
+    <link rel="apple-touch-icon" sizes="57x57" href="./favi/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="./favi/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./favi/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="./favi/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./favi/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="./favi/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./favi/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./favi/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./favi/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="./favi/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favi/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./favi/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favi/favicon-16x16.png">
+    <link rel="manifest" href="./favi/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="./favi/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+    <link href="./css/sakura.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&family=Rufina:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TFT5S9XBQ4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-TFT5S9XBQ4');
+</script>
+<script>
+$(window).on('load',function(){        
+    /* $('#loading').animate({opacity:0},2000,function(){
+        $('#loading').remove();
+        $('body').removeClass('off');
+    }) */
+})
+    $(document).ready(function(){
+        $('.leaf_box').sakura();
+        
+    console.log('ver.1.08');
+
+    var swiper = new Swiper(".gallery_thumb", {
+        spaceBetween: 30,
+        pagination: {
+            el: ".swiper-pagination",
+            // dynamicBullets: true,
+        },
+    });
+
+    var dayNum;
+
+    var remainTime = document.querySelector("#dayNum");
+
+    function diffDay() {
+        var masTime = new Date("2024-03-09");
+        var todayTime = new Date();
+        
+        var diff = masTime - todayTime;
+
+        var diffDay = String(Math.floor(diff / (1000*60*60*24)));
+
+        diffDay = Number(diffDay) + 1;
+        
+        if(diffDay == 0){
+            remainTime.innerHTML = ` <span class="today">당일</span>입니다.`;
+        } else if(diffDay < 0){
+            remainTime.innerHTML = `이 지났습니다.`;
+        } else {
+            remainTime.innerHTML = `까지 <span class="today">${diffDay}</span>일 남았습니다.`;
+        }
+    }
+
+    diffDay();
+
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.set($('.nav_cont .box'), {opacity: 0, y:'50px'});
+    gsap.set($('.gallery_thumb .thumb'), {opacity: 0, scale:0.5});
+
+    var _mainVideo = gsap.timeline();
+    _mainVideo.timeScale(1)
+    .fromTo($('#loading'), {opacity: 1,}, {opacity: 0,duration: 1,ease: 'power1.out',onComplete:function(){
+        $('#loading').remove();$('body').removeClass('off');
+        
+        const boxes = gsap.utils.toArray('.box');
+        boxes.forEach(box => {
+            gsap.to(box, { 
+                opacity: 1,
+                y: 0,
+                duration: 1.5,
+                scrollTrigger: {
+                    trigger: box
+                }
+            })
+        });
+    }})
+    
+    const thumb = gsap.utils.toArray('.thumb');
+    thumb.forEach(thumb => {
+        gsap.to(thumb, { 
+            opacity: 1,
+            scale: 1,
+            duration: 1.5,
+            ease: "elastic.out(1,0.3)",
+            scrollTrigger: {
+                trigger: thumb
+            }
+        })
+    });
+    gsap.timeline({
+        scrollTrigger: {
+            trigger: ".nav_cont_6 .account_bg",
+            start: "top 80%",
+            end: "top 50%",
+            scrub: 1.4,
+            // markers: true
+        }
+    })
+    .fromTo(".account_bg .bg_box", {top:'0'}, {top:'-33%', ease: 'none', duration: 1 })
+    
+    var clipboard = new Clipboard('.ac_text');
+    clipboard.on('success', function(e) {
+        alert('복사되었습니다!');
+    });
+    clipboard.on('error', function(e) {
+        alert('복사에 실패했습니다. 다시 시도해주세요.');
+    });
+
+    $(document).on('click','.account_top',function(e){
+        e.preventDefault;
+
+        if($(this).hasClass('on') == false){
+            $('.account_top').removeClass('on');
+            $('.acc_group').slideUp();
+            $(this).addClass('on');
+            $(this).siblings('.acc_group').slideDown(500);
+        } else {
+            $('.account_top').removeClass('on');
+            $('.acc_group').slideUp();
+        }
+        
+    })
+    var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+    var options = { //지도를 생성할 때 필요한 기본 옵션
+        center: new kakao.maps.LatLng(37.5487194, 126.6676776), //지도의 중심좌표.
+        level: 4 //지도의 레벨(확대, 축소 정도)
+    };
+    
+    var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+
+    var markerPosition  = new kakao.maps.LatLng(37.5487194, 126.6676776); 
+
+    // 마커를 생성합니다
+    var marker = new kakao.maps.Marker({
+        position: markerPosition
+    });
+    marker.setMap(map);
+
+    function setDraggable(draggable) {
+        // 마우스 드래그로 지도 이동 가능여부를 설정합니다
+        map.setDraggable(draggable);    
+    }
+
+    setDraggable(false);
+
+    $('.map_hold').on('click',function(){
+        if($(this).hasClass('on') == true){
+            $(this).removeClass('on').addClass('off');
+            $('.map_box').removeClass('hold');
+            setDraggable(true);
+            $('.map_hold .txt').text('고정 해제');
+        } else {
+            $(this).removeClass('off').addClass('on');
+            $('.map_box').addClass('hold');
+            setDraggable(false);
+            $('.map_hold .txt').text('지도 고정');
+        }
+    })
+
+    /* $(window).scroll(function(e){
+        $('.share_box').addClass('_off');
+
+        setTimeout(function(){
+            $('.share_box').removeClass('_off');
+        },1000)
+    }); */
+
+    var swiper2 = new Swiper(".sl_cont", {
+        slidesPerView: 1,
+        centeredSlides: true,
+        pagination: {
+            el: ".swiper-pagination",
+            type: "fraction",
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        on:{
+            slideChangeTransitionEnd: function(index,object){                
+                $('.pop_box').css("background-image","url("+ $('.gallery_list.swiper-slide-active img').attr('src') +")");
+
+                console.log()
+                // console.log($('.gallery_list.swiper-slide-active').children('img').attr('src'))
+            }
+        }
+    });
+
+    $('.thumb a').on('click',function(e){
+        e.preventDefault();
+
+        var imgNumb = $(this).data('idx') - 1;
+        swiper2.slideTo(imgNumb);
+
+        $('.pop_box').css("background-image","url("+ $(this).find('img').attr('src') +")");
+        $('.pop_box').show();
+    })
+
+    $('.layer_pop .closed, .dimmed').on('click',function(e){
+        e.preventDefault();
+
+        $('.pop_box').hide();
+    })
+})
+</script>
+<style>
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+/* reset */
+*{margin: 0;padding: 0;font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;}
+html{-webkit-tap-highlight-color:transparent !important;-webkit-text-size-adjust: none;}
+a {display:block;color: #333;text-decoration:none;}
+body,input,label{font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;webkit-text-size-adjust: auto;color:#333333;}
+body {overflow-x:hidden;background:#e4e6d8;}
+ul,ol,li{list-style: none;}
+img{display: block;border: 0;}
+button{border: none;background: none;cursor: pointer;-webkit-transform: translate3d(0,0,0);outline: none;}
+body.off{overflow: hidden;}
+#loading {position:fixed;width:100vw;height:100vh;background:#e4e6d8;z-index: 50;}
+.evWrap {width:750px;min-height:100vh;margin:0 auto;background:#e4e6d8;color:#70754c;/* overflow-x:hidden; */}
+
+.sd_ico {width:265px;height:95px;margin:100px auto 80px;background:url(./img/sd_ico.png) no-repeat center center / 100% 100%;}
+.sd_deco {width:48px;height:48px;background:url(./img/sd_deco.png) no-repeat center center / 100% 100%;}
+
+.nav_cont {width:750px;margin:0 auto;position:relative;}
+.nav_cont .nav_wrap {position:relative;width:680px;margin:0 auto;border:3px solid #6F744C;border-top:none;border-bottom:none;background:url('./img/kv_paper.jpg') repeat center center;box-sizing:border-box;}
+.nav_cont_kv::before {position:absolute;right:-44px;top:525px;display:block;content:'';width:205px;height:314px;background:url('./img/kv_deco_r.png') no-repeat center center / 100% 100%;z-index:11;}
+.nav_cont_kv::after {position:absolute;left:-44px;top:1071px;display:block;content:'';width:205px;height:314px;background:url('./img/kv_deco_r.png') no-repeat center center / 100% 100%;transform:scaleX(-1);z-index:11;}
+.nav_cont.nav_cont_kv .nav_wrap {width:750px;border:none;background:none;}
+.nav_cont .nav_wrap .kv_flower {position:absolute;top:0;left:50%;width:827px;transform:translateX(-50%);z-index:11;opacity:0.5;}
+.nav_cont .nav_wrap .kv_tit {position:absolute;top:287px;left:50%;transform:translateX(-50%);z-index:11;}
+.nav_cont .nav_wrap .kv_tit span {display:block;width:256px;margin:0 auto;}
+.nav_cont .nav_wrap .kv_txt {position:absolute;top:383px;left:50%;display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;transform:translateX(-50%);z-index:11;}
+.nav_cont .nav_wrap .kv_txt span {display:block;line-height:32px;letter-spacing:-1.2px;color:#70754c;}
+.nav_cont .nav_wrap .kv_txt span.date {font-weight:500;font-size:28px;}
+.nav_cont .nav_wrap .kv_txt span.loca {font-size:22px;}
+.nav_cont .nav_wrap .kv_box {position:relative;padding-top:102px;}
+.nav_cont .nav_wrap .kv_box .kv_wrap {z-index: 10;position: relative;width:680px;height:auto;margin:0 auto;border-radius:100vw 100vw 0 0;border:3px solid #6F744C;border-bottom:none;overflow:hidden;background:url('./img/kv_paper.jpg') repeat center center;box-sizing:border-box;}
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_img {width:620px;height:auto;margin:30px auto 0;}    
+.nav_cont .nav_wrap .orbit_line {position:absolute;top:85px;left:79px;width:663px;z-index:11;}
+.nav_cont .nav_wrap .orbit_heart {z-index: 11;position: absolute;top:75px;left: calc(50% - 280px);display: block;width: 34px;height: 26px;will-change: transform;animation: 10s linear orbit infinite;transform: translate3d(0px, 0px, 0);}
+.nav_cont .nav_wrap .orbit_circle {z-index: 11;position: absolute;top:75px;left: calc(50% - 280px);display: block;width: 21px;height: 21px;will-change: transform;animation: 10s linear orbit2 infinite;transform: translate3d(600px, 183px, 0) scale(.9);}
+
+
+@keyframes orbit {
+    0% {
+        z-index: 11;
+        
+        transform: translate3d(0, 0, 0) scale(.8);
+    }
+    10% {
+        z-index: 11;
+        
+        transform: translate3d(155px, 30px, 0) scale(1);
+    }
+    20% {
+        z-index: 11;
+        
+        transform: translate3d(310px, 75px, 0) scale(1);
+    }
+    30% {
+        z-index: 11;
+        
+        transform: translate3d(465px, 125px, 0) scale(.95);
+    }
+    40% {
+        z-index: 11;
+        
+        transform: translate3d(600px, 185px, 0) scale(.9);
+    }
+    45% {
+        z-index: 10;
+        
+        transform: translate3d(625px, 210px, 0) scale(.8);
+    }
+    50% {
+        z-index: 9;
+        
+        transform: translate3d(550px, 200px, 0) scale(.75);
+    }
+    60% {
+        z-index: 9;
+        
+        transform: translate3d(406px, 160px, 0) scale(.7);
+    }   
+    
+    70% {
+        z-index: 9;
+        
+        transform: translate3d(262px, 120px, 0) scale(0.7);
+    }
+    80% {
+        z-index: 9;
+        
+        transform: translate3d(118px, 75px, 0) scale(0.75);
+    }
+    90% {
+        z-index: 11;
+        
+        transform: translate3d(0px, 30px, 0) scale(0.75);
+    }
+    95% {
+        z-index: 11;
+        transform: translate3d(-25px, 5px, 0) scale(.8);
+    }
+    100% {
+        z-index: 11;
+        
+        transform: translate3d(0, 0, 0) scale(.8);
+    }
+}
+@keyframes orbit2 {
+    0% {
+        z-index: 11;
+        
+        transform: translate3d(600px, 183px, 0) scale(.9);
+    }
+    5% {
+        z-index: 10;
+        
+        transform: translate3d(634px, 210px, 0) scale(.8);
+    }
+    10% {
+        z-index: 9;
+        
+        transform: translate3d(562px, 200px, 0) scale(.75);
+    }
+    20% {
+        z-index: 9;
+        
+        transform: translate3d(406px, 160px, 0) scale(.7);
+    }   
+    
+    30% {
+        z-index: 9;
+        
+        transform: translate3d(262px, 120px, 0) scale(0.7);
+    }
+    40% {
+        z-index: 9;
+        
+        transform: translate3d(100px, 70px, 0) scale(0.75);
+    }
+    50% {
+        z-index: 11;
+        
+        transform: translate3d(0px, 26px, 0) scale(0.75);
+    }
+    55% {
+        z-index: 11;
+        transform: translate3d(-25px, 7px, 0) scale(.8);
+    }
+    60% {
+        z-index: 11;
+        
+        transform: translate3d(0, 4px, 0) scale(.8);
+    }
+    70% {
+        z-index: 11;
+        
+        transform: translate3d(155px, 32px, 0) scale(1);
+    }
+    80% {
+        z-index: 11;
+        
+        transform: translate3d(310px, 75px, 0) scale(1);
+    }
+    90% {
+        z-index: 11;
+        
+        transform: translate3d(465px, 127px, 0) scale(.95);
+    }
+    100% {
+        z-index: 11;
+        
+        transform: translate3d(600px, 183px, 0) scale(.9);
+    }
+
+}
+
+.nav_cont_1 .cont_info {padding-top:100px;}
+.nav_cont_1 .cont_info .info_txt {font-size:22px;line-height:34px;text-align:center;}
+.nav_cont_1 .cont_img {width:100%;height:482px;overflow:hidden;}
+
+.nav_cont_2 {}
+.nav_cont_2 .sd_ico {margin-bottom:0;}
+.nav_cont_2 .info_tit {font-size:22px;text-align:center;line-height:32px;letter-spacing:-1.2px;color:#70754c;}
+.nav_cont_2 .info_tit span {display:block;}
+.nav_cont_2 .info_tit .tit2 {font-size:28px;font-weight:500;}
+.nav_cont_2 .cont_info {padding-top:51px;}
+.nav_cont_2 .sd_deco {margin:0 auto 24px;}
+.nav_cont_2 .info_tit + .sd_deco {margin:24px auto 80px;}
+.nav_cont_2 .info_tel {display:flex;justify-content:space-between;padding:0 50px;}
+.nav_cont_2 .info_tel .tel_cont {position:relative;width:260px;}
+.nav_cont_2 .info_tel .tel_cont::after {position:absolute;top:-30px;left:50%;font-size:24px;font-weight:500;line-height:1;color:#ababab;transform:translateX(-50%);letter-spacing:-1px;;}
+.nav_cont_2 .info_tel .tel_cont.groom_box::after {content:'Groom';}
+.nav_cont_2 .info_tel .tel_cont.bride_box::after {content:'Bride';}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap {text-align: center;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.top {padding:27px 0 37px;border-bottom:2px solid #979f6a;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box {display:flex;justify-content:center;align-items:center;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .term {font-size:24px;margin-right:15px;line-height:1;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .name {font-size:32px;margin-right:15px;line-height:1;color:#5d5d5d;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .tel {}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .tel a {width:30px;height:30px;background:url('./img/tel_ico.png') no-repeat center center / 100% 100%;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot {}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_tit {padding:30px 0 39px;font-size:24px;color:#ababab;font-weight:500;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box:last-child {margin-top:30px;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .term {font-size:20px;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .name {font-size:32px;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .tel {}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .tel a {width:30px;height:30px;background:url('./img/tel_ico.png') no-repeat center center / 100% 100%;}
+.nav_cont_2 .info_loc {width:640px;margin:90px auto 0;padding:50px 0;background:#e4e6d8;border-radius:10px;text-align:center;}
+.nav_cont_2 .info_loc .info_txt {}
+.nav_cont_2 .info_loc .info_txt .date {margin-bottom:20px;font-size:32px;line-height:1;letter-spacing:-1.2px;}
+.nav_cont_2 .info_loc .info_txt .loc {font-size:28px;line-height:1;letter-spacing:-1.2px;}
+.nav_cont_2 .info_loc .info_txt .loc span {position:relative;}
+.nav_cont_2 .info_loc .info_txt .loc span::before {position:absolute;top:14px;left:-14px;display:inline-block;content:'';width:6px;height:6px;border-radius:100%;background:#70754c;}
+.nav_cont_2 .info_loc .info_txt .loc span::after {position:absolute;top:14px;right:-14px;display:inline-block;content:'';width:6px;height:6px;border-radius:100%;background:#70754c;}
+
+.nav_cont_3 {}
+.nav_cont_3 .nav_wrap {padding:100px 0 100px;}
+.nav_cont_3 .sd_ico {margin-bottom:0;}
+.nav_cont_3 .cont_info {position:relative;width:640px;margin:0 auto;padding:60px 25px 70px;background:#e3e3d5;box-sizing:border-box;border-radius:10px;text-align:center;}
+.nav_cont_3 .info_tit {font-size:28px;text-align:center;line-height:32px;letter-spacing:-1.2px;color:#70754c;}
+.nav_cont_3 .info_tit span {position:relative;}
+.nav_cont_3 .info_tit span::before {position:absolute;top:-10px;left:-60px;display:inline-block;content:'';width:52px;height:52px;background:url('./img/gallery_deco.png') no-repeat center center / 100% 100%;}
+.nav_cont_3 .info_tit span::after {position:absolute;top:-10px;right:-60px;display:inline-block;content:'';width:52px;height:52px;background:url('./img/gallery_deco.png') no-repeat center center / 100% 100%;}
+.nav_cont_3 .gallery {margin-top:50px;overflow: hidden;}
+.nav_cont_3 .gallery .gallery_wrap {}
+.nav_cont_3 .gallery .gallery_wrap .gallery_box {display:flex;flex-wrap: wrap;justify-content: space-between;align-content: space-between;width:590px;height:590px;}
+.nav_cont_3 .gallery .gallery_wrap .gallery_box .thumb {width:190px;height:190px;border-radius:10px;overflow:hidden;background-color:#dddddd;}
+.nav_cont_3 .gallery .gallery_wrap .gallery_box .thumb a {display:block;}
+.nav_cont_3 .gallery .gallery_wrap .gallery_box .thumb a.none {pointer-events: none;}
+.nav_cont_3 .gallery .gallery_wrap .gallery_box .thumb a img {width:100%;}
+.nav_cont_3 .gallery .swiper-pagination {bottom:30px;}
+.nav_cont_3 .gallery .swiper-pagination-bullet {background:#974d02;transform:scale(0.8);opacity:0.5;}
+.nav_cont_3 .gallery .swiper-pagination-bullet-active {background:#974d02;transform:scale(1); opacity: 1;}
+
+.nav_cont_4 .nav_wrap {padding:0 0 100px;}
+.nav_cont_4 .month {font-size:100px;line-height:1;color:#979f6a;font-weight:900;text-align:center;}
+.nav_cont_4 .sd_ico {margin-top:-40px;}
+.nav_cont_4 .calendar {}
+.nav_cont_4 .calendar .calender_wrap {width:640px;margin:40px auto;padding-top:50px;border-top:3px solid #979f6a;border-bottom:1px solid #979f6a;}
+.nav_cont_4 .calendar .calender_wrap span {display:block;font-size:24px;line-height:1;}
+.nav_cont_4 .calendar .calender_wrap .days {display:flex;justify-content: space-between;margin-bottom:70px;}
+.nav_cont_4 .calendar .calender_wrap .days span {width:14%;text-align:center;}
+.nav_cont_4 .calendar .calender_wrap .numb {display:flex;flex-flow:wrap;justify-content: space-between;}
+.nav_cont_4 .calendar .calender_wrap .numb span {position:relative;width:14%;margin-bottom:40px;text-align:center;}
+.nav_cont_4 .calendar .calender_wrap .numb span.d_day {z-index:1;}
+.nav_cont_4 .calendar .calender_wrap .numb span.d_day::before {position:absolute;top:50%;left:50%;content:'';width:50px;height:50px;background: #e3e3d5;transform:translate(-50%,-50%);border-radius:10px;z-index:-1;}
+.nav_cont_4 .calendar .calender_wrap .numb span.d_day::after {position:absolute;top:50%;left:50%;content:'';width:50px;height:50px;background: url('./img/dday2.png') no-repeat center center / 100% 100%;transform:translate(-50%,-50%);z-index:-1;animation:pulse 1s ease-in Infinite ;}
+.nav_cont_4 .day_count {font-size:24px;text-align:center;}
+.nav_cont_4 .day_count .today {font-size:30px;color:#f09999;font-weight:bold;}
+
+@keyframes pulse {
+    0% {
+        -webkit-transform:translate(-50%,-50%) scaleX(1);
+        transform:translate(-50%,-50%) scaleX(1)
+    }
+
+    50% {
+        -webkit-transform:translate(-50%,-50%) scale3d(1.05,1.05,1.05);
+        transform:translate(-50%,-50%) scale3d(1.05,1.05,1.05)
+    }
+
+    to {
+        -webkit-transform:translate(-50%,-50%) scaleX(1);
+        transform:translate(-50%,-50%) scaleX(1)
+    }
+}
+
+.nav_cont_5 {}
+.nav_cont_5 .info_tit {margin-bottom:40px;padding-top:20px;font-size:28px;text-align:center;line-height:32px;letter-spacing:-1.2px;color:#70754c;}
+.nav_cont_5 .sd_ico {margin:0 auto 16px;}
+.nav_cont_5 .info_sub_tit {margin-bottom:20px;letter-spacing:5px;}
+.nav_cont_5 .cont_map {width:640px;margin:0 auto 40px;}
+.nav_cont_5 .cont_map .map_box {position:relative;width:100%;height:400px;background:#fff;}
+.nav_cont_5 .cont_map .map_box.hold #map::after {position:absolute;top:0;left:0;content:'';display:block;width:100%;height:100%;z-index:1;}
+.nav_cont_5 .cont_map .map_box #map {width:100%;height:400px;}
+.nav_cont_5 .cont_map .map_search {display:flex;justify-content:space-between;align-items:center;padding:15px 30px;background:#979f6a;}
+.nav_cont_5 .cont_map .map_search .search_tit {position:relative;margin-right:20px;font-size:20px;font-weight:500;}
+.nav_cont_5 .cont_map .map_search .search_tit::after {position:absolute;left:0;bottom:0;width:100%;height:10px;content:'';background:#979f6a;z-index:-1}
+.nav_cont_5 .cont_map .map_search .search_list {display:flex;justify-content:space-between;width:100%;}
+.nav_cont_5 .cont_map .map_search .search_list a {display:flex;align-items:center;font-size:20px;line-height:1;color:#fafafa;}
+.nav_cont_5 .cont_map .map_search .search_list a .ico {display:block;width:40px;height:40px;margin-right:10px;border-radius:10px;overflow: hidden;}
+.nav_cont_5 .cont_map .map_search .search_list a.map_kakao {margin-right:20px;}
+.nav_cont_5 .cont_map .map_search .search_list a.map_kakao .ico {background:url('./img/map_02.jpg') no-repeat center center / 100% 100%;}
+.nav_cont_5 .cont_map .map_search .search_list a.map_naver {margin-right:20px;}
+.nav_cont_5 .cont_map .map_search .search_list a.map_naver .ico {background:url('./img/map_01.jpg') no-repeat center center / 100% 100%;}
+.nav_cont_5 .cont_map .map_search .search_list a.map_hold {}
+.nav_cont_5 .cont_map .map_search .search_list a.map_hold.on .ico {background:url('./img/ico_lock_on.png') no-repeat center center / 100% 100%;}
+.nav_cont_5 .cont_map .map_search .search_list a.map_hold.off .ico {background:url('./img/ico_lock_off.png') no-repeat center center / 100% 100%;}
+.nav_cont_5 .cont_route {display:flex;flex-direction:column;width:640px;margin:0 auto;text-align:left;}
+.nav_cont_5 .cont_route .route_box {margin-bottom:28px;}
+.nav_cont_5 .cont_route .route_box:last-child {margin-bottom:0;}
+.nav_cont_5 .cont_route .route_box .route_tit {position:relative;display:inline-block;margin-bottom:6px;font-size:27px;font-weight:500;z-index:1;}
+.nav_cont_5 .cont_route .route_box .route_tit::after {position:absolute;left:0;bottom:0;width:100%;height:10px;content:'';background:#e3e3d5;z-index:-1;}
+.nav_cont_5 .cont_route .route_box .route_txt {font-size:20px;line-height:34px;letter-spacing:-1px;}
+.nav_cont_5 .cont_route .route_box .route_txt .caution {display:block;font-size:18px;color:#f03333;}
+
+
+.nav_cont_6 {padding:0;}
+.nav_cont_6 .nav_wrap {padding-top:120px;border-bottom:3px solid #6F744C;}
+.nav_cont_6 .info_tit {font-size:22px;text-align:center;line-height:32px;letter-spacing:-1.2px;color:#70754c;}
+.nav_cont_6 .info_tit span {display:block;}
+.nav_cont_6 .info_tit .tit2 {font-size:28px;font-weight:500;}
+.nav_cont_6 .sd_ico {margin:0 auto 16px;}
+.nav_cont_6 .info_sub_tit {margin-bottom:16px;}
+.nav_cont_6 .info_tit {letter-spacing:0;}
+.nav_cont_6 .account_cont {display:flex;flex-direction:column;justify-content:space-between;width:100%;padding:60px 30px;box-sizing:border-box;text-align:center;}
+.nav_cont_6 .account_cont .account_top {text-align:center;}
+.nav_cont_6 .account_cont .account_top span {position:relative;display:inline-block;padding:15px 40px;font-size:18px;z-index:1;cursor: pointer;border:2px solid #e3e3d5;border-radius:100vw;}
+.nav_cont_6 .account_cont .account_top.on span {background:#e3e3d5;}
+.nav_cont_6 .account_cont .account_slide:last-child {margin-top:20px;}
+.nav_cont_6 .account_cont .acc_group {display:none;padding-top:30px;}
+.nav_cont_6 .account_cont .ac_tit {margin-bottom:20px;font-size:28px;}
+.nav_cont_6 .account_cont .account_box {margin-bottom:20px;}
+.nav_cont_6 .account_cont .account_box:last-child {margin-bottom:0;}
+.nav_cont_6 .account_cont .account_box .ac_term {display:block;margin-bottom:10px;font-size:26px;}
+.nav_cont_6 .account_cont .account_box .ac_text {position:relative;display:inline-block;font-size:22px;z-index:1;font-weight:500;}
+.nav_cont_6 .account_cont .account_box .ac_text::after {position:absolute;left:0;bottom:0;width:100%;height:10px;content:'';background:#e3e3d5;z-index:-1;}
+.nav_cont_6 .account_cont .account_cation {font-size:18px;color:#952d2d;}
+
+.nav_cont_6 .account_bg {position:relative;height:700px;overflow:hidden;}
+.nav_cont_6 .account_bg::before {position:absolute;left:0;top:0;width:100%;height:100px;content:'';background:linear-gradient(180deg, rgba(247,248,244,1) 0%,rgba(247,248,244,0) 80%, rgba(247,248,244,0) 100%);z-index:2;}
+.nav_cont_6 .account_bg .bg_box {position:absolute;top:0;left:0;display:flex;justify-content:center;align-items:flex-start;width:100%;height:975px;background:url('./img/img2_.jpg') no-repeat center center;background-size:cover;box-sizing:border-box;text-align:center;z-index:1;}
+.nav_cont_6 .account_bg .bg_box .save_the_date {margin-top:40px;}
+.nav_cont_6 .account_bg .bg_box .save_the_date img {width:70%;margin:0 auto;opacity:0.89;}
+
+.share_box {width:100%;padding:30px 0 20px;}
+.share_box #btnKakao {display:flex;justify-content:center;align-items:center;}
+.share_box #btnKakao img {width:40px;margin-right:10px;}
+
+.pop_box {position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;background-position:center center;transition:0.3s all;background-size:100% 100%;}
+.pop_box .layer_pop {position:relative;display:flex;justify-content:center;align-items:center;width:100%;height:100%;}
+.pop_box .layer_pop .closed {position:absolute;top:20px;left:50%;width:40px;height:40px;margin-left:320px;font-size:0;background-image: url("data:image/svg+xml,%3Csvg fill='%23ffffff' height='40px' width='40px' version='1.1' id='Capa_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 460.775 460.775' xml:space='preserve'%3E%3Cpath d='M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55 c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55 c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505 c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55 l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719 c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z'/%3E%3C/svg%3E");background-size:100% 100%;z-index:101;opacity:0.7;}
+.pop_box .layer_pop .sl_cont {max-width:750px;width:100%;height:100%;margin:0 auto;overflow:hidden;}
+.pop_box .layer_pop .sl_cont .pop_wrap {position:relative;width:100%;max-width:750px;}
+.pop_box .layer_pop .sl_cont .pop_wrap .gallery_list {display:flex;justify-content:center;align-items:center;width:750px;margin:0 auto;}
+.pop_box .layer_pop .sl_cont .pop_wrap .gallery_list img {width:100%;}
+.pop_box .swiper-button-next:after, .pop_box .swiper-button-prev:after {color:#70754c;}
+.pop_box .swiper-pagination-fraction {bottom:0;color:#fff;}
+.pop_box .dimmed {position:absolute;left:0;top:0;display:flex;justify-content:center;align-items:center;width:100%;height:100%;background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);-webkit-backdrop-filter: blur(10px);}
+@media screen and (max-width:750px) {
+
+
+    #loading {position:fixed;width:100vw;height:100vh;background:#e4e6d8;z-index: 50;}
+    .evWrap {width:100vw;min-height:100vh;margin:0 auto;background:#e4e6d8;color:#70754c;overflow-x:hidden;}
+    img {display:block;width:100%;}
+
+    .sd_ico {width:35.33333vw;height:12.66667vw;margin:13.33333vw auto 10.66667vw;background:url(./img/sd_ico.png) no-repeat center center / 100% 100%;}
+    .sd_deco {width:6.4vw;height:6.4vw;background:url(./img/sd_deco.png) no-repeat center center / 100% 100%;}
+
+    .nav_cont {width:100vw;margin:0 auto;position:relative;}
+    .nav_cont .nav_wrap {position:relative;width:90.66667vw;margin:0 auto;border:0.4vw solid #6F744C;border-top:none;border-bottom:none;background:url('./img/kv_paper.jpg') repeat center center;box-sizing:border-box;}
+    .nav_cont_kv::before {position:absolute;right:-5.86667vw;top:70vw;display:block;content:'';width:27.33333vw;height:41.86667vw;background:url('./img/kv_deco_r.png') no-repeat center center / 100% 100%;z-index:11;}
+    .nav_cont_kv::after {position:absolute;left:-5.86667vw;top:142.8vw;display:block;content:'';width:27.33333vw;height:41.86667vw;background:url('./img/kv_deco_r.png') no-repeat center center / 100% 100%;transform:scaleX(-1);z-index:11;}
+    .nav_cont.nav_cont_kv .nav_wrap {width:100vw;border:none;background:none;}
+    .nav_cont .nav_wrap .kv_flower {position:absolute;top:0;left:50%;width:100vw;transform:translateX(-50%);z-index:11;opacity:0.5;}
+    .nav_cont .nav_wrap .kv_tit {position:absolute;top:38.26667vw;left:50%;transform:translateX(-50%);z-index:11;}
+    .nav_cont .nav_wrap .kv_tit span {display:block;width:34.13333vw;margin:0 auto;}
+    .nav_cont .nav_wrap .kv_txt {position:absolute;top:51.06667vw;left:50%;display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;transform:translateX(-50%);z-index:11;}
+    .nav_cont .nav_wrap .kv_txt span {display:block;line-height:7.16667vw;letter-spacing:-0.16vw;color:#70754c;}
+    .nav_cont .nav_wrap .kv_txt span.date {font-weight:500;font-size:5.06666vw;}
+    .nav_cont .nav_wrap .kv_txt span.loca {font-size:4.16666vw;}
+    .nav_cont .nav_wrap .kv_box {position:relative;padding-top:13.6vw;}
+    .nav_cont .nav_wrap .kv_box .kv_wrap {z-index: 10;position: relative;width:90.66667vw;height:auto;margin:0 auto;border-radius:100vw 100vw 0 0;border:0.4vw solid #6F744C;border-bottom:none;overflow:hidden;background:url('./img/kv_paper.jpg') repeat center center;box-sizing:border-box;}
+    .nav_cont .nav_wrap .kv_box .kv_wrap .kv_img {width:82.66667vw;height:auto;margin:4vw auto 0;}    
+    .nav_cont .nav_wrap .orbit_line {position:absolute;top:11.33333vw;left:10.53333vw;width:88.4vw;z-index:11;}
+    .nav_cont .nav_wrap .orbit_heart {z-index: 11;position: absolute;top:10vw;left: calc(50% - 37.33333vw);display: block;width: 4.53333vw;height: 3.46667vw;will-change: transform;animation: 10s linear orbit infinite;transform: translate3d(0vw, 0vw, 0);}
+    .nav_cont .nav_wrap .orbit_circle {z-index: 11;position: absolute;top:10vw;left: calc(50% - 37.33333vw);display: block;width: 2.8vw;height: 2.8vw;will-change: transform;animation: 10s linear orbit2 infinite;transform: translate3d(80vw, 24.4vw, 0) scale(.9);}
+
+
+    @keyframes orbit {
+        0% {
+            z-index: 11;
+            
+            transform: translate3d(0, 0, 0) scale(.8);
+        }
+        10% {
+            z-index: 11;
+            
+            transform: translate3d(20.66667vw, 4vw, 0) scale(1);
+        }
+        20% {
+            z-index: 11;
+            
+            transform: translate3d(41.33333vw, 10vw, 0) scale(1);
+        }
+        30% {
+            z-index: 11;
+            
+            transform: translate3d(62vw, 16.66667vw, 0) scale(.95);
+        }
+        40% {
+            z-index: 11;
+            
+            transform: translate3d(80vw, 24.66667vw, 0) scale(.9);
+        }
+        45% {
+            z-index: 10;
+            
+            transform: translate3d(83.33333vw, 28vw, 0) scale(.8);
+        }
+        50% {
+            z-index: 9;
+            
+            transform: translate3d(73.33333vw, 26.66667vw, 0) scale(.75);
+        }
+        60% {
+            z-index: 9;
+            
+            transform: translate3d(54.13333vw, 21.33333vw, 0) scale(.7);
+        }   
+        
+        70% {
+            z-index: 9;
+            
+            transform: translate3d(34.93333vw, 16vw, 0) scale(0.7);
+        }
+        80% {
+            z-index: 9;
+            
+            transform: translate3d(15.73333vw, 10vw, 0) scale(0.75);
+        }
+        90% {
+            z-index: 11;
+            
+            transform: translate3d(0vw, 4vw, 0) scale(0.75);
+        }
+        95% {
+            z-index: 11;
+            transform: translate3d(-3.33333vw, 0.66667vw, 0) scale(.8);
+        }
+        100% {
+            z-index: 11;
+            
+            transform: translate3d(0, 0, 0) scale(.8);
+        }
+    }
+    @keyframes orbit2 {
+        0% {
+            z-index: 11;
+            
+            transform: translate3d(80vw, 24.4vw, 0) scale(.9);
+        }
+        5% {
+            z-index: 10;
+            
+            transform: translate3d(84.53333vw, 28vw, 0) scale(.8);
+        }
+        10% {
+            z-index: 9;
+            
+            transform: translate3d(74.93333vw, 26.66667vw, 0) scale(.75);
+        }
+        20% {
+            z-index: 9;
+            
+            transform: translate3d(54.13333vw, 21.33333vw, 0) scale(.7);
+        }   
+        
+        30% {
+            z-index: 9;
+            
+            transform: translate3d(34.93333vw, 16vw, 0) scale(0.7);
+        }
+        40% {
+            z-index: 9;
+            
+            transform: translate3d(13.33333vw, 9.33333vw, 0) scale(0.75);
+        }
+        50% {
+            z-index: 11;
+            
+            transform: translate3d(0vw, 3.46667vw, 0) scale(0.75);
+        }
+        55% {
+            z-index: 11;
+            transform: translate3d(-3.33333vw, 0.93333vw, 0) scale(.8);
+        }
+        60% {
+            z-index: 11;
+            
+            transform: translate3d(0, 0.53333vw, 0) scale(.8);
+        }
+        70% {
+            z-index: 11;
+            
+            transform: translate3d(20.66667vw, 4.26667vw, 0) scale(1);
+        }
+        80% {
+            z-index: 11;
+            
+            transform: translate3d(41.33333vw, 10vw, 0) scale(1);
+        }
+        90% {
+            z-index: 11;
+            
+            transform: translate3d(62vw, 16.93333vw, 0) scale(.95);
+        }
+        100% {
+            z-index: 11;
+            
+            transform: translate3d(80vw, 24.4vw, 0) scale(.9);
+        }
+
+    }
+
+    .nav_cont_1 .cont_info {padding-top:13.33333vw;}
+    .nav_cont_1 .cont_info .info_txt {font-size:3.76666vw;line-height:5.83333vw;text-align:center;}
+    .nav_cont_1 .cont_img {width:100%;height:64.26667vw;overflow:hidden;}
+
+    .nav_cont_2 {}
+    .nav_cont_2 .sd_ico {margin-bottom:0;}
+    .nav_cont_2 .info_tit {font-size:4.13333vw;text-align:center;line-height:6.13333vw;letter-spacing:-0.16vw;color:#70754c;}
+    .nav_cont_2 .info_tit span {display:block;}
+    .nav_cont_2 .info_tit .tit2 {font-size:5.63333vw;font-weight:500;}
+    .nav_cont_2 .cont_info {padding-top:6.8vw;}
+    .nav_cont_2 .sd_deco {margin:0 auto 3.2vw;}
+    .nav_cont_2 .info_tit + .sd_deco {margin:3.2vw auto 10.66667vw;}
+    .nav_cont_2 .info_tel {display:flex;justify-content:space-between;padding:0 6.66667vw;}
+    .nav_cont_2 .info_tel .tel_cont {position:relative;width:34.66667vw;}
+    .nav_cont_2 .info_tel .tel_cont::after {position:absolute;top:-4vw;left:50%;font-size:4.6vw;font-weight:500;line-height:1;color:#ababab;transform:translateX(-50%);letter-spacing:-0.13333vw;;}
+    .nav_cont_2 .info_tel .tel_cont.groom_box::after {content:'Groom';}
+    .nav_cont_2 .info_tel .tel_cont.bride_box::after {content:'Bride';}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap {text-align: center;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.top {padding:3.6vw 0 4.93333vw;border-bottom:0.26667vw solid #979f6a;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box {display:flex;justify-content:center;align-items:center;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .term {font-size:3.8vw;margin-right:2vw;line-height:1;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .name {font-size:5.66667vw;margin-right:2vw;line-height:1;color:#5d5d5d;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .tel {}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .tel a {width:5.2vw;height:5.2vw;background:url('./img/tel_ico.png') no-repeat center center / 100% 100%;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot {}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_tit {padding:4vw 0 5.2vw;font-size:4.2vw;color:#ababab;font-weight:500;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box:last-child {margin-top:4vw;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .term {font-size:3.6vw;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .name {font-size:5.26667vw;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .tel {}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .tel a {width:5vw;height:5vw;background:url('./img/tel_ico.png') no-repeat center center / 100% 100%;}
+    .nav_cont_2 .info_loc {width:85.33333vw;margin:12vw auto 0;padding:6.66667vw 0;background:#e4e6d8;border-radius:1.33333vw;text-align:center;}
+    .nav_cont_2 .info_loc .info_txt {}
+    .nav_cont_2 .info_loc .info_txt .date {margin-bottom:2.66667vw;font-size:4.8vw;line-height:1;letter-spacing:-0.16vw;}
+    .nav_cont_2 .info_loc .info_txt .loc {font-size:4.8vw;line-height:1;letter-spacing:-0.16vw;}
+    .nav_cont_2 .info_loc .info_txt .loc span {position:relative;}
+    .nav_cont_2 .info_loc .info_txt .loc span::before {position:absolute;top:1.86667vw;left:-1.86667vw;display:inline-block;content:'';width:0.8vw;height:0.8vw;border-radius:100%;background:#70754c;}
+    .nav_cont_2 .info_loc .info_txt .loc span::after {position:absolute;top:1.86667vw;right:-1.86667vw;display:inline-block;content:'';width:0.8vw;height:0.8vw;border-radius:100%;background:#70754c;}
+
+    .nav_cont_3 {}
+    .nav_cont_3 .nav_wrap {padding:13.33333vw 0 13.33333vw;}
+    .nav_cont_3 .sd_ico {margin-bottom:0;}
+    .nav_cont_3 .cont_info {position:relative;width:85.33333vw;margin:0 auto;padding:8vw 3.33333vw 9.33333vw;background:#e3e3d5;box-sizing:border-box;border-radius:1.33333vw;text-align:center;}
+    .nav_cont_3 .info_tit {font-size:5.63333vw;text-align:center;line-height:4.26667vw;letter-spacing:-0.16vw;color:#70754c;}
+    .nav_cont_3 .info_tit span {position:relative;}
+    .nav_cont_3 .info_tit span::before {position:absolute;top:0;left:-8vw;display:inline-block;content:'';width:6.93333vw;height:6.93333vw;background:url('./img/gallery_deco.png') no-repeat center center / 100% 100%;}
+    .nav_cont_3 .info_tit span::after {position:absolute;top:0;right:-8vw;display:inline-block;content:'';width:6.93333vw;height:6.93333vw;background:url('./img/gallery_deco.png') no-repeat center center / 100% 100%;}
+    .nav_cont_3 .gallery {margin-top:6.66667vw;overflow: hidden;}
+    .nav_cont_3 .gallery .gallery_wrap {}
+    .nav_cont_3 .gallery .gallery_wrap .gallery_box {display:flex;flex-wrap: wrap;justify-content: space-between;align-content: space-between;width:78.66667vw;height:78.66667vw;}
+    .nav_cont_3 .gallery .gallery_wrap .gallery_box .thumb {width:25.33333vw;height:25.33333vw;border-radius:1.33333vw;overflow:hidden;background-color:#dddddd;}
+    .nav_cont_3 .gallery .gallery_wrap .gallery_box .thumb a {display:block;}
+    .nav_cont_3 .gallery .gallery_wrap .gallery_box .thumb a.none {pointer-events: none;}
+    .nav_cont_3 .gallery .gallery_wrap .gallery_box .thumb a img {width:100%;}
+    .nav_cont_3 .gallery .swiper-pagination {bottom:4vw;}
+    .nav_cont_3 .gallery .swiper-pagination-bullet {background:#974d02;transform:scale(0.8);opacity:0.5;}
+    .nav_cont_3 .gallery .swiper-pagination-bullet-active {background:#974d02;transform:scale(1); opacity: 1;}
+
+    .nav_cont_4 .nav_wrap {padding:0 0 13.33333vw;}
+    .nav_cont_4 .month {font-size:14.33333vw;line-height:1;color:#979f6a;font-weight:900;text-align:center;}
+    .nav_cont_4 .sd_ico {margin-top:-5.33333vw;}
+    .nav_cont_4 .calendar {}
+    .nav_cont_4 .calendar .calender_wrap {width:85.33333vw;margin:5.33333vw auto;padding-top:6.66667vw;border-top:0.4vw solid #979f6a;border-bottom:0.13333vw solid #979f6a;}
+    .nav_cont_4 .calendar .calender_wrap span {display:block;font-size:4.13333vw;line-height:1;}
+    .nav_cont_4 .calendar .calender_wrap .days {display:flex;justify-content: space-between;margin-bottom:9.33333vw;}
+    .nav_cont_4 .calendar .calender_wrap .days span {width:14%;text-align:center;}
+    .nav_cont_4 .calendar .calender_wrap .numb {display:flex;flex-flow:wrap;justify-content: space-between;}
+    .nav_cont_4 .calendar .calender_wrap .numb span {position:relative;width:14%;margin-bottom:5.33333vw;text-align:center;}
+    .nav_cont_4 .calendar .calender_wrap .numb span.d_day {z-index:1;}
+    .nav_cont_4 .calendar .calender_wrap .numb span.d_day::before {position:absolute;top:50%;left:50%;content:'';width:6.66667vw;height:6.66667vw;background: #e3e3d5;transform:translate(-50%,-50%);border-radius:1.33333vw;z-index:-1;}
+    .nav_cont_4 .calendar .calender_wrap .numb span.d_day::after {position:absolute;top:50%;left:50%;content:'';width:6.66667vw;height:6.66667vw;background: url('./img/dday2.png') no-repeat center center / 100% 100%;transform:translate(-50%,-50%);z-index:-1;animation:pulse 1s ease-in Infinite ;}
+    .nav_cont_4 .day_count {font-size:4.6333vw;text-align:center;letter-spacing:-0.2vw;}
+    .nav_cont_4 .day_count .today {font-size:6vw;color:#f09999;}
+
+    @keyframes pulse {
+        0% {
+            -webkit-transform:translate(-50%,-50%) scaleX(1);
+            transform:translate(-50%,-50%) scaleX(1)
+        }
+
+        50% {
+            -webkit-transform:translate(-50%,-50%) scale3d(1.05,1.05,1.05);
+            transform:translate(-50%,-50%) scale3d(1.05,1.05,1.05)
+        }
+
+        to {
+            -webkit-transform:translate(-50%,-50%) scaleX(1);
+            transform:translate(-50%,-50%) scaleX(1)
+        }
+    }
+
+    .nav_cont_5 {}
+    .nav_cont_5 .info_tit {margin-bottom:5.33333vw;padding-top:2.66667vw;font-size:5.63333vw;text-align:center;line-height:4.26667vw;letter-spacing:-0.16vw;color:#70754c;}
+    .nav_cont_5 .sd_ico {margin:0 auto 2.13333vw;}
+    .nav_cont_5 .info_sub_tit {margin-bottom:2.66667vw;letter-spacing:0.66667vw;}
+    .nav_cont_5 .cont_map {width:85.33333vw;margin:0 auto 8.33333vw;}
+    .nav_cont_5 .cont_map .map_box {position:relative;width:100%;height:53.33333vw;background:#fff;}
+    .nav_cont_5 .cont_map .map_box.hold #map::after {position:absolute;top:0;left:0;content:'';display:block;width:100%;height:100%;z-index:1;}
+    .nav_cont_5 .cont_map .map_box #map {width:100%;height:53.33333vw;}
+    .nav_cont_5 .cont_map .map_search {display:flex;justify-content:space-between;align-items:center;padding:2vw 4vw;background:#979f6a;}
+    .nav_cont_5 .cont_map .map_search .search_tit {position:relative;margin-right:2.66667vw;font-size:2.66667vw;font-weight:500;}
+    .nav_cont_5 .cont_map .map_search .search_tit::after {position:absolute;left:0;bottom:0;width:100%;height:1.33333vw;content:'';background:#979f6a;z-index:-1}
+    .nav_cont_5 .cont_map .map_search .search_list {display:flex;justify-content:space-between;width:100%;}
+    .nav_cont_5 .cont_map .map_search .search_list a {display:flex;align-items:center;font-size:2.66667vw;line-height:1;color:#fafafa;}
+    .nav_cont_5 .cont_map .map_search .search_list a .ico {display:block;width:5.33333vw;height:5.33333vw;margin-right:1.33333vw;border-radius:1.33333vw;overflow: hidden;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_kakao {margin-right:2.66667vw;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_kakao .ico {background:url('./img/map_02.jpg') no-repeat center center / 100% 100%;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_naver {margin-right:2.66667vw;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_naver .ico {background:url('./img/map_01.jpg') no-repeat center center / 100% 100%;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_hold {}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_hold.on .ico {background:url('./img/ico_lock_on.png') no-repeat center center / 100% 100%;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_hold.off .ico {background:url('./img/ico_lock_off.png') no-repeat center center / 100% 100%;}
+    .nav_cont_5 .cont_route {display:flex;flex-direction:column;width:85.33333vw;margin:0 auto;text-align:left;}
+    .nav_cont_5 .cont_route .route_box {margin-bottom:4.33333vw;}
+    .nav_cont_5 .cont_route .route_box:last-child {margin-bottom:0;}
+    .nav_cont_5 .cont_route .route_box .route_tit {position:relative;display:inline-block;margin-bottom:2vw;font-size:5.1333vw;font-weight:500;z-index:1;}
+    .nav_cont_5 .cont_route .route_box .route_tit::after {position:absolute;left:0;bottom:0;width:100%;height:1.33333vw;content:'';background:#e3e3d5;z-index:-1;}
+    .nav_cont_5 .cont_route .route_box .route_txt {font-size:4.13333vw;line-height:6.13333vw;letter-spacing:-0.33333vw;word-break:keep-all;}
+    .nav_cont_5 .cont_route .route_box .route_txt .caution {display:block;font-size:3.8vw;color:#f03333;}
+
+
+    .nav_cont_6 {padding:0;}
+    .nav_cont_6 .nav_wrap {padding-top:16vw;border-bottom:0.4vw solid #6F744C;}
+    .nav_cont_6 .info_tit {font-size:4.13333vw;text-align:center;line-height:6.13333vw;letter-spacing:-0.16vw;color:#70754c;}
+    .nav_cont_6 .info_tit span {display:block;}
+    .nav_cont_6 .info_tit .tit2 {font-size:5.63333vw;font-weight:500;}
+    .nav_cont_6 .sd_ico {margin:0 auto 2.13333vw;}
+    .nav_cont_6 .info_sub_tit {margin-bottom:2.13333vw;}
+    .nav_cont_6 .info_tit {letter-spacing:0;}
+    .nav_cont_6 .account_cont {display:flex;flex-direction:column;justify-content:space-between;width:100%;padding:8vw 4vw;box-sizing:border-box;text-align:center;}
+    .nav_cont_6 .account_cont .account_top {text-align:center;}
+    .nav_cont_6 .account_cont .account_top span {position:relative;display:inline-block;padding:2vw 5.33333vw;font-size:4.13333vw;z-index:1;cursor: pointer;border:0.26667vw solid #e3e3d5;border-radius:100vw;}
+    .nav_cont_6 .account_cont .account_top.on span {background:#e3e3d5;}
+    .nav_cont_6 .account_cont .account_slide:last-child {margin-top:2.66667vw;}
+    .nav_cont_6 .account_cont .acc_group {display:none;padding-top:4vw;}
+    .nav_cont_6 .account_cont .ac_tit {margin-bottom:2.66667vw;font-size:3.73333vw;}
+    .nav_cont_6 .account_cont .account_box {margin-bottom:4.66667vw;}
+    .nav_cont_6 .account_cont .account_box:last-child {margin-bottom:0;}
+    .nav_cont_6 .account_cont .account_box .ac_term {display:block;margin-bottom:1.33333vw;font-size:3.46667vw;}
+    .nav_cont_6 .account_cont .account_box .ac_text {position:relative;display:inline-block;font-size:4.266666vw;z-index:1;font-weight:500;}
+    .nav_cont_6 .account_cont .account_box .ac_text::after {position:absolute;left:0;bottom:0;width:100%;height:1.33333vw;content:'';background:#e3e3d5;z-index:-1;}
+    .nav_cont_6 .account_cont .account_cation {font-size:4vw;color:#952d2d;}
+
+    .nav_cont_6 .account_bg {position:relative;height:93.33333vw;overflow:hidden;}
+    .nav_cont_6 .account_bg::before {position:absolute;left:0;top:0;width:100%;height:13.33333vw;content:'';background:linear-gradient(180deg, rgba(247,248,244,1) 0%,rgba(247,248,244,0) 80%, rgba(247,248,244,0) 100%);z-index:2;}
+    .nav_cont_6 .account_bg .bg_box {position:absolute;top:0;left:0;display:flex;justify-content:center;align-items:flex-start;width:100%;height:130vw;background:url('./img/img2_.jpg') no-repeat center center;background-size:cover;box-sizing:border-box;text-align:center;z-index:1;}
+    .nav_cont_6 .account_bg .bg_box .save_the_date {margin-top:5.33333vw;}
+    .nav_cont_6 .account_bg .bg_box .save_the_date img {width:70%;margin:0 auto;opacity:0.89;}
+
+    .share_box {width:100%;padding:4vw 0 2.66667vw;}
+    .share_box #btnKakao {display:flex;justify-content:center;align-items:center;}
+    .share_box #btnKakao img {width:5.33333vw;margin-right:1.33333vw;}
+
+    .pop_box {position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;background-position:center center;transition:0.3s all;background-size:100% 100%;}
+    .pop_box .layer_pop {position:relative;display:flex;justify-content:center;align-items:center;width:100%;height:100%;}
+    .pop_box .layer_pop .closed {position:absolute;top:2.66667vw;left:50%;width:8.33333vw;height:8.33333vw;margin-left:39.66667vw;font-size:0;background-size:100% 100%;z-index:101;opacity:0.7;}
+    .pop_box .layer_pop .sl_cont {max-width:100vw;width:100%;height:100%;margin:0 auto;overflow:hidden;}
+    .pop_box .layer_pop .sl_cont .pop_wrap {position:relative;width:100%;max-width:100vw;}
+    .pop_box .layer_pop .sl_cont .pop_wrap .gallery_list {display:flex;justify-content:center;align-items:center;width:100vw;margin:0 auto;}
+    .pop_box .layer_pop .sl_cont .pop_wrap .gallery_list img {width:100%;}
+    .pop_box .swiper-button-next:after, .pop_box .swiper-button-prev:after {color:#70754c;}
+    .pop_box .swiper-pagination-fraction {bottom:0;color:#fff;}
+    .pop_box .dimmed {position:absolute;left:0;top:0;display:flex;justify-content:center;align-items:center;width:100%;height:100%;background:rgba(0,0,0,0.65);backdrop-filter:blur(1.33333vw);-webkit-backdrop-filter: blur(1.33333vw);}
+
+}
+
+</style>
+<body>
+    <div id="loading"></div>
+    <div id="wrapper" class="evWrap">
+        <!-- kv -->
+        <audio id="bgm-player" loop="loop" autoplay="autoplay"><source src="https://mcard.fromtoday.co.kr/mcard/assets/bgm/piano_03.mp3"></audio>
+        <div class="nav_cont nav_cont_kv">
+            <div class="nav_wrap">
+                <div class="kv_flower">
+                    <img src="./img/top_flower.png" alt="">
+                </div>
+                <div class="kv_tit box">
+                    <span><img src="./img/tit.png" alt=""></span>
+                </div>
+                <div class="kv_txt">
+                    <span class="date box">2024.03.09 PM 16:30</span>
+                    <span class="loca box">인천 아시아드 웨딩 컨벤션 (브릴리에 홀)</span>
+                </div>
+                <div class="kv_box">
+                    <div class="kv_wrap">
+                        <div class="kv_img">
+                            <img src="./img/kv_img.png" alt="">
+                        </div>
+                    </div>
+                    <div class="orbit_line">
+                        <img src="./img/orbit_line.png" alt="">
+                    </div>
+                    <div class="orbit_heart">
+                        <img src="./img/orbit_heart.png" alt="">
+                    </div>
+                    <div class="orbit_circle">
+                        <img src="./img/orbit_circle.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- // kv -->
+    
+        <!-- 초대문구 -->
+        <div class="nav_cont nav_cont_1">
+            <div class="nav_wrap">
+                <div class="cont_info">
+                    <div class="info_txt">
+                        <p class="box">사랑을 확인할 수 있는 깊이가 되어</p>
+                        <p class="box">봄에는 활짝 핀 벚꽃이 되어주고,</p>
+                        <p class="box">여름에는 시원한 바람이었으며,</p>
+                        <p class="box">가을에는 드넓은 하늘이었고,</p>
+                        <p class="box">겨울에는 새하얀 눈이 되어,</p>
+                        <p class="box">평생을 늘 서로에게 버팀목이 되겠습니다.</p>
+                        <p class="box">&nbsp;</p>
+                        <p class="box">시작의 한 걸음, 함께 축복해 주시면 감사드립니다.</p>
+                    </div>
+                    <div class="sd_ico"></div>
+                </div>
+                <div class="cont_img">
+                    <img src="./img/img1.jpg" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- // 초대문구 -->
+    
+        <!-- 전화하기 -->
+        <div class="nav_cont nav_cont_2">
+            <div class="nav_wrap">
+                <div class="cont_info">
+                    <div class="sd_deco"></div>
+                    <div class="info_tit">
+                        <span class="tit1 box">하나되는날,</span>
+                        <span class="tit2 box">축복해주세요.</span>
+                    </div>
+                    <div class="sd_deco"></div>
+                    <div class="info_tel">
+                        <div class="tel_cont groom_box">
+                            <div class="tel_wrap top">
+                                <div class="tel_box box">
+                                    <p class="term">
+                                        신랑
+                                    </p>
+                                    <p class="name">
+                                        김 승도
+                                    </p>
+                                    <p class="tel">
+                                        <a href="tel:+821059230708"></a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="tel_wrap bot">
+                                <div class="tel_tit">
+                                    신랑측 혼주
+                                </div>
+                                <div class="tel_box box">
+                                    <p class="term">
+                                        신랑父
+                                    </p>
+                                    <p class="name">
+                                        김 주일
+                                    </p>
+                                    <p class="tel">
+                                        <a href="tel:+821047752949"></a>
+                                    </p>
+                                </div>
+                                <div class="tel_box box">
+                                    <p class="term">
+                                        신랑母
+                                    </p>
+                                    <p class="name">
+                                        조 석예
+                                    </p>
+                                    <p class="tel">
+                                        <a href="tel:+821087592949"></a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tel_cont bride_box">
+                            <div class="tel_wrap top">
+                                <div class="tel_box box">
+                                    <p class="term">
+                                        신부
+                                    </p>
+                                    <p class="name">
+                                        이 아영
+                                    </p>
+                                    <p class="tel">
+                                        <a href="tel:+821041645240"></a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="tel_wrap bot">
+                                <div class="tel_tit">
+                                    신부측 혼주
+                                </div>
+                                <div class="tel_box box">
+                                    <p class="term">
+                                        신부父
+                                    </p>
+                                    <p class="name">
+                                        이 강우
+                                    </p>
+                                    <p class="tel">
+                                        <a href="tel:+821064705240"></a>
+                                    </p>
+                                </div>
+                                <div class="tel_box box">
+                                    <p class="term">
+                                        신부母
+                                    </p>
+                                    <p class="name">
+                                        이 선화
+                                    </p>
+                                    <p class="tel">
+                                        <a href="tel:+821050675240"></a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info_loc box">
+                        <div class="info_txt">
+                            <div class="date">2024년 03월 09일 토요일  오후 4시 30분</div>
+                            <div class="loc"><span>인천아시아드 웨딩컨벤션 브릴리에홀</span></div>
+                        </div>
+                    </div>
+                    <div class="sd_ico"></div>
+                </div>
+            </div>
+        </div>
+        <!-- // 전화하기 -->
+    
+        <!-- 웨딩앨범보기 -->
+        <div class="nav_cont nav_cont_3">
+            <div class="nav_wrap">
+                <div class="cont_info">
+                    <div class="info_tit box">
+                        <span>갤러리</span>
+                    </div>
+                    <div class="gallery gallery_thumb">
+                        <div class="gallery_wrap swiper-wrapper">
+                            <div class="gallery_box swiper-slide">
+                                <div class="thumb">
+                                    <a href="#" data-idx="1">
+                                        <img src="./gallery/thumb/01.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="2">
+                                        <img src="./gallery/thumb/02.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="3">
+                                        <img src="./gallery/thumb/03.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="4">
+                                        <img src="./gallery/thumb/04.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="5">
+                                        <img src="./gallery/thumb/05.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="6">
+                                        <img src="./gallery/thumb/06.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="7">
+                                        <img src="./gallery/thumb/07.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="8">
+                                        <img src="./gallery/thumb/08.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="9">
+                                        <img src="./gallery/thumb/09.jpg" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="gallery_box swiper-slide">
+                                <div class="thumb">
+                                    <a href="#" data-idx="10">
+                                        <img src="./gallery/thumb/10.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="11">
+                                        <img src="./gallery/thumb/11.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="12">
+                                        <img src="./gallery/thumb/12.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="13">
+                                        <img src="./gallery/thumb/13.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="14">
+                                        <img src="./gallery/thumb/14.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="15">
+                                        <img src="./gallery/thumb/15.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="16">
+                                        <img src="./gallery/thumb/16.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="17">
+                                        <img src="./gallery/thumb/17.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="18">
+                                        <img src="./gallery/thumb/18.jpg" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="gallery_box swiper-slide">
+                                <div class="thumb">
+                                    <a href="#" data-idx="19">
+                                        <img src="./gallery/thumb/19.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="20">
+                                        <img src="./gallery/thumb/20.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="21">
+                                        <img src="./gallery/thumb/21.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="22">
+                                        <img src="./gallery/thumb/22.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="23">
+                                        <img src="./gallery/thumb/23.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="24">
+                                        <img src="./gallery/thumb/24.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="25">
+                                        <img src="./gallery/thumb/25.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="26">
+                                        <img src="./gallery/thumb/26.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="27">
+                                        <img src="./gallery/thumb/27.jpg" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="gallery_box swiper-slide">
+                                <div class="thumb">
+                                    <a href="#" data-idx="28">
+                                        <img src="./gallery/thumb/28.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="29">
+                                        <img src="./gallery/thumb/29.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="30">
+                                        <img src="./gallery/thumb/30.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="31">
+                                        <img src="./gallery/thumb/31.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="32">
+                                        <img src="./gallery/thumb/32.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="33">
+                                        <img src="./gallery/thumb/33.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="34" class="none">
+                                        
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="35" class="none">
+                                        
+                                    </a>
+                                </div>
+                                <div class="thumb">
+                                    <a href="#" data-idx="36" class="none">
+
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- // 웨딩앨범보기 -->
+    
+        <!-- 달력보기 -->
+        <div class="nav_cont nav_cont_4">
+            <div class="nav_wrap">
+                <div class="cont_info">
+                    <div class="info_tit two_line">
+                        
+                    </div>
+                    <div class="month box">
+                        03
+                    </div>
+                    <div class="sd_ico"></div>
+                    <div class="calendar box">
+                        <div class="calender_wrap">
+                            <div class="days">
+                                <span>일</span>
+                                <span>월</span>
+                                <span>화</span>
+                                <span>수</span>
+                                <span>목</span>
+                                <span>금</span>
+                                <span>토</span>
+                            </div>
+                            <div class="numb">
+                                <span>&nbsp;</span>
+                                <span>&nbsp;</span>
+                                <span>&nbsp;</span>
+                                <span>&nbsp;</span>
+                                <span>&nbsp;</span>
+                                <span>1</span>
+                                <span>2</span>
+    
+                                <span>3</span>
+                                <span>4</span>
+                                <span>5</span>
+                                <span>6</span>
+                                <span>7</span>
+                                <span>8</span>
+                                <span class="d_day">9</span>
+    
+                                <span>10</span>
+                                <span>11</span>
+                                <span>12</span>
+                                <span>13</span>
+                                <span>14</span>
+                                <span>15</span>
+                                <span>16</span>
+    
+                                <span>17</span>
+                                <span>18</span>
+                                <span>19</span>
+                                <span>20</span>
+                                <span>21</span>
+                                <span>22</span>
+                                <span>23</span>
+    
+                                <span>24</span>
+                                <span>25</span>
+                                <span>26</span>
+                                <span>27</span>
+                                <span>28</span>
+                                <span>29</span>
+                                <span>30</span>
+    
+                                <span>31</span>
+                                <span>&nbsp;</span>
+                                <span>&nbsp;</span>
+                                <span>&nbsp;</span>
+                                <span>&nbsp;</span>
+                                <span>&nbsp;</span>
+                                <span>&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="day_count box">
+                        승도🧡아영의 결혼식<span id="dayNum"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- // 달력보기 -->
+    
+        <!-- 지도, 경로 -->
+        <div class="nav_cont nav_cont_5">
+            <div class="nav_wrap">
+                <div class="sd_ico"></div>
+                <div class="cont_info">
+                    <div class="info_tit box">
+                        오시는 길
+                    </div>
+                    <div class="cont_map">
+                        <div class="map_box box hold">
+                            <div id="map"></div>
+                            <!-- https://apis.map.kakao.com/web/guide/ -->
+                        </div>
+                        <div class="map_search box">
+                            <!-- <div class="search_tit">길찾기</div> -->
+                            <div class="search_list">
+                                <a class="map_kakao" href="https://map.kakao.com/link/to/인천아시아드웨딩컨벤션,37.5487194,126.6676776" target="_blank">
+                                    <span class="ico"></span>
+                                    <span>카카오맵</span>
+                                </a>
+                                <a class="map_naver" href="https://map.naver.com/p/directions/-/14100587.7267414,4515906.2989387,%EC%9D%B8%EC%B2%9C%EC%95%84%EC%8B%9C%EC%95%84%EB%93%9C%EC%9B%A8%EB%94%A9%EC%BB%A8%EB%B2%A4%EC%85%98,1320891480,PLACE_POI/-/transit?c=18.00,0,0,0,dh" target="_blank">
+                                    <span class="ico"></span>
+                                    <span>네이버지도</span>
+                                </a>
+                                <a class="map_hold on" href="javascript:void(0);">
+                                    <span class="ico"></span>
+                                    <span class="txt">지도 고정</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cont_route">
+                        <div class="route_box car">
+                            <div class="route_tit box">
+                                자가용 이용시
+                            </div>
+                            <div class="route_txt box">
+                                네비게이션 : "아시아드웨딩컨벤션" 또는 "염곡로 725" 입력<br />
+                                주차장 안내 : 인천아시아드주경기장 3번 게이트 앞 주차장 이용 (주차요금 무료)
+                            </div>
+                        </div>
+                        <div class="route_box bus">
+                            <div class="route_tit box">
+                                버스 이용시
+                            </div>
+                            <div class="route_txt box">
+                                우성아파트 [42717] : 24-1, 70, 인천e음86, 111, 111B, 302, 310<br />
+                                우성아파트 [42718] : 24-1, 70, 595, 인천e음86, 111, 111B, 302, 302B, 308, 310<br />
+                                인천아시아드주경기장(동문) [89354] : 3-2, 71, 인천e음86<br />
+                                인천아시아드주경기장(동문) [89359] : 3-2, 71, 인천e음86
+                            </div>
+                        </div>
+                        <div class="route_box metro">
+                            <div class="route_tit box">
+                                지하철 이용시
+                            </div>
+                            <div class="route_txt box">
+                                셔틀버스 운행 (15분 간격 운행)  &nbsp;<span class="caution">※ 도로교통상황에 따라 배차 간격이 길어질 수 있습니다.</span>
+                                공항철도, 인천 2호선 검암역 1번출구 횡단보도 건너편 승차<br />
+                                인천 2호선 아시아드경기장역 3번출구 앞 승차
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 계좌번호 -->
+        <div class="nav_cont nav_cont_6">
+            <div class="nav_wrap">
+                <div class="cont_info">
+                    <div class="sd_ico"></div>
+                    <div class="info_tit box">
+                        <span class="tit1 box">신랑 신부에게</span>
+                        <span class="tit2 box">마음 전하기</span>
+                    </div>
+                    
+                    <div class="account_cont">
+                        <div class="account_slide box">
+                            <div class="account_top"><span>신랑측 계좌번호</span></div>
+                            <div class="acc_group">
+                                <!-- <div class="ac_tit">🤵🏻</div> -->
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="신한은행 110-332-246074">신한은행 110-332-246074 (김승도)</div>
+                                </div>
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="신한은행 110-321-815593">신한은행 110-321-815593 (김주일)</div>
+                                </div>
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="국민은행 282401-04-294071">국민은행 282401-04-294071 (조석예)</div>
+                                </div>
+                                <div class="account_cation">
+                                    ※계좌번호를 누르면 복사됩니다.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="account_slide box">
+                            <div class="account_top"><span>신부측 계좌번호</span></div>
+                            <div class="acc_group">
+                                <!-- <div class="ac_tit">👰🏻</div> -->
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="신한은행 110-539-134586">신한은행 110-539-134586 (이아영)</div>
+                                </div>
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="농협은행 477091-52-075391">농협은행 477091-52-075391 (이강우)</div>
+                                </div>
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="농협은행 356-1138-2176-93">농협은행 356-1138-2176-93 (이선화)</div>
+                                </div>
+                                <div class="account_cation">
+                                    ※계좌번호를 누르면 복사됩니다.
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                    <div class="account_bg">
+                        <div class="bg_box"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- // 계좌번호 -->        
+        <div class="share_box">
+            <div id="btnKakao">
+                <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" id="kakao-link-btn" alt="카카오톡 링크 공유하기">
+                카카오톡<br />공유하기
+            </div>
+            
+            
+            <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+            <script type='text/javascript'>
+                //<![CDATA[
+                // // 사용할 앱의 JavaScript 키를 설정해 주세요.
+                Kakao.init('0620e36fd8d72e9232529fb736f53dc9');
+                // // 카카오링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
+                Kakao.Link.createScrapButton({
+                    container: '#btnKakao',
+                    requestUrl: 'https://our-story.site/ksdlay/',
+                    templateId : 103558
+                });
+                //]]>
+            </script>
+        </div>
+    </div>
+    <div class="pop_box" style="display:none;">
+        <div class="layer_pop">
+            <a href="#" class="closed">x</a>
+            <div class="sl_cont">
+                <div class="pop_wrap swiper-wrapper">
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/01.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/02.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/03.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/04.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/05.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/06.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/07.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/08.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/09.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/10.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/11.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/12.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/13.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/14.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/15.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/16.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/17.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/18.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/19.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/20.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/21.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/22.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/23.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/24.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/25.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/26.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/27.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/28.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/29.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/30.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/31.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/32.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/33.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+        <div class="dimmed"></div>
+    </div>
+    <div class="leaf_box"></div>
+</body>

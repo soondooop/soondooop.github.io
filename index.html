@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GitHub 방명록</title>
+    <meta charset="UTF-8">
+    <style>
+    .guestbook-entry { border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 5px; }
+    .entry-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .entry-actions { margin-top: 10px; }
+    .message { white-space: pre-wrap; }
+    .edit-form { display: none; margin-top: 10px; }
+    form { margin-bottom: 30px; }
+    textarea { width: 100%; min-height: 100px; }
+    .password-input { margin: 10px 0; }
+    </style>
+</head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4243785263236414"
+     crossorigin="anonymous"></script>
+<body>
+    <div id="guestbook">
+        <h1>방명록</h1>
+        <form id="guestbookForm">
+            <div>
+                <label for="name">이름:</label>
+                <input type="text" id="name" required>
+            </div>
+            <div>
+                <label for="message">메시지:</label>
+                <textarea id="message" required></textarea>
+            </div>
+            <div class="password-input">
+                <label for="password">비밀번호:</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit">등록하기</button>
+        </form>
+
+        <h2>방명록 목록</h2>
+        <div id="guestbookEntries"></div>
+    </div>
+
+    <!-- JavaScript 파일 연결 -->
+    <script src="./script.js"></script>
+</body>
+</html>
