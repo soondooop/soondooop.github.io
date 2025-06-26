@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CKEditor 4 다중 이미지 업로드 매크로</title>
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            text-align: center;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .main-content {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .content-section {
+            padding: 30px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .content-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: #3498db;
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+        
+        .shortcuts {
+            background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .shortcuts h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .shortcuts ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .shortcuts li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(44, 62, 80, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .shortcuts li:last-child {
+            border-bottom: none;
+        }
+        
+        .shortcut-key {
+            background: #34495e;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .upload-section {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-section:hover {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+        
+        .upload-section.dragover {
+            border-color: #3498db;
+            background: #e3f2fd;
+            transform: scale(1.02);
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        }
+        
+        .file-input-wrapper:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #1f5f8b 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+        
+        #multiImageInput {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .button-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+        }
+        
+        .btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .status {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: none;
+            font-weight: 500;
+        }
+        
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .preview-section {
+            margin-top: 25px;
+        }
+        
+        .image-preview {
+            display: inline-block;
+            margin: 10px;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .image-preview:hover {
+            transform: scale(1.05);
+        }
+        
+        .image-preview img {
+            max-width: 120px;
+            max-height: 120px;
+            display: block;
+            border-radius: 8px;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .remove-image:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+        
+        .editor-container {
+            margin-top: 30px;
+        }
+        
+        .editor-container .section-title {
+            margin-bottom: 15px;
+        }
+        
+        /* CKEditor 커스터마이징 */
+        .cke_chrome {
+            border: 1px solid #ddd !important;
+            border-radius: 6px !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+        }
+        
+        .cke_top {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+            border-bottom: 1px solid #ddd !important;
+            border-radius: 6px 6px 0 0 !important;
+        }
+        
+        .cke_bottom {
+            background: #f8f9fa !important;
+            border-top: 1px solid #ddd !important;
+            border-radius: 0 0 6px 6px !important;
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px 0;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .content-section {
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .image-preview img {
+                max-width: 100px;
+                max-height: 100px;
+            }
+        }
+        
+        /* 로딩 애니메이션 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📸 CKEditor 4 다중 이미지 업로드 매크로</h1>
+            <p>여러 이미지를 한 번에 선택하고 에디터에 삽입하세요</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="content-section">
+                <h3 class="section-title">🚀 단축키 및 기능</h3>
+                <div class="shortcuts">
+                    <ul>
+                        <li>
+                            <span>이미지 선택 대화상자 열기</span>
+                            <span class="shortcut-key">Ctrl + Shift + I</span>
+                        </li>
+                        <li>
+                            <span>선택된 이미지들을 에디터에 삽입</span>
+                            <span class="shortcut-key">Ctrl + Shift + U</span>
+                        </li>
+                        <li>
+                            <span>선택된 이미지들을 클립보드에 복사</span>
+                            <span class="shortcut-key">Ctrl + Shift + C</span>
+                        </li>
+                        <li>
+                            <span>모든 선택된 이미지 제거</span>
+                            <span class="shortcut-key">Ctrl + Shift + D</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <h3 class="section-title">📁 이미지 선택</h3>
+                <div class="upload-section" id="uploadSection">
+                    <div class="file-input-wrapper">
+                        <span>📂 이미지 파일 선택 (여러 개 가능)</span>
+                        <input type="file" id="multiImageInput" multiple accept="image/*">
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-primary" id="uploadBtn" disabled>
+                            <span class="btn-text">📤 에디터에 삽입</span>
+                            <span class="loading" style="display: none;"></span>
+                        </button>
+                        <button class="btn btn-secondary" id="clearBtn" disabled>🗑️ 모두 제거</button>
+                    </div>
+                    
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div id="progressText" style="text-align: center; font-size: 14px; color: #666;"></div>
+                    </div>
+                    
+                    <div class="status" id="status"></div>
+                </div>
+                
+                <div class="preview-section" id="previewSection" style="display: none;">
+                    <h3 class="section-title">🖼️ 선택된 이미지 미리보기</h3>
+                    <div id="imagePreviewContainer"></div>
+                </div>
+            </div>
+            
+            <div class="content-section editor-container">
+                <h3 class="section-title">✏️ CKEditor</h3>
+                <textarea id="editor" name="editor"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CKEditor 초기화
+        let editor;
+        
+        // 전역 변수
+        let selectedImages = [];
+        let imageCounter = 0;
+        
+        // CKEditor 초기화
+        CKEDITOR.replace('editor', {
+            height: 400,
+            removePlugins: 'elementspath,resize',
+            toolbar: [
+                { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates'] },
+                { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
+                { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'SpellChecker', 'Scayt'] },
+                '/',
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
+                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl'] },
+                { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+                { name: 'insert', items: ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
+                '/',
+                { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
+                { name: 'colors', items: ['TextColor', 'BGColor'] },
+                { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
+            ],
+            filebrowserUploadUrl: '/upload/',
+            filebrowserImageUploadUrl: '/upload/',
+            on: {
+                instanceReady: function() {
+                    editor = this;
+                    console.log('CKEditor가 준비되었습니다.');
+                }
+            }
+        });
+        
+        // DOM 요소들
+        const multiImageInput = document.getElementById('multiImageInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const previewSection = document.getElementById('previewSection');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const status = document.getElementById('status');
+        const uploadSection = document.getElementById('uploadSection');
+        
+        // 이미지 선택 이벤트
+        multiImageInput.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            const imageFiles = files.filter(file => file.type.startsWith('image/'));
+            
+            if (imageFiles.length === 0) {
+                showStatus('이미지 파일을 선택해주세요.', 'error');
+                return;
+            }
+            
+            selectedImages = imageFiles;
+            updateUI();
+            showImagePreviews();
+            showStatus(`${imageFiles.length}개의 이미지가 선택되었습니다.`, 'success');
+        });
+        
+        // 에디터에 삽입 버튼
+        uploadBtn.addEventListener('click', function() {
+            if (selectedImages.length === 0) {
+                showStatus('선택된 이미지가 없습니다.', 'error');
+                return;
+            }
+            
+            insertImagesToEditor();
+        });
+        
+        // 모두 제거 버튼
+        clearBtn.addEventListener('click', function() {
+            clearAllImages();
+        });
+        
+        // 키보드 단축키
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + Shift + I: 이미지 선택
+            if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                e.preventDefault();
+                multiImageInput.click();
+            }
+            
+            // Ctrl + Shift + U: 에디터에 삽입
+            if (e.ctrlKey && e.shiftKey && e.key === 'U') {
+                e.preventDefault();
+                if (selectedImages.length > 0) {
+                    insertImagesToEditor();
+                }
+            }
+            
+            // Ctrl + Shift + C: 클립보드에 복사
+            if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                e.preventDefault();
+                copyImagesToClipboard();
+            }
+            
+            // Ctrl + Shift + D: 모든 이미지 제거
+            if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+                e.preventDefault();
+                clearAllImages();
+            }
+        });
+        
+        // UI 업데이트
+        function updateUI() {
+            uploadBtn.disabled = selectedImages.length === 0;
+            clearBtn.disabled = selectedImages.length === 0;
+            previewSection.style.display = selectedImages.length > 0 ? 'block' : 'none';
+        }
+        
+        // 이미지 미리보기 표시
+        function showImagePreviews() {
+            imagePreviewContainer.innerHTML = '';
+            
+            selectedImages.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'image-preview';
+                    previewDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="${file.name}">
+                        <button class="remove-image" onclick="removeImage(${index})">×</button>
+                    `;
+                    imagePreviewContainer.appendChild(previewDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // 개별 이미지 제거
+        function removeImage(index) {
+            selectedImages.splice(index, 1);
+            updateUI();
+            showImagePreviews();
+            showStatus('이미지가 제거되었습니다.', 'info');
+        }
+        
+        // 모든 이미지 제거
+        function clearAllImages() {
+            selectedImages = [];
+            updateUI();
+            imagePreviewContainer.innerHTML = '';
+            multiImageInput.value = '';
+            showStatus('모든 이미지가 제거되었습니다.', 'info');
+        }
+        
+        // 에디터에 이미지 삽입
+        function insertImagesToEditor() {
+            if (!editor) {
+                showStatus('CKEditor가 준비되지 않았습니다.', 'error');
+                return;
+            }
+            
+            // 로딩 상태 표시
+            const btnText = uploadBtn.querySelector('.btn-text');
+            const loading = uploadBtn.querySelector('.loading');
+            btnText.style.display = 'none';
+            loading.style.display = 'inline-block';
+            uploadBtn.disabled = true;
+            
+            progressContainer.style.display = 'block';
+            let insertedCount = 0;
+            
+            selectedImages.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // 이미지를 Base64로 인코딩하여 에디터에 삽입
+                    const imgHtml = `<img src="${e.target.result}" alt="${file.name}" style="max-width: 100%; height: auto; margin: 10px 0; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">`;
+                    
+                    editor.insertHtml(imgHtml);
+                    insertedCount++;
+                    
+                    // 진행률 업데이트
+                    const progress = (insertedCount / selectedImages.length) * 100;
+                    progressFill.style.width = progress + '%';
+                    progressText.textContent = `${insertedCount} / ${selectedImages.length} 이미지 삽입 완료`;
+                    
+                    if (insertedCount === selectedImages.length) {
+                        setTimeout(() => {
+                            // 로딩 상태 해제
+                            btnText.style.display = 'inline';
+                            loading.style.display = 'none';
+                            uploadBtn.disabled = false;
+                            
+                            progressContainer.style.display = 'none';
+                            progressFill.style.width = '0%';
+                            progressText.textContent = '';
+                            
+                            showStatus(`${insertedCount}개의 이미지가 에디터에 삽입되었습니다.`, 'success');
+                        }, 1000);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // 클립보드에 이미지 복사
+        function copyImagesToClipboard() {
+            if (selectedImages.length === 0) {
+                showStatus('복사할 이미지가 없습니다.', 'error');
+                return;
+            }
+            
+            if (navigator.clipboard && window.ClipboardItem) {
+                const clipboardItems = selectedImages.map(file => new ClipboardItem({
+                    [file.type]: file
+                }));
+                
+                navigator.clipboard.write(clipboardItems).then(() => {
+                    showStatus('이미지들이 클립보드에 복사되었습니다.', 'success');
+                }).catch(() => {
+                    showStatus('클립보드 복사에 실패했습니다. 브라우저가 지원하지 않을 수 있습니다.', 'error');
+                });
+            } else {
+                showStatus('이 브라우저는 이미지 클립보드 복사를 지원하지 않습니다.', 'error');
+            }
+        }
+        
+        // 상태 메시지 표시
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 드래그 앤 드롭 지원
+        uploadSection.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+        
+        uploadSection.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+        });
+        
+        uploadSection.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+            
+            const files = Array.from(e.dataTransfer.files);
+            const imageFiles = files.filter(file => file.type.startsWith('image/'));
+            
+            if (imageFiles.length === 0) {
+                showStatus('이미지 파일만 드롭할 수 있습니다.', 'error');
+                return;
+            }
+            
+            selectedImages = imageFiles;
+            updateUI();
+            showImagePreviews();
+            showStatus(`${imageFiles.length}개의 이미지가 드롭되었습니다.`, 'success');
+        });
+        
+        // 페이지 로드 완료 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('다중 이미지 업로드 매크로가 준비되었습니다.');
+            showStatus('페이지가 로드되었습니다. 이미지를 선택하거나 드래그 앤 드롭하세요.', 'info');
+        });
+    </script>
+</body>
+</html> 
