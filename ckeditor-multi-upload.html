@@ -622,6 +622,11 @@
                 return;
             }
             
+            if (selectedImages.length === 0) {
+                showStatus('선택된 이미지가 없습니다.', 'error');
+                return;
+            }
+            
             // 로딩 상태 표시
             const btnText = uploadBtn.querySelector('.btn-text');
             const loading = uploadBtn.querySelector('.loading');
@@ -630,38 +635,68 @@
             uploadBtn.disabled = true;
             
             progressContainer.style.display = 'block';
-            let insertedCount = 0;
+            progressText.textContent = '서버에 이미지 업로드 중...';
             
+            // FormData를 사용하여 파일 업로드
+            const formData = new FormData();
             selectedImages.forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    // 이미지를 Base64로 인코딩하여 에디터에 삽입
-                    const imgHtml = `<img src="${e.target.result}" alt="${file.name}" style="max-width: 100%; height: auto; margin: 10px 0; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">`;
+                formData.append('files[]', file);
+            });
+            
+            // 서버에 업로드
+            fetch('upload.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let insertedCount = 0;
                     
-                    editor.insertHtml(imgHtml);
-                    insertedCount++;
-                    
-                    // 진행률 업데이트
-                    const progress = (insertedCount / selectedImages.length) * 100;
-                    progressFill.style.width = progress + '%';
-                    progressText.textContent = `${insertedCount} / ${selectedImages.length} 이미지 삽입 완료`;
-                    
-                    if (insertedCount === selectedImages.length) {
-                        setTimeout(() => {
-                            // 로딩 상태 해제
-                            btnText.style.display = 'inline';
-                            loading.style.display = 'none';
-                            uploadBtn.disabled = false;
-                            
-                            progressContainer.style.display = 'none';
-                            progressFill.style.width = '0%';
-                            progressText.textContent = '';
-                            
-                            showStatus(`${insertedCount}개의 이미지가 에디터에 삽입되었습니다.`, 'success');
-                        }, 1000);
-                    }
-                };
-                reader.readAsDataURL(file);
+                    data.files.forEach((fileData, index) => {
+                        // 서버 URL을 사용하여 이미지 삽입
+                        const imgHtml = `<img src="${fileData.url}" alt="${fileData.filename}" style="max-width: 100%; height: auto; margin: 10px 0; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">`;
+                        
+                        editor.insertHtml(imgHtml);
+                        insertedCount++;
+                        
+                        // 진행률 업데이트
+                        const progress = (insertedCount / data.files.length) * 100;
+                        progressFill.style.width = progress + '%';
+                        progressText.textContent = `${insertedCount} / ${data.files.length} 이미지 삽입 완료`;
+                        
+                        if (insertedCount === data.files.length) {
+                            setTimeout(() => {
+                                // 로딩 상태 해제
+                                btnText.style.display = 'inline';
+                                loading.style.display = 'none';
+                                uploadBtn.disabled = false;
+                                
+                                progressContainer.style.display = 'none';
+                                progressFill.style.width = '0%';
+                                progressText.textContent = '';
+                                
+                                showStatus(`${insertedCount}개의 이미지가 서버에 업로드되고 에디터에 삽입되었습니다.`, 'success');
+                            }, 1000);
+                        }
+                    });
+                } else {
+                    throw new Error(data.error || '업로드에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('업로드 오류:', error);
+                
+                // 로딩 상태 해제
+                btnText.style.display = 'inline';
+                loading.style.display = 'none';
+                uploadBtn.disabled = false;
+                
+                progressContainer.style.display = 'none';
+                progressFill.style.width = '0%';
+                progressText.textContent = '';
+                
+                showStatus(`업로드 실패: ${error.message}`, 'error');
             });
         }
         
