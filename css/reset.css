@@ -1,0 +1,20 @@
+@charset "utf-8";
+
+/* reset */
+*{margin: 0;padding: 0;border: 0;outline-style: none;box-sizing: border-box;}
+html{-webkit-tap-highlight-color:transparent !important;-webkit-text-size-adjust: none;-webkit-appearance: none;}
+html{overflow-x: hidden;-webkit-touch-callout:none;}
+body{min-width: 320px;max-width: 100%;font-family: 'Noto Sans KR', sans-serif;color: #242424;}
+ol,ul,li{list-style: none;}
+table,th,td{border-collapse: collapse;/*border-spacing: 0;*/}
+input{-webkit-appearance: none;-webkit-border-radius: 0;border-radius: 0;}
+input[type=text]::-ms-clear, 
+input[type=tel]::-ms-clear{display: none;}
+select{-webkit-appearance: none;-moz-appearance: none;appearance: none;}
+select::-ms-expand{display: none;}/* IE 10, 11의 네이티브 화살표 숨기기 */
+button{border: none;background: none;cursor: pointer;outline: none;}
+label{cursor: pointer;}
+label img{pointer-events: none;}
+a{text-decoration: none;color: #242424;}
+button{border: none;background: none;cursor: pointer;-webkit-transform: translate3d(0,0,0);outline: none;}
+img{display: block;border: 0;width: 100%;}

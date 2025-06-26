@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>효근&amp;아라</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="./js/gsap.min.js"></script>
+    <script src="./js/ScrollTrigger.min.js"></script>
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=16c7a447ef8a851b39c8d93d9c74a0d5"></script>
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=z7iut62rgg"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+</head>
+
+<script type="text/javascript">
+var swiper;
+    $(window).on('load',function(){
+        
+        $('#loading').animate({opacity:0},2000,function(){
+            $('#loading').remove();
+            $('body').removeClass('off');
+            swiper.autoplay.start();
+            $('.kv_border').addClass('on');
+        })
+    })
+$(document).ready(function(){
+    console.log('ver.1.02');
+           
+    swiper = new Swiper(".kv_border", {
+        effect: "fade",
+        autoPlay: true,
+        speed: 1200,
+        autoplay: {
+            delay: 2000,
+            disableOnInteraction: false,
+        },
+    });
+           
+    var swiper2 = new Swiper(".info_img", {
+        autoPlay: true,
+        speed: 500,
+        pagination: {
+            el: ".swiper-pagination",
+            dynamicBullets: true,
+        },
+    });
+
+    swiper.autoplay.stop();
+
+    var dayNum;
+
+    const remainTime = document.querySelector("#dayNum");
+
+    function diffDay() {
+    const masTime = new Date("2023-10-21");
+    const todayTime = new Date();
+    
+    const diff = masTime - todayTime;
+
+    const diffDay = String(Math.floor(diff / (1000*60*60*24)));
+    
+    if(diffDay == 0){
+        remainTime.innerHTML = ` <span class="today">당일</span>입니다.`;
+    } else if(diffDay < 0){
+        remainTime.innerHTML = `이 지났습니다.`;
+    } else {
+        remainTime.innerHTML = `까지 <span class="today">${diffDay}</span>일 남았습니다.`;
+    }
+}
+
+diffDay();
+
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.set($('.nav_cont .box'), {scale:1.1,opacity: 0, y:'50px'});
+
+    const boxes = gsap.utils.toArray('.box');
+        boxes.forEach(box => {
+        gsap.to(box, { 
+            scale: 1,
+            opacity: 1,
+            y: 0,
+            duration: 1.5,
+            scrollTrigger: {
+                trigger: box
+            }
+        })
+    });
+
+    var clipboard = new Clipboard('.ac_text');
+    clipboard.on('success', function(e) {
+        alert('복사되었습니다!');
+    });
+    clipboard.on('error', function(e) {
+        alert('복사에 실패했습니다. 다시 시도해주세요.');
+    });
+
+    $(document).on('click','.account_top',function(e){
+        e.preventDefault;
+
+        if($(this).hasClass('on') == false){
+            $('.account_top').removeClass('on');
+            $('.acc_group').slideUp();
+            $(this).addClass('on');
+            $(this).siblings('.acc_group').slideDown(500);
+        } else {
+            $('.account_top').removeClass('on');
+            $('.acc_group').slideUp();
+        }
+        
+    })
+                        var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+                        var options = { //지도를 생성할 때 필요한 기본 옵션
+                            center: new kakao.maps.LatLng(37.39146627577777, 126.63768765310179), //지도의 중심좌표.
+                            level: 3 //지도의 레벨(확대, 축소 정도)
+                        };
+                        
+                        var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+
+                        var markerPosition  = new kakao.maps.LatLng(37.39146627577777, 126.63768765310179); 
+
+                        // 마커를 생성합니다
+                        var marker = new kakao.maps.Marker({
+                            position: markerPosition
+                        });
+                        marker.setMap(map);
+
+                        function setDraggable(draggable) {
+                            // 마우스 드래그로 지도 이동 가능여부를 설정합니다
+                            map.setDraggable(draggable);    
+                        }
+
+                        setDraggable(false);
+
+                        $('.map_hold').on('click',function(){
+                            if($(this).hasClass('on') == true){
+                                $(this).removeClass('on').addClass('off');
+                                $('.map_box').removeClass('hold');
+                                setDraggable(true);
+                                $('.map_hold .txt').text('고정 해제');
+                            } else {
+                                $(this).removeClass('off').addClass('on');
+                                $('.map_box').addClass('hold');
+                                setDraggable(false);
+                                $('.map_hold .txt').text('지도 고정');
+                            }
+                        })
+})
+    
+</script>
+<style>
+@charset "utf-8";
+@font-face {
+    font-family: 'MAPOGOLDENPIER';
+    src: url('./fonts/MAPOGOLDENPIER.TTF') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SourceHanSerifK';
+    src: url('./fonts/SourceHanSerifK-Regular.otf') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SourceHanSerifK';
+    src: url('./fonts/SourceHanSerifK-Medium.otf') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SourceHanSerifK';
+    src: url('./fonts/SourceHanSerifK-Bold.otf') format('woff');
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SourceHanSerifK';
+    src: url('./fonts/SourceHanSerifK-Heavy.otf') format('woff');
+    font-weight: 900;
+    font-style: normal;
+}
+/* reset */
+*{margin: 0;padding: 0}
+html{-webkit-tap-highlight-color:transparent !important;-webkit-text-size-adjust: none;}
+a {display:block;color: #333;text-decoration:none;}
+body,input,label{font-family: 'SourceHanSerifK';webkit-text-size-adjust: auto;color:#333333;}
+ul,ol,li{list-style: none;}
+img{display: block;border: 0;}
+button{border: none;background: none;cursor: pointer;-webkit-transform: translate3d(0,0,0);outline: none;}
+.swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active-prev {}
+.swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active-main {}
+
+/* common */
+.hide{position: absolute;left: -5000px;width: 0;height: 0;overflow: hidden;visibility: hidden;z-index: -1;}	
+.clearfix:after{display: block;clear: both;content: '';}
+body.off{overflow: hidden;}
+#loading {position:fixed;width:100vw;height:100vh;background:#f5e9d9;z-index: 5;}
+
+#wrapper {position:relative; overflow:hidden; z-index:0;width:750px;margin:0 auto;background:#f7f7f7;}
+.sd_ico {width:192px;height:81px;margin:51px auto 24px;background:url(./images/sd_ico.png) no-repeat center center / 100% 100%;}
+.nav_cont {text-align:center;}
+.nav_cont .nav_wrap {padding:1px 0;}
+.nav_cont .info_tit {margin-bottom: 50px;font-weight: 500;font-family: 'MAPOGOLDENPIER';font-size: 38px;line-height: 1;letter-spacing: 4px;color: #974d02;}
+.nav_cont .info_sub_tit {margin-bottom:14px;font-size:24px;font-weight:500;line-height:1;color:#974d02;letter-spacing:5.5px;}
+
+.nav_cont .kv_box {position:relative;}
+.nav_cont .kv_box::after {position:absolute;left:50%;top:0;width:100%;height:100%;content:'';transform:translateX(-50%);z-index:1;}
+.nav_cont .kv_box .kv_border {width:600px;height:1120px;margin:0 auto;border:2px solid #eccb9f;border-top:none;border-radius:0 0 300px 300px;}
+.nav_cont .kv_box .kv_border .kv_cont {width:560px;height:1100px;margin:0 auto;border-radius:0 0 285px 285px;overflow: hidden;background:#f7f7f7;}
+.swiper-fade.on .swiper-slide img {transform:scale(1);transition:10s all;}
+.swiper-fade.on .swiper-slide-active img {transform: scale(1.08);transition:10s all;}
+
+.nav_cont_kv {background:#f5e9d9;padding-bottom:84px;}
+.nav_cont_kv .cont_info {padding-top:46px;}
+.nav_cont_kv .cont_info .info_name {font-size:42px;line-height:1;letter-spacing:-2px;font-weight:500;}
+.nav_cont_kv .cont_info .info_name span {font-size:22px;letter-spacing:-1.5px;}
+.nav_cont_kv .cont_info .sd_ico {margin:41px auto;}
+.nav_cont_kv .cont_info .info_txt {opacity:0;}
+.nav_cont_kv .cont_info .info_txt .date {font-size:36px;line-height:1;letter-spacing:-1.6px;}
+.nav_cont_kv .cont_info .info_txt .loc {margin-top:10px;font-size:34px;}
+
+.nav_cont_1 {}
+.nav_cont_1 .cont_info .info_txt {font-size:24px;line-height:46px;letter-spacing:-0.2px;}
+.nav_cont_1 .cont_info .info_txt span {display:block;}
+.nav_cont_1 .cont_info .info_txt span:last-child {margin-top: 45px;font-size: 26px;letter-spacing: -2px;}
+.nav_cont_1 .cont_img {width:100%;height:530px;margin:56px auto 0;}
+/* .nav_cont_1 .cont_img {width:100%;height:530px;margin:56px auto 0;background:url('./images/tel_img.jpg');  background-attachment: fixed;background-position: center;background-repeat: no-repeat;background-size: cover;} */
+
+.nav_cont_2 {padding-bottom:68px;}
+.nav_cont_2 .sd_ico {margin-bottom:28px;}
+.nav_cont_2 .info_sub_tit {margin-bottom:20px;font-size:19px;letter-spacing:4.2px;}
+.nav_cont_2 .info_tel {display:flex;justify-content:space-between;padding:0 50px;}
+.nav_cont_2 .info_tel .tel_cont {position:relative;width:300px;}
+.nav_cont_2 .info_tel .tel_cont::after {position:absolute;top:-30px;left:50%;font-size:24px;font-weight:900;line-height:1;color:#ccc;transform:translateX(-50%);letter-spacing:-1px;;}
+/* .nav_cont_2 .info_tel .tel_cont.groom_box::after {content:'Groom';}
+.nav_cont_2 .info_tel .tel_cont.bride_box::after {content:'Bride';} */
+.nav_cont_2 .info_tel .tel_cont .tel_wrap {}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.top {padding:27px 0 37px;border-bottom:2px solid #e4cbaa;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box {display:flex;justify-content:center;align-items:center;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .term {font-size:24px;margin-right:15px;line-height:1;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .name {font-size:36px;margin-right:15px;line-height:1;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .tel {}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .tel a {width:30px;height:30px;background:url('./images/tel_ico.png') no-repeat center center / 100% 100%;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot {}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_tit {padding:30px 0 39px;font-size:24px;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box:last-child {margin-top:30px;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .term {font-size:20px;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .name {font-size:32px;}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .tel {}
+.nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .tel a {width:30px;height:30px;background:url('./images/tel_ico.png') no-repeat center center / 100% 100%;}
+.nav_cont_2 .info_loc {width:650px;margin:90px auto 0;padding:50px 0;background:#f5e9d9;border-radius:40px;}
+.nav_cont_2 .info_loc .info_txt {}
+.nav_cont_2 .info_loc .info_txt .date {margin-bottom:20px;font-size:32px;line-height:1;letter-spacing:-1.2px;}
+.nav_cont_2 .info_loc .info_txt .loc {font-size:28px;line-height:1;letter-spacing:-1.2px;}
+
+.nav_cont_3 {background:#f5e9d9;padding-bottom:90px;}
+.nav_cont_3 .sd_ico {margin:46px auto 8px;}
+.nav_cont_3 .info_sub_tit {margin-bottom:20px;}
+.nav_cont_3 .info_tit {margin-bottom:80px;letter-spacing:1px;}
+.nav_cont_3 .info_img {position:relative;width:100%;height:auto;}
+.nav_cont_3 .info_img .swiper-pagination {margin-top:30px;}
+.nav_cont_3 .info_img .swiper-pagination-bullet {background:#974d02;transform:scale(0.8);opacity:0.5;}
+.nav_cont_3 .info_img .swiper-pagination-bullet-active {background:#974d02;transform:scale(1); opacity: 1;}
+
+.nav_cont_3 .info_btn {}
+.nav_cont_3 .info_btn a {display:flex;justify-content:center;align-items:center;width:375px;height:80px;margin:50px auto 0;border-radius:40px;background:#f7f7f7;}
+.nav_cont_3 .info_btn a span {font-size:24px;font-weight:500;}
+.nav_cont_3 .btn_point {margin-top:10px;font-size:18px;color:#f09999;letter-spacing: -0.5px;text-align: right;padding-right: 20px;}
+
+.nav_cont_4 .info_tit {margin:100px auto 0;line-height:56px;letter-spacing:0;}
+.nav_cont_4 .sd_ico {margin-top:27px;}
+.nav_cont_4 .month {font-size:130px;line-height:1;color:#e8d195;font-weight:900;opacity:0.7;}
+.nav_cont_4 .calendar {}
+.nav_cont_4 .calendar .calender_wrap {width:650px;margin:44px auto 15px;padding-top:50px;border-top:3px solid #f5e9d9;border-bottom:1px solid #f5e0d0;}
+.nav_cont_4 .calendar .calender_wrap span {display:block;font-size:24px;line-height:1;}
+.nav_cont_4 .calendar .calender_wrap .days {display:flex;justify-content: space-between;margin-bottom:65px;}
+.nav_cont_4 .calendar .calender_wrap .days span {width:14%;}
+.nav_cont_4 .calendar .calender_wrap .numb {display:flex;flex-flow:wrap;justify-content: space-between;}
+.nav_cont_4 .calendar .calender_wrap .numb span {position:relative;width:14%;margin-bottom:33px;}
+.nav_cont_4 .calendar .calender_wrap .numb span.d_day {z-index:1;}
+.nav_cont_4 .calendar .calender_wrap .numb span.d_day::before {position:absolute;top:50%;left:50%;content:'';width:50px;height:50px;background: url('./images/dday.png') no-repeat center center / 100% 100%;transform:translate(-50%,-50%);z-index:-1;}
+.nav_cont_4 .calendar .calender_wrap .numb span.d_day::after {position:absolute;top:50%;left:50%;content:'';width:50px;height:50px;background: url('./images/dday2.png') no-repeat center center / 100% 100%;transform:translate(-50%,-50%);z-index:-1;animation:ball 1s ease-in Infinite Alternate;}
+.nav_cont_4 .day_count {font-size:24px;}
+.nav_cont_4 .day_count .today {font-size:30px;color:#f09999;}
+
+@keyframes ball {
+    0% {
+        transform:translate(-50%,-50%) scale(1);
+    }
+    20% {
+        transform:translate(-50%,-50%) scale(1.05);
+    }
+    40% {
+        transform:translate(-50%,-50%) scale(1);
+    }
+    60% {
+        transform:translate(-50%,-50%) scale(1.05);
+    }
+    80% {
+        transform:translate(-50%,-50%) scale(1);
+    }
+    100% {
+        transform:translate(-50%,-50%) scale(1);
+    }
+}
+
+
+.nav_cont_5 {}
+.nav_cont_5 .sd_ico {margin-bottom:16px;}
+.nav_cont_5 .info_sub_tit {margin-bottom:20px;letter-spacing:5px;}
+.nav_cont_5 .info_tit {margin-bottom:70px;}
+.nav_cont_5 .cont_map {width:650px;margin:0 auto 40px;}
+.nav_cont_5 .cont_map .map_box {position:relative;width:100%;height:400px;background:#fff;}
+.nav_cont_5 .cont_map .map_box.hold #map::after {position:absolute;top:0;left:0;content:'';display:block;width:100%;height:100%;z-index:1;}
+.nav_cont_5 .cont_map .map_box #map {width:100%;height:400px;}
+.nav_cont_5 .cont_map .map_search {display:flex;justify-content:space-between;align-items:center;padding:15px 30px;background:#f5e9d9;}
+.nav_cont_5 .cont_map .map_search .search_tit {position:relative;margin-right:20px;font-size:20px;font-weight:500;}
+.nav_cont_5 .cont_map .map_search .search_tit::after {position:absolute;left:0;bottom:0;width:100%;height:10px;content:'';background:#f5e9d9;z-index:-1}
+.nav_cont_5 .cont_map .map_search .search_list {display:flex;justify-content:space-between;width:100%;}
+.nav_cont_5 .cont_map .map_search .search_list a {display:flex;align-items:center;font-size:20px;line-height:1;}
+.nav_cont_5 .cont_map .map_search .search_list a .ico {display:block;width:40px;height:40px;margin-right:10px;border-radius:10px;overflow: hidden;}
+.nav_cont_5 .cont_map .map_search .search_list a.map_kakao {margin-right:20px;}
+.nav_cont_5 .cont_map .map_search .search_list a.map_kakao .ico {background:url('./images/map_02.jpg') no-repeat center center / 100% 100%;}
+.nav_cont_5 .cont_map .map_search .search_list a.map_naver {margin-right:20px;}
+.nav_cont_5 .cont_map .map_search .search_list a.map_naver .ico {background:url('./images/map_01.jpg') no-repeat center center / 100% 100%;}
+.nav_cont_5 .cont_map .map_search .search_list a.map_hold {}
+.nav_cont_5 .cont_map .map_search .search_list a.map_hold.on .ico {background:url('./images/ico_lock_on.png') no-repeat center center / 100% 100%;}
+.nav_cont_5 .cont_map .map_search .search_list a.map_hold.off .ico {background:url('./images/ico_lock_off.png') no-repeat center center / 100% 100%;}
+
+.nav_cont_5 .cont_route {display:flex;flex-direction:column;width:650px;margin:0 auto 120px;text-align:left;}
+.nav_cont_5 .cont_route .route_box {margin-bottom:28px;}
+.nav_cont_5 .cont_route .route_box:last-child {margin-bottom:0;}
+.nav_cont_5 .cont_route .route_box .route_tit {position:relative;display:inline-block;margin-bottom:6px;font-size:27px;font-weight:500;z-index:1;}
+.nav_cont_5 .cont_route .route_box .route_tit::after {position:absolute;left:0;bottom:0;width:100%;height:10px;content:'';background:#f5e9d9;z-index:-1;}
+.nav_cont_5 .cont_route .route_box .route_txt {font-size:24px;line-height:34px;letter-spacing:-1px;}
+
+
+.nav_cont_6 {background:#f5e9d9;padding-bottom:90px;}
+.nav_cont_6 .sd_ico {margin-bottom:13px;}
+.nav_cont_6 .info_sub_tit {margin-bottom:16px;}
+.nav_cont_6 .info_tit {letter-spacing:0;}
+.nav_cont_6 .account {display:flex;justify-content:center;align-items:center;width:100%;height:auto;padding:50px;background:url('./images/acc_bg.jpg') no-repeat center 73% / 100% auto;box-sizing:border-box;}
+.nav_cont_6 .account .account_wrap {display:flex;flex-direction:column;justify-content:space-between;width:650px;padding:60px 30px;background:rgba(255,255,255,0.7);border:2px solid #eccb9f;}
+
+
+.nav_cont_6 .account .account_wrap .account_top {}
+.nav_cont_6 .account .account_wrap .account_top span {position:relative;display:inline-block;font-size:18px;z-index:1;cursor: pointer;}
+.nav_cont_6 .account .account_wrap .account_top span::after {position:absolute;left:0;bottom:0;width:100%;height:10px;content:'';background:#f5e9d9;z-index:-1;transition: 0.5s all;}
+.nav_cont_6 .account .account_wrap .account_top.on span::after {background:#f5c6c6;transition: 0.5s all;}
+.nav_cont_6 .account .account_wrap .account_top span span {font-size:20px;}
+
+.nav_cont_6 .account .account_wrap .account_slide:last-child {margin-top:20px;}
+
+.nav_cont_6 .account .account_wrap .acc_group {display:none;padding-top:30px;}
+
+
+.nav_cont_6 .account .account_wrap .ac_tit {margin-bottom:20px;font-size:28px;}
+.nav_cont_6 .account .account_wrap .account_box {margin-bottom:20px;}
+.nav_cont_6 .account .account_wrap .account_box:last-child {margin-bottom:0;}
+.nav_cont_6 .account .account_wrap .account_box .ac_term {display:block;margin-bottom:10px;font-size:26px;}
+.nav_cont_6 .account .account_wrap .account_box .ac_text {position:relative;display:inline-block;font-size:22px;z-index:1;font-weight:500;}
+.nav_cont_6 .account .account_wrap .account_box .ac_text::after {position:absolute;left:0;bottom:0;width:100%;height:10px;content:'';background:#f5e9d9;z-index:-1;}
+
+.nav_cont_6 .account .account_wrap .account_cation {font-size:18px;color:#952d2d;}
+
+@media (max-width: 750px)  {
+    img {width:100%;}
+    #wrapper {position:relative; overflow:hidden; z-index:0;width:100vw;margin:0 auto;background:#f7f7f7;}
+    .sd_ico {width:25.6vw;height:10.8vw;margin:6.8vw auto 3.2vw;background:url(./images/sd_ico.png) no-repeat center center / 100% 100%;}
+    .nav_cont {text-align:center;}
+    .nav_cont .nav_wrap {padding:0.13333vw 0;}
+    .nav_cont .info_tit {margin-bottom: 6.66667vw;font-weight: 500;font-family: 'MAPOGOLDENPIER';font-size: 5.06667vw;line-height: 1;letter-spacing: 0.53333vw;color: #974d02;}
+    .nav_cont .info_sub_tit {margin-bottom:1.86667vw;font-size:3.2vw;font-weight:500;line-height:1;color:#974d02;letter-spacing:0.73333vw;}
+
+    .nav_cont .kv_box {position:relative;}
+    .nav_cont .kv_box::after {position:absolute;left:50%;top:0;width:100%;height:100%;content:'';transform:translateX(-50%);z-index:1;}
+    .nav_cont .kv_box .kv_border {width:80vw;height:149.33333vw;margin:0 auto;border:0.26667vw solid #eccb9f;border-top:none;border-radius:0 0 40vw 40vw;}
+    .nav_cont .kv_box .kv_border .kv_cont {width:74.66667vw;height:146.66667vw;margin:0 auto;border-radius:0 0 38vw 38vw;overflow: hidden;background:#f7f7f7;}
+    .swiper-fade.on .swiper-slide img {transform:scale(1);transition:10s all;}
+    .swiper-fade.on .swiper-slide-active img {transform: scale(1.08);transition:10s all;}
+
+    .nav_cont_kv {background:#f5e9d9;padding-bottom:11.2vw;}
+    .nav_cont_kv .cont_info {padding-top:6.13333vw;}
+    .nav_cont_kv .cont_info .info_name {font-size:5.6vw;line-height:1;letter-spacing:-0.26667vw;font-weight:500;}
+    .nav_cont_kv .cont_info .info_name span {font-size:2.93333vw;letter-spacing:-0.2vw;}
+    .nav_cont_kv .cont_info .sd_ico {margin:5.46667vw auto;}
+    .nav_cont_kv .cont_info .info_txt {opacity:0;}
+    .nav_cont_kv .cont_info .info_txt .date {font-size:4.8vw;line-height:1;letter-spacing:-0.21333vw;}
+    .nav_cont_kv .cont_info .info_txt .loc {margin-top:1.33333vw;font-size:4.53333vw;}
+
+    .nav_cont_1 {}
+    .nav_cont_1 .cont_info .info_txt {font-size:3.2vw;line-height:6.13333vw;letter-spacing:-0.02667vw;}
+    .nav_cont_1 .cont_info .info_txt span {display:block;}
+    .nav_cont_1 .cont_info .info_txt span:last-child {margin-top: 6vw;font-size: 3.46667vw;letter-spacing: -0.26667vw;}
+    .nav_cont_1 .cont_img {width:100%;height:70.66667vw;margin:7.46667vw auto 0;}
+
+    .nav_cont_2 {padding-bottom:9.06667vw;}
+    .nav_cont_2 .sd_ico {margin-bottom:3.73333vw;}
+    .nav_cont_2 .info_sub_tit {margin-bottom:2.66667vw;font-size:2.53333vw;letter-spacing:0.56vw;}
+    .nav_cont_2 .info_tel {display:flex;justify-content:space-between;padding:0 6.66667vw;}
+    .nav_cont_2 .info_tel .tel_cont {position:relative;width:40vw;}
+    .nav_cont_2 .info_tel .tel_cont::after {position:absolute;top:-4vw;left:50%;font-size:3.2vw;font-weight:900;line-height:1;color:#ccc;transform:translateX(-50%);letter-spacing:-0.13333vw;;}
+    /* .nav_cont_2 .info_tel .tel_cont.groom_box::after {content:'Groom';}
+    .nav_cont_2 .info_tel .tel_cont.bride_box::after {content:'Bride';} */
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap {}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.top {padding:3.6vw 0 4.93333vw;border-bottom:0.26667vw solid #e4cbaa;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box {display:flex;justify-content:center;align-items:center;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .term {font-size:3.2vw;margin-right:2vw;line-height:1;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .name {font-size:4.8vw;margin-right:2vw;line-height:1;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .tel {}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap .tel_box .tel a {width:4vw;height:4vw;background:url('./images/tel_ico.png') no-repeat center center / 100% 100%;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot {}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_tit {padding:4vw 0 5.2vw;font-size:3.2vw;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box:last-child {margin-top:4vw;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .term {font-size:2.66667vw;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .name {font-size:4.26667vw;}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .tel {}
+    .nav_cont_2 .info_tel .tel_cont .tel_wrap.bot .tel_box .tel a {width:4vw;height:4vw;background:url('./images/tel_ico.png') no-repeat center center / 100% 100%;}
+    .nav_cont_2 .info_loc {width:86.66667vw;margin:12vw auto 0;padding:6.66667vw 0;background:#f5e9d9;border-radius:5.33333vw;}
+    .nav_cont_2 .info_loc .info_txt {}
+    .nav_cont_2 .info_loc .info_txt .date {margin-bottom:2.66667vw;font-size:4.26667vw;line-height:1;letter-spacing:-0.16vw;}
+    .nav_cont_2 .info_loc .info_txt .loc {font-size:3.73333vw;line-height:1;letter-spacing:-0.16vw;}
+
+    .nav_cont_3 {background:#f5e9d9;padding-bottom:12vw;}
+    .nav_cont_3 .sd_ico {margin:6.13333vw auto 1.06667vw;}
+    .nav_cont_3 .info_sub_tit {margin-bottom:2.66667vw;}
+    .nav_cont_3 .info_tit {margin-bottom:10.66667vw;letter-spacing:0.13333vw;}
+    .nav_cont_3 .info_img {width:100%;}
+    .nav_cont_3 .info_btn {}
+    .nav_cont_3 .info_btn a {display:flex;justify-content:center;align-items:center;width:50vw;height:10.66667vw;margin:6.66667vw auto 0;border-radius:5.33333vw;background:#f7f7f7;}
+    .nav_cont_3 .info_btn a span {font-size:3.2vw;font-weight:500;}
+    .nav_cont_3 .btn_point {margin-top:1.33333vw;font-size:2.4vw;color:#f09999;letter-spacing: -0.06667vw;text-align: right;padding-right: 2.66667vw;}
+
+    .nav_cont_4 .info_tit {margin:13.33333vw auto 0;line-height:7.46667vw;letter-spacing:0;}
+    .nav_cont_4 .sd_ico {margin-top:3.6vw;}
+    .nav_cont_4 .month {font-size:17.33333vw;line-height:1;color:#e8d195;font-weight:900;opacity:0.7;}
+    .nav_cont_4 .calendar {}
+    .nav_cont_4 .calendar .calender_wrap {width:86.66667vw;margin:5.86667vw auto 2vw;padding-top:6.66667vw;border-top:0.4vw solid #f5e9d9;border-bottom:0.13333vw solid #f5e0d0;}
+    .nav_cont_4 .calendar .calender_wrap span {display:block;font-size:3.2vw;line-height:1;}
+    .nav_cont_4 .calendar .calender_wrap .days {display:flex;justify-content: space-between;margin-bottom:8.66667vw;}
+    .nav_cont_4 .calendar .calender_wrap .days span {width:14%;}
+    .nav_cont_4 .calendar .calender_wrap .numb {display:flex;flex-flow:wrap;justify-content: space-between;}
+    .nav_cont_4 .calendar .calender_wrap .numb span {position:relative;width:14%;margin-bottom:4.4vw;}
+    .nav_cont_4 .calendar .calender_wrap .numb span.d_day {z-index:1;}
+    .nav_cont_4 .calendar .calender_wrap .numb span.d_day::before {position:absolute;top:50%;left:50%;content:'';width:6.66667vw;height:6.66667vw;background: url('./images/dday.png') no-repeat center center / 100% 100%;transform:translate(-50%,-50%);z-index:-1;}
+    .nav_cont_4 .calendar .calender_wrap .numb span.d_day::after {position:absolute;top:50%;left:50%;content:'';width:6.66667vw;height:6.66667vw;background: url('./images/dday2.png') no-repeat center center / 100% 100%;transform:translate(-50%,-50%);z-index:-1;animation:ball 1s ease-in Infinite Alternate;}
+    .nav_cont_4 .day_count {font-size:4vw;}
+    .nav_cont_4 .day_count .today {font-size:5vw;color:#f09999;}
+
+    @keyframes ball {
+        0% {
+            transform:translate(-50%,-50%) scale(1);
+        }
+        20% {
+            transform:translate(-50%,-50%) scale(1.05);
+        }
+        40% {
+            transform:translate(-50%,-50%) scale(1);
+        }
+        60% {
+            transform:translate(-50%,-50%) scale(1.05);
+        }
+        80% {
+            transform:translate(-50%,-50%) scale(1);
+        }
+        100% {
+            transform:translate(-50%,-50%) scale(1);
+        }
+    }
+
+    .nav_cont_5 {}
+    .nav_cont_5 .sd_ico {margin-bottom:2.13333vw;}
+    .nav_cont_5 .info_sub_tit {margin-bottom:2.66667vw;letter-spacing:0.66667vw;}
+    .nav_cont_5 .info_tit {margin-bottom:9.33333vw;}
+    .nav_cont_5 .cont_map {width:86.66667vw;margin:0 auto 5.33333vw;}
+    .nav_cont_5 .cont_map .map_box {width:100%;height:53.33333vw;background:#fff;}
+    .nav_cont_5 .cont_map .map_box #map {width:100%;height:53.33333vw;}
+    .nav_cont_5 .cont_map .map_search {display:flex;justify-content:space-between;align-items:center;padding:3vw 5vw;background:#f5e9d9;}
+    .nav_cont_5 .cont_map .map_search .search_tit {position:relative;margin-right:2.66667vw;font-size:2.66667vw;font-weight:500;}
+    .nav_cont_5 .cont_map .map_search .search_tit::after {position:absolute;left:0;bottom:0;width:100%;height:1.33333vw;content:'';background:#f5e9d9;z-index:-1}
+    .nav_cont_5 .cont_map .map_search .search_list {display:flex;justify-content:space-between;width:100%;}
+    .nav_cont_5 .cont_map .map_search .search_list a {display:flex;align-items:center;font-size:3.4vw;line-height:1;letter-spacing:-0.38888vw;}
+    .nav_cont_5 .cont_map .map_search .search_list a .ico {display:block;width:5.33333vw;height:5.33333vw;margin-right:2.8vw;border-radius:1.33333vw;overflow: hidden;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_kakao {margin-right:20px;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_kakao .ico {background:url('./images/map_02.jpg') no-repeat center center / 100% 100%;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_naver {margin-right:20px;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_naver .ico {background:url('./images/map_01.jpg') no-repeat center center / 100% 100%;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_hold {}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_hold.on .ico {background:url('./images/ico_lock_on.png') no-repeat center center / 100% 100%;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_hold.off .ico {background:url('./images/ico_lock_off.png') no-repeat center center / 100% 100%;}
+/*     .nav_cont_5 .cont_map .map_search {display:flex;justify-content:flex-end;align-items:center;margin-top:2vw;}
+    .nav_cont_5 .cont_map .map_search .search_tit {position:relative;margin-right:2.66667vw;font-size:2.66667vw;font-weight:500;}
+    .nav_cont_5 .cont_map .map_search .search_tit::after {position:absolute;left:0;bottom:0;width:100%;height:1.33333vw;content:'';background:#f5e9d9;z-index:-1}
+    .nav_cont_5 .cont_map .map_search .search_list {display:flex;justify-content:flex-end;}
+    .nav_cont_5 .cont_map .map_search .search_list a {font-size:0;}
+    .nav_cont_5 .cont_map .map_search .search_list a .ico {display:block;width:5.33333vw;height:5.33333vw;border-radius:1.33333vw;overflow: hidden;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_kakao {margin-right:2.66667vw;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_kakao .ico {background:url('./images/map_02.jpg') no-repeat center center / 100% 100%;}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_naver {}
+    .nav_cont_5 .cont_map .map_search .search_list a.map_naver .ico {background:url('./images/map_01.jpg') no-repeat center center / 100% 100%;} */
+
+    .nav_cont_5 .cont_route {display:flex;flex-direction:column;width:86.66667vw;margin:0 auto 16vw;text-align:left;}
+    .nav_cont_5 .cont_route .route_box {margin-bottom:3.73333vw;}
+    .nav_cont_5 .cont_route .route_box:last-child {margin-bottom:0;}
+    .nav_cont_5 .cont_route .route_box .route_tit {position:relative;display:inline-block;margin-bottom:2vw;font-size:4.2vw;font-weight:500;z-index:1;}
+    .nav_cont_5 .cont_route .route_box .route_tit::after {position:absolute;left:0;bottom:0;width:100%;height:1.33333vw;content:'';background:#f5e9d9;z-index:-1;}
+    .nav_cont_5 .cont_route .route_box .route_txt {font-size:3.4vw;line-height:6vw;letter-spacing:-0.23333vw;}
+
+
+    .nav_cont_6 {background:#f5e9d9;padding-bottom:12vw;}
+    .nav_cont_6 .sd_ico {margin-bottom:1.73333vw;}
+    .nav_cont_6 .info_sub_tit {margin-bottom:2.13333vw;}
+    .nav_cont_6 .info_tit {letter-spacing:0;}
+    .nav_cont_6 .account {display:flex;justify-content:center;align-items:center;width:100%;height:auto;padding:6.66667vw;background:url('./images/acc_bg.jpg') no-repeat center 73% / 100% auto;box-sizing:border-box;}
+    .nav_cont_6 .account .account_wrap {display:flex;flex-direction:column;justify-content:space-between;width:86.66667vw;padding:8vw 4vw;background:rgba(255,255,255,0.7);border:0.26667vw solid #eccb9f;}
+
+
+    .nav_cont_6 .account .account_wrap .account_top {}
+    .nav_cont_6 .account .account_wrap .account_top span {position:relative;display:inline-block;font-size:4.2vw;z-index:1;cursor: pointer;}
+    .nav_cont_6 .account .account_wrap .account_top span::after {position:absolute;left:0;bottom:0;width:100%;height:1.33333vw;content:'';background:#f5e9d9;z-index:-1;transition: 0.5s all;}
+    .nav_cont_6 .account .account_wrap .account_top.on span::after {background:#f5c6c6;transition: 0.5s all;}
+    .nav_cont_6 .account .account_wrap .account_top span span {font-size:3.2vw;}
+
+    .nav_cont_6 .account .account_wrap .account_slide:last-child {margin-top:3.2vw;}
+
+    .nav_cont_6 .account .account_wrap .acc_group {display:none;padding-top:4vw;}
+
+
+    .nav_cont_6 .account .account_wrap .ac_tit {margin-bottom:2.66667vw;font-size:3.73333vw;}
+    .nav_cont_6 .account .account_wrap .account_box {margin-bottom:2.66667vw;}
+    .nav_cont_6 .account .account_wrap .account_box:last-child {margin-bottom:0;}
+    .nav_cont_6 .account .account_wrap .account_box .ac_term {display:block;margin-bottom:1.33333vw;font-size:2.13333vw;}
+    .nav_cont_6 .account .account_wrap .account_box .ac_text {position:relative;display:inline-block;font-size:4.2vw;z-index:1;font-weight:500;}
+    .nav_cont_6 .account .account_wrap .account_box .ac_text::after {position:absolute;left:0;bottom:0;width:100%;height:1.33333vw;content:'';background:#f5e9d9;z-index:-1;}
+
+    .nav_cont_6 .account .account_wrap .account_cation {font-size:3.4vw;}
+}
+
+</style>
+<body class="off">
+<div id="loading"></div>
+<div id="wrapper" class="evWrap">
+    <!-- kv -->
+    <div class="nav_cont nav_cont_kv">
+        <div class="nav_wrap">
+            <div class="kv_box">
+                <div class="kv_border">
+                    <div class="kv_cont swiper-wrapper">
+                        <div class="kv_slide swiper-slide">
+                            <img src="./images/kv1.png" alt="">
+                        </div>
+                        <div class="kv_slide swiper-slide">
+                            <img src="./images/kv2.png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cont_info">
+                <div class="info_name box">
+                    박효근 <span>그리고</span> 조아라
+                </div>
+                <div class="sd_ico box"></div>
+                <div class="info_txt box">
+                    <div class="date">2023.10.21 PM 12:00</div>
+                    <div class="loc">경원재 앰배서더 인천</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // kv -->
+
+    <!-- 초대문구 -->
+    <div class="nav_cont nav_cont_1">
+        <div class="nav_wrap">
+            <div class="cont_info">
+                <div class="sd_ico box"></div>
+                <div class="info_sub_tit box">
+                    INVITATION
+                </div>
+                <div class="info_tit box">
+                    초대합니다
+                </div>
+                <div class="info_txt">
+                    <span class="box">거울을 보듯 꼭 닮았지만 반대이기도 한 두사람, <br /></span>
+                    <span class="box">마침내 하나가 된다고 합니다.<br /></span>
+                    <span class="box">한 직장에서 조심스럽게 마주보며 다져온 사랑을<br /></span>
+                    <span class="box">이제 함께 한 곳을 바라보며 더 큰 사랑으로 키운다고 합니다.<br /></span>
+                    <span class="box"><br /></span>
+                    <span class="box">두 사람이 서로를 아끼고 사랑하며 잘 살아본다고 하니,<br /></span>
+                    <span class="box">부디 오셔서 이들의 뜻깊은 출발을 축복해 주시기 바랍니다.</span>
+                    <span class="box">- 사내연애는 복사기도 안다던 그 복사기 올림 -</span>
+                </div>
+            </div>
+            <div class="cont_img box">
+                <img src="./images/tel_img.jpg" alt="">
+            </div>
+        </div>
+    </div>
+    <!-- // 초대문구 -->
+
+    <!-- 전화하기 -->
+    <div class="nav_cont nav_cont_2">
+        <div class="nav_wrap">
+            <div class="cont_info">
+                <div class="sd_ico box"></div>
+                <div class="info_sub_tit box">
+                    CONGRATULATION
+                </div>
+                <div class="info_tit box">
+                    축하해주세요
+                </div>
+                <div class="info_tel">
+                    <div class="tel_cont groom_box">
+                        <div class="tel_wrap top box">
+                            <div class="tel_box">
+                                <p class="term">
+                                    신랑
+                                </p>
+                                <p class="name">
+                                    박 효근
+                                </p>
+                                <p class="tel">
+                                    <a href="tel:+821059230708"></a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="tel_wrap bot">
+                            <div class="tel_tit box">
+                                신랑측 혼주
+                            </div>
+                            <div class="tel_box box">
+                                <p class="term">
+                                    신랑父
+                                </p>
+                                <p class="name">
+                                    박 용배
+                                </p>
+                                <p class="tel">
+                                    <a href="tel:+821059230708"></a>
+                                </p>
+                            </div>
+                            <div class="tel_box box">
+                                <p class="term">
+                                    신랑母
+                                </p>
+                                <p class="name">
+                                    장 숙경
+                                </p>
+                                <p class="tel">
+                                    <a href="tel:+821059230708"></a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tel_cont bride_box">
+                        <div class="tel_wrap top box">
+                            <div class="tel_box">
+                                <p class="term">
+                                    신부
+                                </p>
+                                <p class="name">
+                                    조 아라
+                                </p>
+                                <p class="tel">
+                                    <a href="tel:+821059230708"></a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="tel_wrap bot">
+                            <div class="tel_tit box">
+                                신부측 혼주
+                            </div>
+                            <div class="tel_box box">
+                                <p class="term">
+                                    신부父
+                                </p>
+                                <p class="name">
+                                    이 용성
+                                </p>
+                                <p class="tel">
+                                    <a href="tel:+821059230708"></a>
+                                </p>
+                            </div>
+                            <div class="tel_box box">
+                                <p class="term">
+                                    신부母
+                                </p>
+                                <p class="name">
+                                    방 진옥
+                                </p>
+                                <p class="tel">
+                                    <a href="tel:+821059230708"></a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="info_loc box">
+                    <div class="info_txt">
+                        <div class="date">2023년 10월 21일 토요일 낮 12시</div>
+                        <div class="loc">경원재 앰배서더 영접마당 (야외예식)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 전화하기 -->
+
+    <!-- 웨딩앨범보기 -->
+    <div class="nav_cont nav_cont_3">
+        <div class="nav_wrap">
+            <div class="cont_info">
+                <div class="sd_ico box"></div>
+                <div class="info_sub_tit box">
+                    GALLERY
+                </div>
+                <div class="info_tit box">
+                    우리들의 아름다운 시작
+                </div>
+                <div class="info_img box">
+                    <div class="gallerys swiper-wrapper">
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/01.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/02.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/03.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/04.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/05.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/06.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/07.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/08.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/09.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/10.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/11.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/12.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/13.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/14.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/15.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/16.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/17.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/18.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/19.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/20.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/21.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/22.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/23.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/24.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/25.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/26.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/27.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/28.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/29.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/30.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/31.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/32.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/33.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/34.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/35.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/36.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/37.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/38.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/39.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/40.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/41.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/42.jpg" alt="">
+                        </div>
+                        <div class="ga_slide swiper-slide">
+                            <img src="./images/slides/43.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+                <div class="btn_point box">
+                    ※ 앨범 형식으로 제작되었습니다.
+                </div>
+                <div class="info_btn box">
+                    <a href="https://online.fliphtml5.com/ewrnm/geok/" target="_blank">
+                        <span>
+                            사진 앨범 보러가기
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 웨딩앨범보기 -->
+
+    <!-- 달력보기 -->
+    <div class="nav_cont nav_cont_4">
+        <div class="nav_wrap">
+            <div class="cont_info">
+                <div class="info_tit two_line box">
+                    2023년 가을, <br />
+                    하늘연달 스물하루
+                </div>
+                <div class="sd_ico box"></div>
+                <div class="month box">
+                    10
+                </div>
+                <div class="calendar box">
+                    <div class="calender_wrap">
+                        <div class="days">
+                            <span>일</span>
+                            <span>월</span>
+                            <span>화</span>
+                            <span>수</span>
+                            <span>목</span>
+                            <span>금</span>
+                            <span>토</span>
+                        </div>
+                        <div class="numb">
+                            <span>1</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span>4</span>
+                            <span>5</span>
+                            <span>6</span>
+                            <span>7</span>
+
+                            <span>8</span>
+                            <span>9</span>
+                            <span>10</span>
+                            <span>11</span>
+                            <span>12</span>
+                            <span>13</span>
+                            <span>14</span>
+
+                            <span>15</span>
+                            <span>16</span>
+                            <span>17</span>
+                            <span>18</span>
+                            <span>19</span>
+                            <span>20</span>
+                            <span class="d_day">21</span>
+
+                            <span>22</span>
+                            <span>23</span>
+                            <span>24</span>
+                            <span>25</span>
+                            <span>26</span>
+                            <span>27</span>
+                            <span>28</span>
+
+                            <span>29</span>
+                            <span>30</span>
+                            <span>31</span>
+                            <span>&nbsp;</span>
+                            <span>&nbsp;</span>
+                            <span>&nbsp;</span>
+                            <span>&nbsp;</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="day_count box">
+                    효근 & 아라의 결혼식<span id="dayNum"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 달력보기 -->
+
+    <!-- 지도, 경로 -->
+    <div class="nav_cont nav_cont_5">
+        <div class="nav_wrap">
+            <div class="cont_info">
+                <div class="sd_ico box"></div>
+                <div class="info_sub_tit box">
+                    LOCATION
+                </div>
+                <div class="info_tit box">
+                    오시는 길
+                </div>
+                <div class="cont_map">
+                    <div class="map_box box hold">
+                        <div id="map"></div>
+                        <!-- https://apis.map.kakao.com/web/guide/ -->
+                    </div>
+                    <div class="map_search box">
+                        <!-- <div class="search_tit">길찾기</div> -->
+                        <div class="search_list">
+                            <a class="map_kakao" href="https://map.kakao.com/link/to/26636723" target="_blank">
+                                <span class="ico"></span>
+                                <span>카카오맵</span>
+                            </a>
+                            <a class="map_naver" href="https://map.naver.com/p/directions/-/14097225.7890639,4493879.4697838,%EA%B2%BD%EC%9B%90%EC%9E%AC%20%EC%95%B0%EB%B0%B0%EC%84%9C%EB%8D%94%20%EC%9D%B8%EC%B2%9C,36516845,PLACE_POI/-/transit?c=15.00,0,0,0,dh" target="_blank">
+                            <!-- <a href="http://app.map.naver.com/launchApp/?version=11&menu=navigation&elat=37.39193708928004&elng=126.63334965946312&etitle=경원재 앰배서더 인천" target="_blank"> -->
+                                <span class="ico"></span>
+                                <span>네이버지도</span>
+                            </a>
+                            <a class="map_hold on" href="javascript:void(0);">
+                                <span class="ico"></span>
+                                <span class="txt">지도 고정</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="cont_route">
+                    <div class="route_box car box">
+                        <div class="route_tit">
+                            자가용 이용시
+                        </div>
+                        <div class="route_txt">
+                            경원재 앰배서더 인천<br />
+                            인천광역시 연수구 테크노파크로 200<br />
+                            032-729-1111
+                        </div>
+                    </div>
+                    <div class="route_box bus box">
+                        <div class="route_tit">
+                            버스 이용시
+                        </div>
+                        <div class="route_txt">
+                            16, 순환 41,순환 42, 순환 43, 58, 82, 급행 91, 98, 3002(광명역)<br />
+                            M6405(강남역), M6450(삼성역), 1300(서울역, 홍대입구역) 
+                        </div>
+                    </div>
+                    <div class="route_box metro box">
+                        <div class="route_tit">
+                            지하철 이용시
+                        </div>
+                        <div class="route_txt">
+                            인천 지하철 1호선 센트럴파크역 3번 출구<br />
+                            도보 3분
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 지도, 경로 -->
+
+    <!-- 계좌번호 -->
+    <div class="nav_cont nav_cont_6">
+        <div class="nav_wrap">
+            <div class="cont_info">
+                <div class="sd_ico box"></div>
+                <div class="info_sub_tit box">
+                    ACCOUNT
+                </div>
+                <div class="info_tit box">
+                    마음 전하실 곳
+                </div>
+                <div class="account box">
+                    <div class="account_wrap">
+                        <div class="account_slide">
+                            <div class="account_top"><span>신랑측 계좌번호 <span>&blacktriangledown;</span></span></div>
+                            <div class="acc_group">
+                                <div class="ac_tit">🤵🏻</div>
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="신한은행 110-332-246520">신한은행 110-332-246520 (박효근)</div>
+                                </div>
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="기업은행 010-8998-4884">기업은행 010-8998-4884 (박용배)</div>
+                                </div>
+                                <div class="account_cation">
+                                    ※계좌번호를 누르면 복사됩니다.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="account_slide">
+                            <div class="account_top"><span>신부측 계좌번호 <span>&blacktriangledown;</span></span></div>
+                            <div class="acc_group">
+                                <div class="ac_tit">👰🏻</div>
+                                <div class="account_box">
+                                    <dv class="ac_text" data-clipboard-text="신한은행 110-444-259470">신한은행 110-444-259470 (조아라)</dv>
+                                </div>
+                                <div class="account_box">
+                                    <dv class="ac_text" data-clipboard-text="기업은행 464-026-3360-1015">기업은행 464-026-3360-1015 (이용성)</dv>
+                                </div>
+                                <div class="account_cation">
+                                    ※계좌번호를 누르면 복사됩니다.
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 계좌번호 -->
+</div>
+
+
+</body>
+</html>

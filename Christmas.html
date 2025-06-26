@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>크리스마스 홈파티 초대장</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1a472a;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        .snow {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .invitation-card {
+            position: relative;
+            width: 300px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            text-align: center;
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+            transition: transform 0.5s;
+            z-index: 2;
+        }
+
+        .invitation-card:hover {
+            transform: perspective(1000px) rotateY(10deg);
+        }
+
+        .tree {
+            font-size: 50px;
+            margin: 20px 0;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0f0;
+            }
+            to {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #0f0;
+            }
+        }
+
+        h1 {
+            color: #c41e3a;
+            margin-bottom: 20px;
+        }
+
+        .details {
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .rsvp-button {
+            background: #c41e3a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .rsvp-button:hover {
+            transform: scale(1.1);
+            background: #a01830;
+        }
+
+        .gift {
+            font-size: 24px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: transform 0.3s;
+        }
+
+        .gift:hover {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 3;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .close {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            margin: 10px 0;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="snow"></div>
+    
+    <div class="invitation-card">
+        <div class="tree">🎄</div>
+        <h1>크리스마스 홈파티</h1>
+        <div class="details">
+            <p>🎅 즐거운 크리스마스를 함께 보내요! 🎅</p>
+            <p>📅 2023년 12월 24일 토요일</p>
+            <p>⏰ 오후 6시</p>
+            <p>📍 우리집</p>
+        </div>
+        <div class="gift" onclick="showSurprise()">🎁</div>
+        <button class="rsvp-button" onclick="showRSVP()">참석 여부 알려주기</button>
+    </div>
+
+    <div class="modal" id="rsvpModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('rsvpModal')">&times;</span>
+            <h2>참석 여부</h2>
+            <input type="text" placeholder="이름" id="name">
+            <select id="attendance" style="width: 100%; margin: 10px 0; padding: 5px;">
+                <option value="yes">참석합니다</option>
+                <option value="no">불참합니다</option>
+            </select>
+            <textarea placeholder="메시지를 남겨주세요"></textarea>
+            <button class="rsvp-button" onclick="submitRSVP()">제출하기</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+        apiKey: "AIzaSyB84zMqHO-hvn29ubCDJ5k8QTQYq_jPslc",
+        authDomain: "sd-test-c8fd7.firebaseapp.com",
+        projectId: "sd-test-c8fd7",
+        storageBucket: "sd-test-c8fd7.firebasestorage.app",
+        messagingSenderId: "565971267593",
+        appId: "1:565971267593:web:9778d1c7db21bad5a648d8"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      // RSVP 제출 함수를 전역 스코프에 추가
+      window.submitRSVP = async function() {
+        const name = document.getElementById('name').value;
+        const attendance = document.getElementById('attendance').value;
+        const message = document.querySelector('textarea').value;
+
+        if(!name) {
+          alert('이름을 입력해주세요!');
+          return;
+        }
+
+        try {
+          // Firestore에 데이터 저장
+          const docRef = await addDoc(collection(db, "rsvp"), {
+            name: name,
+            attendance: attendance,
+            message: message,
+            timestamp: new Date()
+          });
+
+          alert(`${name}님의 응답이 성공적으로 등록되었습니다!`);
+          closeModal('rsvpModal');
+          
+          // 폼 초기화
+          document.getElementById('name').value = '';
+          document.querySelector('textarea').value = '';
+        } catch (error) {
+          console.error("Error adding document: ", error);
+          alert('응답 저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+        }
+      };
+    </script>
+
+    <script>
+        // 눈내리는 효과
+        function createSnow() {
+            const snow = document.querySelector('.snow');
+            for(let i = 0; i < 50; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.style.position = 'absolute';
+                snowflake.style.left = Math.random() * 100 + '%';
+                snowflake.style.top = Math.random() * 100 + '%';
+                snowflake.style.fontSize = '20px';
+                snowflake.innerHTML = '❄';
+                snowflake.style.opacity = Math.random();
+                snowflake.style.animation = `fall ${Math.random() * 3 + 2}s linear infinite`;
+                snow.appendChild(snowflake);
+            }
+        }
+
+        // 눈 내리는 애니메이션
+        document.styleSheets[0].insertRule(`
+            @keyframes fall {
+                0% {
+                    transform: translateY(-100vh);
+                }
+                100% {
+                    transform: translateY(100vh);
+                }
+            }
+        `, 0);
+
+        createSnow();
+
+        function showRSVP() {
+            document.getElementById('rsvpModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showSurprise() {
+            alert('🎉 선물은 파티에서 공개됩니다! 🎉');
+        }
+
+        // 카드 3D 효과
+        document.querySelector('.invitation-card').addEventListener('mousemove', function(e) {
+            const card = this;
+            const cardRect = card.getBoundingClientRect();
+            const cardCenterX = cardRect.left + cardRect.width / 2;
+            const cardCenterY = cardRect.top + cardRect.height / 2;
+            const angleY = -(e.clientX - cardCenterX) * 0.01;
+            const angleX = (e.clientY - cardCenterY) * 0.01;
+            card.style.transform = `perspective(1000px) rotateY(${angleY}deg) rotateX(${angleX}deg)`;
+        });
+
+        document.querySelector('.invitation-card').addEventListener('mouseleave', function() {
+            this.style.transform = 'perspective(1000px)';
+        });
+    </script>
+</body>
+</html>
