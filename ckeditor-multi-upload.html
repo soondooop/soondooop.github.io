@@ -458,6 +458,15 @@
     </div>
 
     <script>
+        // CKEditor 보안 경고 억제
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            if (args[0] && typeof args[0] === 'string' && args[0].includes('CKEditor 4.22.1 version is not secure')) {
+                return; // 보안 경고 메시지 숨기기
+            }
+            originalWarn.apply(console, args);
+        };
+        
         // CKEditor 초기화
         let editor;
         
@@ -483,8 +492,6 @@
                 { name: 'colors', items: ['TextColor', 'BGColor'] },
                 { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
             ],
-            filebrowserUploadUrl: '/upload/',
-            filebrowserImageUploadUrl: '/upload/',
             on: {
                 instanceReady: function() {
                     editor = this;
