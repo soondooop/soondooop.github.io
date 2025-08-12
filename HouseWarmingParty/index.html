@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="☆★☆★☆★☆★초대짱☆★☆★☆★☆★">
+	<meta property="og:title" content="☆★☆★☆★☆★초대짱☆★☆★☆★☆★">
+	<meta property="og:description" content="2024.07.13 집들이에 초대합니다.">
+	<meta property="og:image" content="./share/share.jpg">
+	<meta property="og:url" content=" "> 
+	
+	<meta name="twitter:title" content="☆★☆★☆★☆★초대짱☆★☆★☆★☆★">
+	<meta name="twitter:description" content="2024.07.13 집들이에 초대합니다.">
+	<meta name="twitter:image" content="./share/share.jpg">
+    <title>☆★☆★☆★☆★초대짱☆★☆★☆★☆★</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=c9f2dbff50aa9d2d0cf009f15f15a52a"></script>
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=z7iut62rgg"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+</head>
+<script>
+window.onload = function(){
+    var t1 = "산넘고 물건너 집들이에 초대합니다.";
+    var _typing = '';
+    var _charLen = 0;
+
+    var searchTypingEvent = function(){
+        if( _charLen < t1.length){
+            _typing = _typing+t1.charAt(_charLen);
+            $(".loading p.t1").html(_typing);
+        }else {
+            _typing = '';
+            _charLen = 0;
+            setTimeout(function(){
+                $('.loading').fadeOut(500)
+            },2000)
+            return false;
+        }
+        setTimeout(function(){
+            searchTypingEvent();
+        }, 100);
+        _charLen++;
+    }
+    
+    setTimeout(function(){
+        searchTypingEvent()
+    },1000)
+
+    var greetingArray = ['☆★☆★☆★☆★☆★☆★☆★초대짱★☆★☆★☆★☆★☆★☆★☆', '★☆★☆★☆★☆★☆★☆★☆초대짱☆★☆★☆★☆★☆★☆★☆★'];
+    var textNum = 0;
+
+    setInterval(changeText, 200);
+
+    function changeText(){
+        ++textNum;
+        if(textNum === greetingArray.length){
+            textNum = 0;
+        } 
+        $('.section .tit').html(greetingArray[textNum]);
+    }
+    
+}
+$(document).ready(function(){
+
+    var clipboard = new Clipboard('.ac_text');
+    clipboard.on('success', function(e) {
+        alert('복사되었습니다!');
+    });
+    clipboard.on('error', function(e) {
+        alert('복사에 실패했습니다. 다시 시도해주세요.');
+    });
+
+    var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+    var options = { //지도를 생성할 때 필요한 기본 옵션
+        center: new kakao.maps.LatLng(37.538888486617665, 126.66497961423698), //지도의 중심좌표.
+        level: 4 //지도의 레벨(확대, 축소 정도)
+    };
+    
+    var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+
+    var markerPosition  = new kakao.maps.LatLng(37.538888486617665, 126.66497961423698); 
+
+    // 마커를 생성합니다
+    var marker = new kakao.maps.Marker({
+        position: markerPosition
+    });
+    marker.setMap(map);
+
+    function setDraggable(draggable) {
+        // 마우스 드래그로 지도 이동 가능여부를 설정합니다
+        map.setDraggable(draggable);    
+    }
+
+    setDraggable(false);
+
+    $('.map_hold').on('click',function(){
+        if($(this).hasClass('on') == true){
+            $(this).removeClass('on').addClass('off');
+            $('.map_box').removeClass('hold');
+            setDraggable(true);
+            $('.map_hold .txt').text('고정 해제');
+        } else {
+            $(this).removeClass('off').addClass('on');
+            $('.map_box').addClass('hold');
+            setDraggable(false);
+            $('.map_hold .txt').text('지도 고정');
+        }
+    })
+})
+</script>
+<style>
+    @font-face {
+        font-family: 'UhBeeKang-Ja';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_five@.2.0/UhBeeKang-Ja.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+/* reset */
+    *{margin: 0;padding: 0;font-family: 'UhBeeKang-Ja';}
+    html{-webkit-tap-highlight-color:transparent !important;-webkit-text-size-adjust: none;}
+    a {display:block;color: #333;text-decoration:none;}
+    body,input,label{font-family: 'UhBeeKang-Ja';webkit-text-size-adjust: auto;color:#333333;}
+    body {overflow-x:hidden;background:url('./bg.jpg')  repeat-y center center / 100% auto;}
+    ul,ol,li{list-style: none;}
+    img{display: block;border: 0;width:100%;}
+    .loading {position:fixed;left:0;top:0;display:flex;justify-content:center;align-items:center;width:100%;height:100vh;background: #ffffff;z-index:99;}
+    .loading p {width:100%;font-size:6.777777vw;text-align:center;}
+    .section {width:100%;}
+    .section.last {padding-bottom:10vw;}
+    .section .tit {width:96vw;margin:0 auto;text-align:center;font-size:8vw;}
+
+    .section .img {width:60vw;margin:10vw auto;}
+
+    .section .txt {margin:10vw auto;font-size:5vw;text-align:center;}
+    .section .txt .ac_text {font-size:5vw;text-align:center;}
+
+    .section .map_search {display:flex;justify-content:space-between;align-items:center;height:10vw;padding:2vw 10vw;background:none;}
+    .section .map_search .search_tit {position:relative;margin-right:2.66667vw;font-size:2.66667vw;font-weight:500;}
+    .section .map_search .search_tit::after {position:absolute;left:0;bottom:0;width:100%;height:1.33333vw;content:'';z-index:-1}
+
+    .section .map_box {position:relative;width:100%;height:66vw;background:#fff;}
+    .section .map_box.hold #map::after {position:absolute;top:0;left:0;content:'';display:block;width:100%;height:100%;z-index:1;}
+    .section .map_box #map {width:100%;height:66vw;}
+
+    .section .map_search .search_list {display:flex;justify-content:space-between;width:100%;height:100%;}
+    .section .map_search .search_list p {font-size:4.66667vw;}
+    .section .map_search .search_list a {display:flex;align-items:center;font-size:4.66667vw;line-height:1;}
+    .section .map_search .search_list a .ico {display:block;width:5.33333vw;height:5.33333vw;margin-right:1.33333vw;border-radius:1.33333vw;overflow: hidden;}
+
+
+</style>
+<body>
+    <audio id="bgm-player" loop="loop" autoplay="autoplay"><source src="./bgm/bgm.mp3"></audio>
+    <div class="loading">
+        <p class="t1"></p>
+    </div>
+    <div class="section">
+        <p class="tit"></p>
+        <p class="img">
+            <img src="https://item.kakaocdn.net/do/d050bca949a1f1d128541bc341a87a27f43ad912ad8dd55b04db6a64cddaf76d" alt="">
+        </p>
+        <p class="txt">
+		2024.07.13 토요일 6시쯤<br />
+            집들이에 놀러오세요!<br />
+            <br />
+            <span class="ac_text" data-clipboard-text="인천 서구 행복2로 40, 103동 704호">인천 서구 행복2로 40, 103동 704호</span>
+        </p>
+    </div>
+    <div class="section last">
+        <div class="map_box box hold">
+            <div id="map"></div>
+        </div>
+        <div class="map_search box">
+            <div class="search_list">
+                <a class="map_kakao" href="https://map.kakao.com/?map_type=TYPE_MAP&target=car&rt=,,426006,1122130&rt1=&rt2=%EC%9D%B8%EC%B2%9C%EA%B0%80%EC%A0%952A-1%EB%B8%94%EB%A1%9D%ED%96%89%EB%B3%B5%EC%A3%BC%ED%83%9D%EC%95%84%ED%8C%8C%ED%8A%B8&rtIds=,186534526" target="_blank">
+                    <!-- <span class="ico"></span> -->
+                    <span>카카오맵</span>
+                </a>
+                <p>ㅣ</p>
+                <a class="map_naver" href="https://map.naver.com/p/directions/-/14100291.171618,4514472.1927855,%EC%9D%B8%EC%B2%9C%20%EC%84%9C%EA%B5%AC%20%ED%96%89%EB%B3%B52%EB%A1%9C%2040,,ADDRESS_POI/-/transit?c=15.00,0,0,0,dh" target="_blank">
+                    <!-- <span class="ico"></span> -->
+                    <span>네이버지도</span>
+                </a>
+                <p>ㅣ</p>
+                <a class="map_hold on" href="javascript:void(0);">
+                    <!-- <span class="ico"></span> -->
+                    <span class="txt">지도 고정</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="share_box" style="display:none;">
+        <div id="btnKakao">
+            <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" id="kakao-link-btn" alt="카카오톡 링크 공유하기">
+            카카오톡<br />공유하기
+        </div>
+        
+        
+        <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+        <script type='text/javascript'>
+            //<![CDATA[
+            // // 사용할 앱의 JavaScript 키를 설정해 주세요.
+            Kakao.init('c9f2dbff50aa9d2d0cf009f15f15a52a');
+            // // 카카오링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
+            Kakao.Link.createScrapButton({
+                container: '#btnKakao',
+                requestUrl: 'https://our-story.site/HouseWarmingParty/',
+                templateId : 109372
+            });
+            //]]>
+        </script>
+    </div>
+    <script>
+        (function() {
+            if(window.location.search != ''){
+                $('.share_box').css('display','block');
+            } else{
+                $('.share_box').remove();
+            }
+        })();
+    </script>
+</body>
+</html>

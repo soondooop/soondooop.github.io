@@ -1,0 +1,3 @@
+#loading{position:absolute;top:50%;left:50%;width:100vw;height:100vh;background:#ffffff;transform:translate(-50%,-50%);}
+#loading .loading_wrap{position:relative;width:100vw;height:100vh;}
+#loading .loading_wrap .loading_bar{position:absolute;top:50%;left:50%;width:90vw;height:10vh;background:#f00;transform:translate(-50%,-50%);}
