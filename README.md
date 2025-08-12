@@ -1,70 +1,110 @@
-# Getting Started with Create React App
+# 🛒 최저가 비교 사이트
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+전 세계 쇼핑몰의 가격을 한 번에 비교하여 최저가를 찾아주는 React 웹 애플리케이션입니다.
 
-## Available Scripts
+## ✨ 주요 기능
 
-In the project directory, you can run:
+### 🔍 검색 기능
+- **실시간 검색**: 상품명으로 검색
+- **인기 검색어**: 자주 검색되는 상품들
+- **로딩 애니메이션**: 검색 중 시각적 피드백
 
-### `npm start`
+### 💰 가격 비교
+- **다중 쇼핑몰**: 쿠팡, 11번가, G마켓, 네이버, 티몬, 위메프
+- **최저가 표시**: 🏆 최저가 배지와 요약 정보
+- **가격 정렬**: 자동으로 가격순 정렬
+- **총 결제금액**: 상품가 + 배송비 계산
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 📱 상품 정보
+- **상품 이미지**: 각 쇼핑몰별 상품 이미지
+- **평점 시스템**: 별점과 리뷰 수 표시
+- **할인 정보**: 원가 대비 할인율 표시
+- **배송 정보**: 무료배송/배송비 표시
+- **상품 특징**: 무료배송, 빠른배송, 안전거래 등
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 🎨 사용자 경험
+- **반응형 디자인**: 모바일/데스크톱 완벽 지원
+- **호버 효과**: 카드 호버 시 애니메이션
+- **그라데이션 배경**: 모던한 디자인
+- **직접 링크**: 각 쇼핑몰로 바로 이동
 
-### `npm test`
+## 🚀 기술 스택
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **React**: 프론트엔드 프레임워크
+- **Axios**: API 통신 (실제 API 연동 가능)
+- **React Icons**: 아이콘 라이브러리
+- **CSS Grid**: 반응형 레이아웃
+- **모의 데이터**: 실제 API 대신 샘플 데이터
 
-### `npm run build`
+## 📦 설치 및 실행
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1. 저장소 클론
+```bash
+git clone [저장소 URL]
+cd price-comparison-new
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. 의존성 설치
+```bash
+npm install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 3. 개발 서버 실행
+```bash
+npm start
+```
 
-### `npm run eject`
+브라우저에서 `http://localhost:3000`에 접속하면 애플리케이션을 확인할 수 있습니다.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🔧 실제 API 연동 방법
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+현재는 모의 데이터를 사용하지만, 실제 쇼핑몰 API로 쉽게 교체 가능:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. **다나와 API**: 가격 비교 전문
+2. **네이버 쇼핑 API**: 네이버 쇼핑 검색
+3. **쿠팡 파트너스 API**: 쿠팡 상품 정보
+4. **11번가 API**: 11번가 상품 검색
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 📱 사용 방법
 
-## Learn More
+1. **검색창에 상품명 입력** (예: iPhone 15, 삼성 갤럭시)
+2. **인기 검색어 클릭** 또는 **직접 검색**
+3. **가격 비교 결과 확인**
+4. **최저가 상품 클릭**하여 해당 쇼핑몰으로 이동
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🎯 프로젝트 구조
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+src/
+├── components/
+│   ├── SearchBar.js          # 검색 컴포넌트
+│   ├── SearchBar.css         # 검색 스타일
+│   ├── ProductCard.js        # 상품 카드 컴포넌트
+│   └── ProductCard.css       # 상품 카드 스타일
+├── App.js                    # 메인 앱 컴포넌트
+├── App.css                   # 앱 전체 스타일
+└── index.js                  # 앱 진입점
+```
 
-### Code Splitting
+## 🌟 주요 특징
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **모던 UI/UX**: 그라데이션과 애니메이션으로 현대적인 디자인
+- **반응형**: 모든 디바이스에서 완벽하게 작동
+- **성능 최적화**: React 최적화 기법 적용
+- **확장 가능**: 새로운 쇼핑몰 API 쉽게 추가 가능
 
-### Analyzing the Bundle Size
+## 📄 라이선스
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+이 프로젝트는 MIT 라이선스 하에 배포됩니다.
 
-### Making a Progressive Web App
+## 🤝 기여하기
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**즐거운 쇼핑하세요! 🛍️✨**
