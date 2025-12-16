@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const calculateBtn = document.getElementById('calculateBtn');
     const resultContainer = document.getElementById('result');
     const volumetricWeightDisplay = document.getElementById('volumetricWeight');
+    const volumetricWeightOriginalDisplay = document.getElementById('volumetricWeightOriginal');
     const actualWeightDisplay = document.getElementById('actualWeight');
     const actualWeightItem = document.getElementById('actualWeightItem');
     const chargeableWeightDisplay = document.getElementById('chargeableWeight');
@@ -108,22 +109,27 @@ document.addEventListener('DOMContentLoaded', function() {
             ? Math.max(actualWeightKg, volumetricWeightKg)
             : volumetricWeightKg;
 
-        // 결과 표시 (g 단위로 변환)
-        const volumetricWeightG = volumetricWeightKg * 1000;
-        const actualWeightG = actualWeightKg * 1000;
-        const chargeableWeightG = chargeableWeightKg * 1000;
+        // 결과 표시 (g 단위로 변환, 반올림)
+        const volumetricWeightG = Math.round(volumetricWeightKg * 1000);
+        const volumetricWeightGOriginal = volumetricWeightKg * 1000; // 소수점 포함 원래 값
+        const actualWeightG = Math.round(actualWeightKg * 1000);
+        const chargeableWeightG = Math.round(chargeableWeightKg * 1000);
 
-        volumetricWeightDisplay.textContent = `${volumetricWeightG.toFixed(2)} g`;
+        volumetricWeightDisplay.textContent = `${volumetricWeightG.toLocaleString()} g`;
+        volumetricWeightDisplay.setAttribute('data-value', volumetricWeightG);
+        volumetricWeightOriginalDisplay.textContent = `(${volumetricWeightGOriginal.toFixed(2)} g)`;
         
         // 실제 무게가 입력되었을 때만 표시
         if (actualWeightKg > 0 && !isWeightHidden) {
-            actualWeightDisplay.textContent = `${actualWeightG.toFixed(2)} g`;
+            actualWeightDisplay.textContent = `${actualWeightG.toLocaleString()} g`;
+            actualWeightDisplay.setAttribute('data-value', actualWeightG);
             actualWeightItem.style.display = 'flex';
         } else {
             actualWeightItem.style.display = 'none';
         }
         
-        chargeableWeightDisplay.textContent = `${chargeableWeightG.toFixed(2)} g`;
+        chargeableWeightDisplay.textContent = `${chargeableWeightG.toLocaleString()} g`;
+        chargeableWeightDisplay.setAttribute('data-value', chargeableWeightG);
 
         // 결과 컨테이너 표시
         resultContainer.classList.remove('hidden');
@@ -140,6 +146,34 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 calculateVolumetricWeight();
+            }
+        });
+    });
+
+    // 복사 버튼 기능
+    const copyButtons = document.querySelectorAll('.copy-btn');
+    copyButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const targetElement = document.getElementById(targetId);
+            const valueToCopy = targetElement.getAttribute('data-value');
+            
+            if (valueToCopy && valueToCopy !== '0' && valueToCopy !== '-') {
+                // 클립보드에 숫자만 복사
+                navigator.clipboard.writeText(valueToCopy).then(() => {
+                    // 복사 성공 피드백
+                    const originalText = this.textContent;
+                    this.textContent = '✓';
+                    this.style.color = '#4caf50';
+                    
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                        this.style.color = '';
+                    }, 1000);
+                }).catch(err => {
+                    console.error('복사 실패:', err);
+                    alert('복사에 실패했습니다.');
+                });
             }
         });
     });

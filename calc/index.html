@@ -86,15 +86,33 @@
             <div id="result" class="result-container hidden">
                 <div class="result-item">
                     <span class="result-label">부피무게:</span>
-                    <span class="result-value" id="volumetricWeight">-</span>
+                    <div class="result-value-wrapper">
+                        <div class="result-value-group">
+                            <span class="result-value" id="volumetricWeight" data-value="0">-</span>
+                            <span class="result-value-original" id="volumetricWeightOriginal">-</span>
+                        </div>
+                        <button type="button" class="copy-btn" data-target="volumetricWeight" aria-label="부피무게 복사" title="숫자만 복사">
+                            📋
+                        </button>
+                    </div>
                 </div>
                 <div class="result-item" id="actualWeightItem">
                     <span class="result-label">실제 무게:</span>
-                    <span class="result-value" id="actualWeight">-</span>
+                    <div class="result-value-wrapper">
+                        <span class="result-value" id="actualWeight" data-value="0">-</span>
+                        <button type="button" class="copy-btn" data-target="actualWeight" aria-label="실제 무게 복사" title="숫자만 복사">
+                            📋
+                        </button>
+                    </div>
                 </div>
                 <div class="result-item highlight">
                     <span class="result-label">운임 기준 무게:</span>
-                    <span class="result-value" id="chargeableWeight">-</span>
+                    <div class="result-value-wrapper">
+                        <span class="result-value" id="chargeableWeight" data-value="0">-</span>
+                        <button type="button" class="copy-btn" data-target="chargeableWeight" aria-label="운임 기준 무게 복사" title="숫자만 복사">
+                            📋
+                        </button>
+                    </div>
                 </div>
                 <div class="result-note">
                     <p>💡 실제 무게와 부피무게 중 더 큰 값이 운임 기준 무게로 적용됩니다.</p>
