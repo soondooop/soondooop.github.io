@@ -12,7 +12,7 @@ const About = () => {
             {(() => {
                 const startYear = 2017;
                 const currentYear = new Date().getFullYear();
-                const years = currentYear - startYear + 1;
+                const years = currentYear - startYear;
                 return (
                   <span style={{ fontWeight: 'bold', color: 'var(--primary-color)' }}>
                     {years}년&nbsp;
@@ -21,7 +21,7 @@ const About = () => {
               })()}
               간의 다양한 업무경험</h3>
             <p>
-              웹에이전시에서 다양한 프로젝트를 통해 웹 표준과 반응형 웹 페이지 및 모션 제작을 전문으로 다뤄왔으며, 롯데면세점 이벤트 페이지 운영을 통한 다양한 경험을 하였습니다. 사용자 경험을 최우선으로 생각하며, 깔끔하고 직관적인 인터페이스를 구현하는 것을 추구합니다.
+              웹에이전시에서 다양한 프로젝트를 통해 웹 표준과 반응형 웹 페이지 및 모션 제작을 전문으로 다뤄왔으며, 롯데면세점 이벤트 및 상품 페이지 운영을 통한 다양한 경험을 하였습니다. 사용자 경험을 최우선으로 생각하며, 깔끔하고 직관적인 인터페이스를 구현하는 것을 추구합니다.
             </p>
             <p>
               최신 웹 기술 트렌드를 지속적으로 학습하고 있으며, React, Vue.js 등의 프레임워크를 활용한 프론트엔드 공부도 함께 진행하고 있습니다.
@@ -31,7 +31,7 @@ const About = () => {
                 <h4>{(() => {
                 const startYear = 2017;
                 const currentYear = new Date().getFullYear();
-                const years = currentYear - startYear + 1;
+                const years = currentYear - startYear;
                 return (
                   <span style={{ fontWeight: 'bold', color: 'var(--primary-color)' }}>
                     {years}&nbsp;

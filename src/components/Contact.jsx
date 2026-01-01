@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
+import emailjs from '@emailjs/browser';
 import { FaEnvelope, FaPhone, FaGithub, FaInstagram } from 'react-icons/fa'
 import './Contact.css'
 
 const Contact = () => {
+  const formRef = useRef()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -18,12 +20,31 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // 폼 제출 로직
-    console.log('Form submitted:', formData)
-    alert('메시지가 전송되었습니다!')
-    setFormData({ name: '', email: '', message: '' })
-  }
+    
+    // EmailJS를 사용하여 이메일 전송
+    // 템플릿 변수 이름은 EmailJS 대시보드의 템플릿과 일치해야 합니다
+    const templateParams = {
+      from_name: formData.name || '',
+      from_email: formData.email || '',
+      message: formData.message || '',
+      to_email: 'tmdehk02@gmail.com' // 수신 이메일 (템플릿에 to_email이 있는 경우)
+    }
 
+    console.log('전송할 데이터:', templateParams)
+
+    emailjs.send('service_03iflsq', 'template_zclheci', templateParams, 'cfu1rNZkG4ywykZDu')
+      .then((result) => {
+        console.log('SUCCESS!', result.status, result.text);
+        console.log('전체 응답:', result);
+        alert('메시지가 전송되었습니다!')
+        setFormData({ name: '', email: '', message: '' })
+      }, (error) => {
+        console.log('FAILED...', error);
+        console.error('에러 상세:', error);
+        alert('메시지 전송에 실패했습니다. 다시 시도해주세요.')
+      });
+  }
+  
   return (
     <section id="contact" className="contact section">
       <div className="container">
@@ -78,7 +99,7 @@ const Contact = () => {
               </div>
             </div>
           </div>
-          <form className="contact-form" onSubmit={handleSubmit}>
+          <form ref={formRef} className="contact-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="name">이름</label>
               <input

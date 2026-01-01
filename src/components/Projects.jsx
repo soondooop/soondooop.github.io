@@ -13,44 +13,108 @@ const Projects = () => {
     },
     {
       id: 2,
-      title: 'Corporate Website',
-      description: '기업 홈페이지 리뉴얼 프로젝트. 웹 접근성과 SEO 최적화를 고려한 개발',
-      image: 'https://via.placeholder.com/600x400/8b5cf6/ffffff?text=Corporate',
-      tags: ['HTML5', 'CSS3', 'JavaScript', 'Accessibility'],
-      link: '#'
+      title: '굿앤굿 어린이케어 APP',
+      description: '휴젤(주)의 바이리즌 제품 페이지 제작. GASP를 이용하여 스크롤 애니메이션을 구현하였습니다.',
+      image: 'https://www.pitap.at/assets/images/project/projectView8_1.png',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery', 'GSAP', 'Ajax'],
+      link: 'https://apps.apple.com/kr/app/%EA%B5%BF%EC%95%A4%EA%B5%BF-%EC%96%B4%EB%A6%B0%EC%9D%B4%EC%BC%80%EC%96%B4/id1229766852'
     },
     {
       id: 3,
-      title: 'Dashboard Application',
-      description: '데이터 시각화 대시보드. Vue.js를 활용한 인터랙티브한 UI 구현',
-      image: 'https://via.placeholder.com/600x400/10b981/ffffff?text=Dashboard',
-      tags: ['Vue.js', 'Chart.js', 'Tailwind CSS', 'REST API'],
-      link: '#'
+      title: '콜레오 마케팅 그룹',
+      description: '콜레오 마케팅 그룹 홈페이지 구축 및 운영',
+      image: 'http://www.coleomarketing.com/assets/images/open_graph_logo.png',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery', 'GSAP', 'Ajax'],
+      link: 'http://www.coleomarketing.com/'
     },
     {
       id: 4,
-      title: 'Mobile App Landing',
-      description: '모바일 앱 프로모션 랜딩 페이지. 애니메이션과 인터랙션 중심의 디자인',
-      image: 'https://via.placeholder.com/600x400/f59e0b/ffffff?text=Landing',
-      tags: ['Next.js', 'GSAP', 'Framer Motion', 'Mobile First'],
-      link: '#'
+      title: '프리미엄 메이필드 호텔',
+      description: '메이필드 호텔 홈페이지 구축 및 운영',
+      image: 'https://www.mayfield.co.kr/assets/share/share_img_v1.png',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery', 'GSAP', 'Ajax'],
+      link: 'https://www.mayfield.co.kr/main/'
     },
     {
       id: 5,
-      title: 'Portfolio Website',
-      description: '크리에이티브 포트폴리오 웹사이트. 미니멀 디자인과 부드러운 트랜지션',
-      image: 'https://via.placeholder.com/600x400/ef4444/ffffff?text=Portfolio',
-      tags: ['React', 'Styled Components', 'Responsive', 'Animation'],
-      link: '#'
+      title: 'LG에너지솔루션',
+      description: 'LG에너지 솔루션 배터리 인사이드 페이지 제작 및 배터리 퀴즈 이벤트 제작.',
+      image: 'https://inside.lgensol.com/wp-content/uploads/2025/04/BATTERY-INSIDE_OG-Image1200x630.webp',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery', 'wordpress'],
+      link: 'https://inside.lgensol.com/'
     },
     {
       id: 6,
-      title: 'Admin Panel',
-      description: '관리자 대시보드 시스템. 복잡한 데이터 관리와 필터링 기능 구현',
-      image: 'https://via.placeholder.com/600x400/3b82f6/ffffff?text=Admin',
-      tags: ['React', 'Material-UI', 'Redux', 'REST API'],
-      link: '#'
-    }
+      title: 'LG화학블로그',
+      description: 'LG화학 블로그 페이지 제작 및 운영',
+      image: 'https://www.pitap.at/assets/images/kv/ImageAssets_lgblog.jpg',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery', 'wordpress'],
+      link: 'https://blog.lgchem.com/'
+    },
+    {
+      id: 7, 
+      title: 'iLab Original',
+      description: 'iLab Original - 푸바오와 무뎅이가 전하는 편지 페이지 제작',
+      image: 'https://innovationlab.co.kr/project/zootopia/og.jpg',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery', 'GSAP'],
+      link: 'https://innovationlab.co.kr/project/zootopia/'
+    },
+    {
+      id: 8,
+      title: '롯데면세점 컨템포러리',
+      description: '롯데면세점 컨템포러리 페이지 제작 및 운영',
+      image: 'https://static.lottedfs.com/contents/images/event-img/20240221170954853fc540e1bf9b74c6aaed952cec608f534.jpg',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery'],
+      link: 'https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1044489'
+    },
+    {
+      id: 9,
+      title: '롯데면세점 더모코스메틱',
+      description: '롯데면세점 더모코스메틱 페이지 제작 및 운영',
+      image: 'https://static.lottedfs.com/contents/images/event-img/20240906161815988159fce0010524ffda929b656c113fbb3.png',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery'],
+      link: 'https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1047430'
+    },
+    {
+      id: 10,
+      title: '롯데면세점 먼슬리 뷰티',
+      description: '롯데면세점 먼슬리 뷰티 페이지 제작 및 운영',
+      image: 'https://static.lottedfs.com/contents/images/event-img/2025123110232550782c5508f91864cbfb7c3a00f13eb9b24.webp',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery'],
+      link: 'https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1052984'
+    },
+    {
+      id: 11,
+      title: '롯데면세점 Shine in winter',
+      description: '롯데면세점 Shine in winter 페이지 제작 및 운영',
+      image: 'https://static.lottedfs.com/contents/images/event-img/2025111814345124087a9b09e4b7344fab6bd1e6ddb42e8cd.jpg',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery'],
+      link: 'https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1052515'
+    },
+    {
+      id: 12,
+      title: '롯데면세점 숨은 면세 찾기',
+      description: '롯데면세점 숨은 면세 찾기 시리즈 페이지 제작 및 운영',
+      image: 'https://static.lottedfs.com/contents/images/event-img/2025020508403084709b9a911d2024e0ba9dae739206fe881.jpg',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery', 'GSAP'],
+      link: 'https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1049084'
+    },
+    {
+      id: 13,
+      title: '롯데면세점 주류 큐레이션',
+      description: '롯데면세점 주류 큐레이션 페이지 제작 및 운영',
+      image: 'https://static.lottedfs.com/contents/images/event-img/20250205092750994ab0bffda2e454894a27f4258a3362bd9.jpg',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery', 'GSAP'],
+      link: 'https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1049005'
+    },
+    {
+      id: 14, 
+      title: '롯데면세점 뷰티 큐레이션',
+      description: '롯데면세점 주류 큐레이션 페이지 제작 및 운영',
+      image: 'https://static.lottedfs.com/contents/images/event-img/2025020509530994236e24c1fc81e436d8317b1437f891b91.jpg',
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery', 'GSAP'],
+      link: 'https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1049008'
+    },
   ]
 
   return (

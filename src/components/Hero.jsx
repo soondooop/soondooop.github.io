@@ -8,21 +8,11 @@ const Hero = () => {
         <div className="hero-content">
           <div className="hero-text">
             <h1 className="hero-title">
-              안녕하세요, <br />
-              <span className="gradient-text">웹퍼블리셔 김승도</span>입니다
+              안녕하세요! <br />
+              <span className="gradient-text">웹퍼블리셔 <br />김승도</span>입니다
             </h1>
             <p className="hero-description">
-                2017년 부터&nbsp;
-              {(() => {
-                const startYear = 2017;
-                const currentYear = new Date().getFullYear();
-                const years = currentYear - startYear + 1;
-                return (
-                  <span style={{ fontWeight: 'bold', color: 'var(--primary-color)' }}>
-                    {years}년차&nbsp;
-                  </span>
-                );
-              })()}
+               <span style={{ fontWeight: 'bold', color: 'var(--primary-color)' }}> 2017년 &nbsp;</span>부터
               웹퍼블리셔로 활동하고 있습니다.
               <br />
               다년간의 경험을 기반으로 요구사항의 맞추어 <br />
