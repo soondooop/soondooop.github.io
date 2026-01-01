@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="주용🧡소은 결혼식에 초대합니다.">
+	<meta property="og:title" content="주용🧡소은 결혼식에 초대합니다.">
+	<meta property="og:description" content="2024.06.15 13:30 JK아트컨벤션 4층 그랜드홀">
+	<meta property="og:image" content="./share/share_800x400.jpg">
+	<meta property="og:url" content="https://our-story.site/JYPSEL/"> 
+	
+	<meta name="twitter:title" content="주용🧡소은 결혼식에 초대합니다.">
+	<meta name="twitter:description" content="2024.06.15 13:30 JK아트컨벤션 4층 그랜드홀">
+	<meta name="twitter:image" content="./share/share_800x400.jpg">
+    <title>주용🧡소은 결혼식에 초대합니다.</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.7/dayjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.7/plugin/dayOfYear.min.js"></script>
+    <script src="./js/gsap.min.js"></script>
+    <script src="./js/ScrollTrigger.min.js"></script>
+    <script src="./js/sakura.js"></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=466df5fc08a2ad909f9cc96b6403ebd2"></script>
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=z7iut62rgg"></script>
+    <script src="./js/hangul.js"></script>
+    <script src="./js/type-hangul.min.js"></script>
+    <link rel="apple-touch-icon" sizes="57x57" href="./favi/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="./favi/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./favi/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="./favi/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./favi/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="./favi/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./favi/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./favi/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./favi/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="./favi/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favi/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./favi/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favi/favicon-16x16.png">
+    <link rel="manifest" href="./favi/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="./favi/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+    <link href="./css/sakura.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&family=Rufina:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C4C74VYNFH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-C4C74VYNFH');
+</script>
+<script>
+
+    
+$(window).on('load',function(){        
+    $('#loading').animate({opacity:0},2000,function(){
+        $('#loading').remove();
+        $('body').removeClass('off');
+    })
+})
+
+$(document).ready(function(){
+    $('.leaf_box').sakura();
+    $(document).bind("contextmenu", function(e) {
+       	return false;
+    });
+    console.log('ver.1.011');
+
+    setTimeout(function(){
+        $('.kv_tit').removeClass('ksd');
+        TypeHangul.type('.kv_tit span',{
+            intervalType: 200
+        });
+    },1000)
+
+    var dayNum;
+
+    var remainTime = document.querySelector("#dayNum");
+
+    function diffDay() {
+        var masTime = new Date("2024-06-15");
+        var todayTime = new Date();
+        
+        var diff = masTime - todayTime;
+
+        var diffDay = String(Math.floor(diff / (1000*60*60*24)));
+
+        diffDay = Number(diffDay) + 1;
+        
+        if(diffDay == 0){
+            remainTime.innerHTML = ` <span class="today">당일</span>입니다.`;
+        } else if(diffDay < 0){
+            remainTime.innerHTML = `이 지났습니다.`;
+        } else {
+            remainTime.innerHTML = `까지 <span class="today">${diffDay}</span>일 남았습니다.`;
+        }
+    }
+
+    diffDay();
+
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.set($('.nav_cont .box'), {opacity: 0, y:'50px'});
+
+    var _mainVideo = gsap.timeline();
+    _mainVideo.timeScale(1)
+    .fromTo($('#loading'), {opacity: 1,}, {opacity: 0,duration: 1,ease: 'power1.out',onComplete:function(){
+        $('#loading').remove();$('body').removeClass('off');
+        
+        const boxes = gsap.utils.toArray('.box');
+        boxes.forEach(box => {
+            gsap.to(box, { 
+                opacity: 1,
+                y: 0,
+                duration: 1.5,
+                scrollTrigger: {
+                    trigger: box,
+                    start: "top 90%",
+                    end: "top 80%",
+                    scrub: 3,
+                    // markers: true,
+                },
+                /* onComplete:function(){
+                    if($('.month').attr('style') == 'transform: translate(0px, 0px); opacity: 1;' == true){
+                        $('.month').addClass('on');
+                    } else {
+                        $('.month').removeClass('on');
+                    }
+                } */
+            })
+        });
+    }})
+    gsap.timeline({
+        scrollTrigger: {
+            trigger: ".nav_cont_1 .cont_img",
+            start: "top 90%",
+            end: "top 50%",
+            scrub: 3,
+            // markers: true
+        }
+    })
+    .fromTo(".cont_img .img_box", {top:'0'}, {top:'-70%', ease: 'none', duration: 3 })
+    
+    gsap.timeline({
+        scrollTrigger: {
+            trigger: ".nav_cont_5 .account_bg",
+            start: "top 80%",
+            end: "top 65%",
+            scrub: 3,
+            // markers: true
+        }
+    })
+    .fromTo(".account_bg .bg_box", {background:'rgba(0,0,0,0)'}, {background:'rgba(0,0,0,0.5)', ease: 'none', duration: 3 })
+    .fromTo(".account_bg .fin_msg", {opacity:'0'}, {opacity:'1', ease: 'none', duration: 3 })
+    
+    var clipboard = new Clipboard('.ac_text');
+    clipboard.on('success', function(e) {
+        alert('복사되었습니다!');
+    });
+    clipboard.on('error', function(e) {
+        alert('복사에 실패했습니다. 다시 시도해주세요.');
+    });
+
+    $(document).on('click','.account_top',function(e){
+        e.preventDefault;
+
+        if($(this).hasClass('on') == false){
+            $('.account_top').removeClass('on');
+            $('.acc_group').slideUp();
+            $(this).addClass('on');
+            $(this).siblings('.acc_group').slideDown(500,function(){
+                ScrollTrigger.refresh();
+            });
+        } else {
+            $('.account_top').removeClass('on');
+            $('.acc_group').slideUp(500,function(){
+                ScrollTrigger.refresh();
+            });
+        }
+        
+    })
+    var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+    var options = { //지도를 생성할 때 필요한 기본 옵션
+        center: new kakao.maps.LatLng(37.5177695, 126.9000792), //지도의 중심좌표.
+        level: 4 //지도의 레벨(확대, 축소 정도)
+    };
+    
+    var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+
+    var markerPosition  = new kakao.maps.LatLng(37.5177695, 126.9000792); 
+
+    // 마커를 생성합니다
+    var marker = new kakao.maps.Marker({
+        position: markerPosition
+    });
+    marker.setMap(map);
+
+    function setDraggable(draggable) {
+        // 마우스 드래그로 지도 이동 가능여부를 설정합니다
+        map.setDraggable(draggable);    
+    }
+
+    setDraggable(false);
+
+    $('.map_hold').on('click',function(){
+        if($(this).hasClass('on') == true){
+            $(this).removeClass('on').addClass('off');
+            $('.map_box').removeClass('hold');
+            setDraggable(true);
+            $('.map_hold .txt').text('고정 해제');
+        } else {
+            $(this).removeClass('off').addClass('on');
+            $('.map_box').addClass('hold');
+            setDraggable(false);
+            $('.map_hold .txt').text('지도 고정');
+        }
+    })
+
+    var swiper2 = new Swiper(".sl_cont", {
+        slidesPerView: 1,
+        centeredSlides: true,
+        pagination: {
+            el: ".swiper-pagination",
+            type: "fraction",
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        on:{
+            slideChangeTransitionEnd: function(index,object){                
+                $('.gallery_pop').css("background-image","url("+ $('.gallery_list.swiper-slide-active img').attr('src') +")");
+            }
+        }
+    });
+
+    $('.tel_view').on('click',function(e){
+        e.preventDefault();
+        
+        $('.tel_pop').show();
+    })
+
+    $('.more_view').on('click',function(e){
+        e.preventDefault();
+
+        if($('.nav_cont_3 .gallery').hasClass('hide') == true){
+            $('.nav_cont_3 .gallery').removeClass('hide');
+            $(this).parents('.btn_box').remove();
+            // $(this).html('<span>줄이기</span>');
+            setTimeout(function(){
+                ScrollTrigger.refresh();
+            },1000)
+        } else {
+            $('.nav_cont_3 .gallery').addClass('hide');
+            $(this).html('<span>더 보기</span>');
+            setTimeout(function(){
+                ScrollTrigger.refresh();
+            },1000)
+        }
+    })
+
+    $('.thumb').on('click',function(e){
+        e.preventDefault();
+
+        var imgNumb = $(this).data('idx') - 1;
+        swiper2.slideTo(imgNumb);
+
+        $('.gallery_pop').css("background-image","url("+ $(this).find('img').attr('src') +")");
+        $('.gallery_pop').show();
+    })
+
+    $('.gallery_view').on('click',function(e){
+        e.preventDefault();
+
+        var imgNumb = 0;
+        swiper2.slideTo(imgNumb);
+
+        $('.gallery_pop').css("background-image","url(./gallery/01-min.jpg)");
+        $('.gallery_pop').show();
+    })
+
+    $('.layer_pop .closed, .dimmed').on('click',function(e){
+        e.preventDefault();
+
+        $('.pop_box').hide();
+    })
+
+
+    var msnry = new Masonry( '.grid', {  
+        itemSelector: '.grid-item',  
+        columnWidth: '.grid-sizer',  
+        percentPosition: true,  
+        // gutter : 15,
+        gutter: '.gutter-sizer',
+    });
+    imagesLoaded( '.grid' ).on( 'progress', function() {  
+        msnry.layout();
+    });
+    
+})
+</script>
+<style>
+@font-face {
+    font-family: 'GangwonEdu_OTFLightA';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFLightA.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'GangwonEdu_OTFBoldA';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+/* reset */
+*{margin: 0;padding: 0;font-family: "GangwonEdu_OTFLightA", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif; font-weight:300;}
+html{-webkit-tap-highlight-color:transparent !important;-webkit-text-size-adjust: none;}
+a {display:block;color: #333;text-decoration:none;}
+body,input,label{font-family: "GangwonEdu_OTFLightA", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;webkit-text-size-adjust: auto;color:#333333;}
+body {-webkit-touch-callout:none;overflow-x:hidden;background:url('./img/bg.jpg') repeat  #fbfaf0;}
+ul,ol,li{list-style: none;}
+img{display: block;border: 0;}
+button{border: none;background: none;cursor: pointer;-webkit-transform: translate3d(0,0,0);outline: none;}
+body.off{overflow: hidden;}
+#loading {position:fixed;width:100vw;height:100vh;background:#fbfaf0;z-index: 50;}
+
+
+.evWrap {width:750px;min-height:100vh;margin:0 auto;}
+.sd_tit {margin-top:120px;font-size:38px;color:rgba(0,0,0,0.2);text-align:center;letter-spacing:10px;}
+.sd_ico {width:40px;height:68px;margin:30px auto 40px;background:url('./img/sd_ico.png') no-repeat center center / 100% 100%;}
+.btn_box a {display:flex;align-items:center;justify-content:center;width:300px;height:60px;margin:0 auto;border-radius:30px;border:2px solid rgba(0,0,0,0.5);}
+.btn_box a span {position:relative;top:4px;font-family:'GangwonEdu_OTFBoldA';font-size:28px;}
+
+.nav_cont {width:750px;margin:0 auto;position:relative;letter-spacing:-1.2px;}
+.nav_cont .nav_wrap {position:relative;width:750px;margin:0 auto;}
+.nav_cont.nav_cont_kv .nav_wrap {width:600px;border:none;background:none;}
+.nav_cont .nav_wrap .kv_tit {position:absolute;left:50%;top:120px;font-size:38px;text-align:center;transform:translateX(-50%);}
+.nav_cont .nav_wrap .kv_ico {position:absolute;left:50%;top:182px;transform:translateX(-50%);}
+.nav_cont .nav_wrap .kv_tit.ksd span {opacity:0;}
+.nav_cont .nav_wrap .kv_tit span {display:block;opacity:1;}
+.nav_cont .nav_wrap .kv_tit span::after {content: "|";right: 0;color:#000;font-size:38px;animation: caret .8s infinite;}
+
+@keyframes caret {
+    50% {
+        opacity:0;
+    }
+}
+.nav_cont .nav_wrap .kv_box {position:relative;padding-top:300px;}
+.nav_cont .nav_wrap .kv_box .kv_wrap {background:#ffffff;border-radius:20px;overflow:hidden;}
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_img {position:relative;width:620px;height:auto;margin:0 auto;}  
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_img::after {position:absolute;left:0;bottom:0;display:block;content:'';width:100%;height:200px;background:linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);}
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_txt {text-align:center;}
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_txt .tit {font-size:46px;margin:40px auto 15px;}
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_txt .tit span {font-size:28px;}
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_txt .txt {font-size:28px;}
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_txt .sd_ico {margin:30px auto 67px;}
+.nav_cont .nav_wrap .kv_loca {font-size:38px;text-align:center;}
+.nav_cont .nav_wrap .kv_loca .kv_date {margin:70px auto 10px;}
+.nav_cont .nav_wrap .kv_loca .kv_hall {font-family: 'GangwonEdu_OTFBoldA';}
+
+.nav_cont_1 .cont_info {}
+.nav_cont_1 .cont_info .info_txt {font-size:32px;text-align:center;}
+.nav_cont_1 .cont_info .info_txt p {margin-bottom:8px;}
+.nav_cont_1 .cont_img {position:relative;width:600px;height:400px;margin:100px auto 70px;overflow:hidden;border-radius:20px;}
+.nav_cont_1 .cont_img .img_box {position:absolute;}
+.nav_cont_1 .info_box {text-align:center;}
+.nav_cont_1 .info_box .info_txt {font-family:'GangwonEdu_OTFBoldA';font-size:38px;color:#282828;}
+.nav_cont_1 .info_box .info_txt.groom {margin-bottom:10px;}
+.nav_cont_1 .info_box .info_txt span {margin:0 10px;font-family:'GangwonEdu_OTFLightA';font-size:28px;}
+.nav_cont_1 .btn_box {margin-top:70px;}
+
+
+.nav_cont_2 .cal_box {width:100%;padding:60px 0 70px;background:#ffffff;box-sizing:border-box;}
+.nav_cont_2 .month {position:relative;font-size:48px;line-height:1;color:#282828;font-weight:900;text-align:center;}
+.nav_cont_2 .month::after {position:absolute;left:50%;bottom:0;transform:translateX(-50%);display:block;content:'';width:0;height:4px;background:#eeeeee;transition:1s width;}
+.nav_cont_2 .month.on::after {width:100%;}
+.nav_cont_2 .calendar {}
+.nav_cont_2 .calendar .calender_wrap {width:640px;margin:40px auto;padding-top:50px;}
+.nav_cont_2 .calendar .calender_wrap span {display:block;font-size:24px;line-height:1;}
+.nav_cont_2 .calendar .calender_wrap .days {display:flex;justify-content: space-between;margin-bottom:70px;}
+.nav_cont_2 .calendar .calender_wrap .days span {width:14%;text-align:center;}
+.nav_cont_2 .calendar .calender_wrap .days span:first-child {color:#f33333;}
+.nav_cont_2 .calendar .calender_wrap .numb {display:flex;flex-flow:wrap;justify-content: space-between;}
+.nav_cont_2 .calendar .calender_wrap .numb span {position:relative;width:14%;margin-bottom:40px;text-align:center;}
+.nav_cont_2 .calendar .calender_wrap .numb span:nth-child(7n + 1) {color:#f33333;}
+.nav_cont_2 .calendar .calender_wrap .numb span.d_day {z-index:1;font-weight:bold;}
+.nav_cont_2 .calendar .calender_wrap .numb span.d_day::before {position:absolute;top:50%;left:50%;content:'';width:50px;height:50px;background: rgba(247, 55, 55, 0.12);transform:translate(-49%,-56%);border-radius:100px;z-index:-1;}
+.nav_cont_2 .calendar .calender_wrap .numb span.d_day::after {position:absolute;top:50%;left:50%;content:'';width:50px;height:50px;background: url('./img/dday2.png') no-repeat center center / 100% 100%;transform:translate(-49%,-56%);z-index:-1;animation:pulse 1s ease-in Infinite ;}
+.nav_cont_2 .day_count {font-size:38px;text-align:center;}
+.nav_cont_2 .day_count .today {position:relative;top:5px;font-size:48px;color:#f73737;font-weight:bold;}
+
+@keyframes pulse {
+    0% {
+        -webkit-transform:translate(-49%,-56%) scaleX(1);
+        transform:translate(-49%,-56%) scaleX(1)
+    }
+
+    50% {
+        -webkit-transform:translate(-49%,-56%) scale3d(1.05,1.05,1.05);
+        transform:translate(-49%,-56%) scale3d(1.05,1.05,1.05)
+    }
+
+    to {
+        -webkit-transform:translate(-49%,-56%) scaleX(1);
+        transform:translate(-49%,-56%) scaleX(1)
+    }
+}
+
+.nav_cont_3 .gallery {position:relative;width:600px;height:auto;margin:0 auto;padding-bottom:50px;overflow: hidden;box-sizing:border-box;transition:1s all;}
+.nav_cont_3 .gallery.hide {height:600px !important;}
+.nav_cont_3 .gallery.hide::after {position:absolute;left:0;bottom:0;display:block;content:'';width:100%;height:120px;background:linear-gradient(0deg, rgba(251,250,240,1) 0%, rgba(255,255,255,0) 100%);}
+.nav_cont_3 .gallery .grid { width:100% }
+.nav_cont_3 .gallery .grid-sizer, .nav_cont_3 .gallery .grid-item { width: 31.6666667%;/* padding:0 7.5px; */}
+.nav_cont_3 .gallery .gutter-sizer {width: 15px;}
+.nav_cont_3 .gallery .grid-item {margin-bottom:15px; border-radius: 10px; overflow:hidden;}
+.nav_cont_3 .gallery .grid-item img {display: block; min-width:100%; max-width: 100%; }
+.nav_cont_3 .gallery .gallery_box img {width:100%;}
+
+.nav_cont_3 .btn_box {margin-top:40px;}
+
+.nav_cont_4 .cont_map {width:100%;margin:0 auto 40px;}
+.nav_cont_4 .cont_map .map_box {position:relative;width:100%;height:400px;background:#fff;}
+.nav_cont_4 .cont_map .map_box.hold #map::after {position:absolute;top:0;left:0;content:'';display:block;width:100%;height:100%;z-index:1;}
+.nav_cont_4 .cont_map .map_box #map {width:100%;height:400px;}
+.nav_cont_4 .cont_map .map_search {display:flex;justify-content:space-between;align-items:center;padding:20px 30px;background:#fff;}
+.nav_cont_4 .cont_map .map_search .search_tit {position:relative;margin-right:20px;font-size:20px;font-weight:500;}
+.nav_cont_4 .cont_map .map_search .search_tit::after {position:absolute;left:0;bottom:0;width:100%;height:10px;content:'';z-index:-1}
+.nav_cont_4 .cont_map .map_search .search_list {display:flex;justify-content:space-between;width:100%;}
+.nav_cont_4 .cont_map .map_search .search_list a {display:flex;align-items:center;font-family:'GangwonEdu_OTFBoldA';font-size:28px;color:#333;}
+.nav_cont_4 .cont_map .map_search .search_list a .ico {display:block;width:40px;height:40px;margin-right:10px;border-radius:10px;overflow: hidden;}
+.nav_cont_4 .cont_map .map_search .search_list a .txt {position:relative;top:5px;}
+.nav_cont_4 .cont_map .map_search .search_list a.map_kakao {margin-right:20px;}
+.nav_cont_4 .cont_map .map_search .search_list a.map_kakao .ico {background:url('./img/map_02.jpg') no-repeat center center / 100% 100%;}
+.nav_cont_4 .cont_map .map_search .search_list a.map_naver {margin-right:20px;}
+.nav_cont_4 .cont_map .map_search .search_list a.map_naver .ico {background:url('./img/map_01.jpg') no-repeat center center / 100% 100%;}
+.nav_cont_4 .cont_map .map_search .search_list a.map_hold {}
+.nav_cont_4 .cont_map .map_search .search_list a.map_hold.on .ico {background:url('./img/ico_lock_on.png') no-repeat center center / 100% 100%;}
+.nav_cont_4 .cont_map .map_search .search_list a.map_hold.off .ico {background:url('./img/ico_lock_off.png') no-repeat center center / 100% 100%;}
+.nav_cont_4 .cont_route {width:670px;margin:0 auto;text-align:left;}
+.nav_cont_4 .cont_route .route_box {display:flex;width:100%;margin-bottom:28px;}
+.nav_cont_4 .cont_route .route_box:last-child {margin-bottom:0;}
+.nav_cont_4 .cont_route .route_box .route_tit {flex:0 0 120px;font-family:'GangwonEdu_OTFBoldA';font-size:38px;}
+.nav_cont_4 .cont_route .route_box .route_txt {flex:1 0 auto; width:calc(100% - 120px);font-size:28px;line-height:38px;}
+.nav_cont_4 .cont_route .route_box .route_txt a {position:relative;top:5px;display:inline-block;width:30px;}
+.nav_cont_4 .cont_route .route_box .route_txt span {font-family:'GangwonEdu_OTFBoldA';}
+
+.nav_cont_5 .info_tit {font-family:'GangwonEdu_OTFBoldA';font-size:38px;text-align:center;line-height:38px;letter-spacing:-1.2px;color:#333;}
+.nav_cont_5 .account_cont {display:flex;flex-direction:column;justify-content:space-between;width:100%;padding:60px 30px 0;box-sizing:border-box;text-align:center;}
+.nav_cont_5 .account_cont .account_top {text-align:center;}
+.nav_cont_5 .account_cont .account_top span {position:relative;display:inline-block;width:300px;height:60px;font-size:28px;line-height:66px;z-index:1;cursor: pointer;border:2px solid rgba(0,0,0,0.5);border-radius:100vw;}
+.nav_cont_5 .account_cont .account_top span i {position:relative;top:-3px;display:inline-block;width:11px;margin-left:5px;transform:rotate(180deg);}
+.nav_cont_5 .account_cont .account_top span i img {display:inline-block;width:100%;}
+.nav_cont_5 .account_cont .account_top.on span {background:#e3e3d5;}
+.nav_cont_5 .account_cont .account_top.on span i {position:relative;top:-5px;display:inline-block;width:11px;transform:rotate(0deg);}
+.nav_cont_5 .account_cont .account_slide:last-child {margin-top:20px;}
+
+.nav_cont_5 .account_cont .acc_group {display:none;width:600px;margin:30px auto 0;padding:30px 50px;border:2px solid rgba(0,0,0,0.5);border-radius:20px;box-sizing:border-box;}
+.nav_cont_5 .account_cont .ac_tit {margin-bottom:20px;font-size:28px;}
+.nav_cont_5 .account_cont .account_box {margin-bottom:20px;}
+.nav_cont_5 .account_cont .account_box:last-child {margin-bottom:0;}
+.nav_cont_5 .account_cont .account_box .ac_term {display:block;margin-bottom:10px;font-size:26px;}
+.nav_cont_5 .account_cont .account_box .ac_text {position:relative;display:flex;flex-wrap:nowrap;justify-content:space-around;align-items:center;font-size:22px;z-index:1;font-weight:500;}
+.nav_cont_5 .account_cont .account_box .ac_text span.bank_name {width:32px;}
+.nav_cont_5 .account_cont .account_box .ac_text span.bank_bar {width:6px;}
+.nav_cont_5 .account_cont .account_box .ac_text span.acc_num {width:160px;text-align:left;}
+.nav_cont_5 .account_cont .account_box .ac_text span.family_name {width:60px;font-family:'GangwonEdu_OTFBoldA';}
+.nav_cont_5 .account_cont .account_box .ac_text span.nick {width:32px;font-family:'GangwonEdu_OTFBoldA';}
+.nav_cont_5 .account_cont .account_box .ac_text span.hanmun {width:30px;margin-top:-6px;font-family:"Apple SD Gothic Neo";}
+.nav_cont_5 .account_cont .account_box .ac_text span.ico {width:30px;height:30px;background:url('./img/ico_copy.png') no-repeat center center / 100% 100%;}
+
+.nav_cont_5 .account_bg {width:100%;height:500px;margin-top:100px;background:url('./img/fin_bg.png') no-repeat center center / 100% 100%;}
+.nav_cont_5 .account_bg .bg_box {position:relative;width:100%;height:100%;}
+.nav_cont_5 .account_bg .bg_box .fin_msg {position:absolute;top:345px;left:50%;transform:translateX(-50%);width:100%;text-align:center;font-family:'GangwonEdu_OTFBoldA';font-size:28px;line-height:40px;color:#fff;}
+
+.share_box {display:flex;justify-content:center;align-items:center;margin:40px 0;}
+.share_box #btnKakao {display:flex;align-items: flex-end;font-family:'GangwonEdu_OTFBoldA';font-size:28px;}
+.share_box #btnKakao img {width:35px;margin-right:10px;}
+
+.pop_box {position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;background-position:center center;transition:0.3s all;background-size:100% 100%;}
+.pop_box .layer_pop {position:relative;display:flex;justify-content:center;align-items:center;width:100%;height:100%;}
+.pop_box .layer_pop .closed {position:absolute;top:20px;right:20px;width:40px;height:40px;margin-left:320px;font-size:0;background-image: url("data:image/svg+xml,%3Csvg fill='%23ffffff' height='40px' width='40px' version='1.1' id='Capa_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 460.775 460.775' xml:space='preserve'%3E%3Cpath d='M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55 c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55 c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505 c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55 l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719 c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z'/%3E%3C/svg%3E");background-size:100% 100%;z-index:101;opacity:0.7;}
+
+.pop_box .layer_pop .tel_cont {width:600px;height:auto;margin:0 auto;padding:40px 60px 50px;overflow:hidden;background:url('./img/bg.jpg') repeat  #fbfaf0;border-radius:15px;box-sizing:border-box;z-index:1;}
+.pop_box .layer_pop .tel_cont div {position:relative;display:flex;flex-wrap:nowrap;justify-content:space-around;align-items:center;margin-bottom:15px;font-size:22px;z-index:1;font-weight:500;}
+.pop_box .layer_pop .tel_cont .bride {margin-top:40px;}
+.pop_box .layer_pop .tel_cont .sd_ico {margin:0 auto 30px;}
+.pop_box .layer_pop .tel_cont .info_tit {margin-bottom:30px;font-size:38px;}
+.pop_box .layer_pop .tel_cont div:last-child {margin-bottom:0;}
+.pop_box .layer_pop .tel_cont div span.name {width:60px;font-family:'GangwonEdu_OTFBoldA';}
+.pop_box .layer_pop .tel_cont div span.nick {width:35px;font-family:'GangwonEdu_OTFBoldA';}
+.pop_box .layer_pop .tel_cont div span.hanmun {width:30px;margin-top:-6px;font-family:"Apple SD Gothic Neo";}
+.pop_box .layer_pop .tel_cont div span.hanmun.emoji {position:relative;left:-3px;}
+.pop_box .layer_pop .tel_cont div span.tel_num {width:140px;}
+.pop_box .layer_pop .tel_cont div span.ico_tel {width:30px;height:30px;background:url('./img/ico_tel.png') no-repeat center center / 100% 100%;}
+.pop_box .layer_pop .tel_cont div span.ico_sms {width:30px;height:30px;background:url('./img/ico_sms.png') no-repeat center center / 100% 100%;}
+.pop_box .layer_pop .tel_cont div span a {display:block;width:100%;height:100%;}
+
+.pop_box .layer_pop .sl_cont {max-width:100%;width:100%;height:100%;margin:0 auto;overflow:hidden;}
+.pop_box .layer_pop .sl_cont .pop_wrap {position:relative;width:100%;max-width:100%;}
+.pop_box .layer_pop .sl_cont .pop_wrap .gallery_list {display:flex;justify-content:center;align-items:center;width:100%;margin:0 auto;}
+.pop_box .layer_pop .sl_cont .pop_wrap .gallery_list img {width:100%;}
+.pop_box .swiper-button-next:after, .pop_box .swiper-button-prev:after {color:#333;}
+.pop_box .swiper-pagination-fraction {bottom:0;color:#fff;}
+.pop_box .dimmed {position:absolute;left:0;top:0;display:flex;justify-content:center;align-items:center;width:100%;height:100%;background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);-webkit-backdrop-filter: blur(10px);}
+
+
+@media (max-width: 749px) {
+img {width:100%;}
+.evWrap {width:100vw;min-height:100vh;margin:0 auto;}
+.sd_tit {margin-top:16vw;font-size:5.06667vw;color:rgba(0,0,0,0.2);text-align:center;letter-spacing:1.33333vw;}
+.sd_ico {width:5.33333vw;height:9.06667vw;margin:4vw auto 5.33333vw;background:url('./img/sd_ico.png') no-repeat center center / 100% 100%;}
+.btn_box a {display:flex;align-items:center;justify-content:center;width:40vw;height:8vw;margin:0 auto;border-radius:4vw;border:0.26667vw solid rgba(0,0,0,0.5);}
+.btn_box a span {position:relative;top:0.53333vw;font-family:'GangwonEdu_OTFBoldA';font-size:3.73333vw;}
+
+.nav_cont {width:100vw;margin:0 auto;position:relative;letter-spacing:-0.16vw;}
+.nav_cont .nav_wrap {position:relative;width:100vw;margin:0 auto;}
+.nav_cont.nav_cont_kv .nav_wrap {width:80vw;border:none;background:none;}
+.nav_cont .nav_wrap .kv_tit {position:absolute;left:50%;top:16vw;font-size:5.06667vw;text-align:center;transform:translateX(-50%);}
+.nav_cont .nav_wrap .kv_ico {position:absolute;left:50%;top:24.26667vw;width:5.333333vw;transform:translateX(-50%);}
+.nav_cont .nav_wrap .kv_tit.ksd span {opacity:0;}
+.nav_cont .nav_wrap .kv_tit span {display:block;opacity:1;}
+.nav_cont .nav_wrap .kv_tit span::after {content: "|";right: 0;color:#000;font-size:5.06667vw;animation: caret .8s infinite;}
+
+@keyframes caret {
+    50% {
+        opacity:0;
+    }
+}
+.nav_cont .nav_wrap .kv_box {position:relative;padding-top:40vw;}
+.nav_cont .nav_wrap .kv_box .kv_wrap {background:#ffffff;border-radius:2.66667vw;overflow:hidden;}
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_img {position:relative;width:82.66667vw;height:auto;margin:0 auto;}  
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_img::after {position:absolute;left:0;bottom:0;display:block;content:'';width:100%;height:26.66667vw;background:linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);}
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_txt {text-align:center;}
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_txt .tit {font-size:6.13333vw;margin:5.33333vw auto 2vw;}
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_txt .tit span {font-size:3.73333vw;}
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_txt .txt {font-size:3.73333vw;}
+.nav_cont .nav_wrap .kv_box .kv_wrap .kv_txt .sd_ico {margin:4vw auto 8.93333vw;}
+.nav_cont .nav_wrap .kv_loca {font-size:5.06667vw;text-align:center;}
+.nav_cont .nav_wrap .kv_loca .kv_date {margin:9.33333vw auto 1.33333vw;}
+.nav_cont .nav_wrap .kv_loca .kv_hall {font-family: 'GangwonEdu_OTFBoldA';}
+
+.nav_cont_1 .cont_info {}
+.nav_cont_1 .cont_info .info_txt {font-size:4.26667vw;text-align:center;}
+.nav_cont_1 .cont_info .info_txt p {margin-bottom:1.06667vw;}
+.nav_cont_1 .cont_img {position:relative;width:80vw;height:53.33333vw;margin:13.33333vw auto 9.33333vw;overflow:hidden;border-radius:2.66667vw;}
+.nav_cont_1 .cont_img .img_box {position:absolute;}
+.nav_cont_1 .info_box {text-align:center;}
+.nav_cont_1 .info_box .info_txt {font-family:'GangwonEdu_OTFBoldA';font-size:5.06667vw;color:#282828;}
+.nav_cont_1 .info_box .info_txt.groom {margin-bottom:1.33333vw;}
+.nav_cont_1 .info_box .info_txt span {margin:0 1.33333vw;font-family:'GangwonEdu_OTFLightA';font-size:3.73333vw;}
+.nav_cont_1 .btn_box {margin-top:9.33333vw;}
+
+
+.nav_cont_2 .cal_box {width:100%;padding:8vw 0 9.33333vw;background:#ffffff;box-sizing:border-box;}
+.nav_cont_2 .month {position:relative;font-size:6.4vw;line-height:1;color:#282828;font-weight:900;text-align:center;}
+.nav_cont_2 .month::after {position:absolute;left:50%;bottom:0;transform:translateX(-50%);display:block;content:'';width:0;height:0.53333vw;background:#eeeeee;}
+.nav_cont_2 .calendar {}
+.nav_cont_2 .calendar .calender_wrap {width:85.33333vw;margin:5.33333vw auto;padding-top:6.66667vw;}
+.nav_cont_2 .calendar .calender_wrap span {display:block;font-size:3.7vw;line-height:1;}
+.nav_cont_2 .calendar .calender_wrap .days {display:flex;justify-content: space-between;margin-bottom:9.33333vw;}
+.nav_cont_2 .calendar .calender_wrap .days span {width:14%;text-align:center;}
+.nav_cont_2 .calendar .calender_wrap .days span:first-child {color:#f33333;}
+.nav_cont_2 .calendar .calender_wrap .numb {display:flex;flex-flow:wrap;justify-content: space-between;}
+.nav_cont_2 .calendar .calender_wrap .numb span {position:relative;width:14%;margin-bottom:5.33333vw;text-align:center;}
+.nav_cont_2 .calendar .calender_wrap .numb span:nth-child(7n + 1) {color:#f33333;}
+.nav_cont_2 .calendar .calender_wrap .numb span.d_day {z-index:1;font-weight:bold;}
+.nav_cont_2 .calendar .calender_wrap .numb span.d_day::before {position:absolute;top:50%;left:50%;content:'';width:6.66667vw;height:6.66667vw;background: rgba(247, 55, 55, 0.12);transform:translate(-49%,-56%);border-radius:13.33333vw;z-index:-1;}
+.nav_cont_2 .calendar .calender_wrap .numb span.d_day::after {position:absolute;top:50%;left:50%;content:'';width:6.66667vw;height:6.66667vw;background: url('./img/dday2.png') no-repeat center center / 100% 100%;transform:translate(-49%,-56%);z-index:-1;animation:pulse 1s ease-in Infinite ;}
+.nav_cont_2 .day_count {font-size:5.06667vw;text-align:center;}
+.nav_cont_2 .day_count .today {position:relative;top:0.66667vw;font-size:6.4vw;color:#f73737;font-weight:bold;}
+
+@keyframes pulse {
+    0% {
+        -webkit-transform:translate(-49%,-56%) scaleX(1);
+        transform:translate(-49%,-56%) scaleX(1)
+    }
+
+    50% {
+        -webkit-transform:translate(-49%,-56%) scale3d(1.05,1.05,1.05);
+        transform:translate(-49%,-56%) scale3d(1.05,1.05,1.05)
+    }
+
+    to {
+        -webkit-transform:translate(-49%,-56%) scaleX(1);
+        transform:translate(-49%,-56%) scaleX(1)
+    }
+}
+
+.nav_cont_3 .gallery {position:relative;width:80vw;height:auto;margin:0 auto;padding-bottom:6.66667vw;overflow: hidden;box-sizing:border-box;transition:1s all;}
+.nav_cont_3 .gallery.hide {height:80vw !important;}
+.nav_cont_3 .gallery.hide::after {position:absolute;left:0;bottom:0;display:block;content:'';width:100%;height:16vw;background:linear-gradient(0deg, rgba(251,250,240,1) 0%, rgba(255,255,255,0) 100%);}
+.nav_cont_3 .gallery .grid { width:100% }
+.nav_cont_3 .gallery .grid-sizer, .nav_cont_3 .gallery .grid-item { width: 31.6666667%;/* padding:0 1vw; */}
+.nav_cont_3 .gallery .gutter-sizer {width: 2vw;}
+.nav_cont_3 .gallery .grid-item {margin-bottom:2vw; border-radius: 1.33333vw; overflow:hidden;}
+.nav_cont_3 .gallery .grid-item img {display: block; min-width:100%; max-width: 100%; }
+.nav_cont_3 .gallery .gallery_box img {width:100%;}
+
+.nav_cont_3 .btn_box {margin-top:5.33333vw;}
+
+.nav_cont_4 .cont_map {width:100%;margin:0 auto 5.33333vw;}
+.nav_cont_4 .cont_map .map_box {position:relative;width:100%;height:53.33333vw;background:#fff;}
+.nav_cont_4 .cont_map .map_box.hold #map::after {position:absolute;top:0;left:0;content:'';display:block;width:100%;height:100%;z-index:1;}
+.nav_cont_4 .cont_map .map_box #map {width:100%;height:53.33333vw;}
+.nav_cont_4 .cont_map .map_search {display:flex;justify-content:space-between;align-items:center;padding:2.66667vw 4vw;background:#fff;}
+.nav_cont_4 .cont_map .map_search .search_tit {position:relative;margin-right:2.66667vw;font-size:2.66667vw;font-weight:500;}
+.nav_cont_4 .cont_map .map_search .search_tit::after {position:absolute;left:0;bottom:0;width:100%;height:1.33333vw;content:'';z-index:-1}
+.nav_cont_4 .cont_map .map_search .search_list {display:flex;justify-content:space-between;width:100%;}
+.nav_cont_4 .cont_map .map_search .search_list a {display:flex;align-items:center;font-family:'GangwonEdu_OTFBoldA';font-size:3.73333vw;color:#333;}
+.nav_cont_4 .cont_map .map_search .search_list a .ico {display:block;width:5.33333vw;height:5.33333vw;margin-right:1.33333vw;border-radius:1.33333vw;overflow: hidden;}
+.nav_cont_4 .cont_map .map_search .search_list a .txt {position:relative;top:0.66667vw;}
+.nav_cont_4 .cont_map .map_search .search_list a.map_kakao {margin-right:2.66667vw;}
+.nav_cont_4 .cont_map .map_search .search_list a.map_kakao .ico {background:url('./img/map_02.jpg') no-repeat center center / 100% 100%;}
+.nav_cont_4 .cont_map .map_search .search_list a.map_naver {margin-right:2.66667vw;}
+.nav_cont_4 .cont_map .map_search .search_list a.map_naver .ico {background:url('./img/map_01.jpg') no-repeat center center / 100% 100%;}
+.nav_cont_4 .cont_map .map_search .search_list a.map_hold {}
+.nav_cont_4 .cont_map .map_search .search_list a.map_hold.on .ico {background:url('./img/ico_lock_on.png') no-repeat center center / 100% 100%;}
+.nav_cont_4 .cont_map .map_search .search_list a.map_hold.off .ico {background:url('./img/ico_lock_off.png') no-repeat center center / 100% 100%;}
+.nav_cont_4 .cont_route {width:89.33333vw;margin:0 auto;text-align:left;}
+.nav_cont_4 .cont_route .route_box {display:flex;width:100%;margin-bottom:3.73333vw;}
+.nav_cont_4 .cont_route .route_box:last-child {margin-bottom:0;}
+.nav_cont_4 .cont_route .route_box .route_tit {flex:0 0 16vw;font-family:'GangwonEdu_OTFBoldA';font-size:5.06667vw;}
+.nav_cont_4 .cont_route .route_box .route_txt {flex:1 0 auto; width:calc(100% - 16vw);font-size:3.73333vw;line-height:5.06667vw;}
+.nav_cont_4 .cont_route .route_box .route_txt a {position:relative;top:0.66667vw;display:inline-block;width:4vw;}
+.nav_cont_4 .cont_route .route_box .route_txt span {font-family:'GangwonEdu_OTFBoldA';}
+
+.nav_cont_5 .info_tit {font-family:'GangwonEdu_OTFBoldA';font-size:5.06667vw;text-align:center;line-height:5.06667vw;letter-spacing:-0.16vw;color:#333;}
+.nav_cont_5 .account_cont {display:flex;flex-direction:column;justify-content:space-between;width:100%;padding:8vw 4vw 0;box-sizing:border-box;text-align:center;}
+.nav_cont_5 .account_cont .account_top {text-align:center;}
+.nav_cont_5 .account_cont .account_top span {position:relative;display:inline-block;width:45vw;height:10vw;font-size:3.8vw;line-height:11vw;z-index:1;cursor: pointer;border:0.26667vw solid rgba(0,0,0,0.5);border-radius:100vw;}
+.nav_cont_5 .account_cont .account_top span i {position:relative;top:0.66667vw;display:inline-block;width:1.46667vw;margin-left:0.66667vw;transform:rotate(180deg);}
+.nav_cont_5 .account_cont .account_top span i img {display:inline-block;width:100%;}
+.nav_cont_5 .account_cont .account_top.on span {background:#e3e3d5;}
+.nav_cont_5 .account_cont .account_top.on span i {position:relative;top:-0.66667vw;display:inline-block;width:1.46667vw;transform:rotate(0deg);}
+.nav_cont_5 .account_cont .account_slide:last-child {margin-top:2.66667vw;}
+
+.nav_cont_5 .account_cont .acc_group {display:none;width:80vw;margin:4vw auto 0;padding:4vw 2.26667vw;border:0.26667vw solid rgba(0,0,0,0.5);border-radius:2.66667vw;box-sizing:border-box;}
+.nav_cont_5 .account_cont .ac_tit {margin-bottom:2.66667vw;font-size:3.73333vw;}
+.nav_cont_5 .account_cont .account_box {margin-bottom:2.66667vw;}
+.nav_cont_5 .account_cont .account_box:last-child {margin-bottom:0;}
+.nav_cont_5 .account_cont .account_box .ac_term {display:block;margin-bottom:1.33333vw;font-size:3.46667vw;}
+.nav_cont_5 .account_cont .account_box .ac_text {position:relative;display:flex;flex-wrap:nowrap;justify-content:space-around;align-items:center;font-size:3.73333vw;z-index:1;font-weight:500;}
+.nav_cont_5 .account_cont .account_box .ac_text span.bank_name {width:6.4vw;}
+.nav_cont_5 .account_cont .account_box .ac_text span.bank_bar {width:0.8vw;}
+.nav_cont_5 .account_cont .account_box .ac_text span.acc_num {width:30vw;text-align:left;}
+.nav_cont_5 .account_cont .account_box .ac_text span.family_name {width:10vw;font-family:'GangwonEdu_OTFBoldA';}
+.nav_cont_5 .account_cont .account_box .ac_text span.nick {width:10vw;font-family:'GangwonEdu_OTFBoldA';}
+.nav_cont_5 .account_cont .account_box .ac_text span.hanmun {width:6.8vw;margin-top:-0.8vw;font-family:"Apple SD Gothic Neo";}
+.nav_cont_5 .account_cont .account_box .ac_text span.ico {width:4vw;height:4vw;background:url('./img/ico_copy.png') no-repeat center center / 100% 100%;}
+
+.nav_cont_5 .account_bg {width:100%;height:66.66667vw;margin-top:13.33333vw;background:url('./img/fin_bg.png') no-repeat center center / 100% 100%;}
+.nav_cont_5 .account_bg .bg_box {position:relative;width:100%;height:100%;}
+.nav_cont_5 .account_bg .bg_box .fin_msg {position:absolute;top:46vw;left:50%;transform:translateX(-50%);width:100%;text-align:center;font-family:'GangwonEdu_OTFBoldA';font-size:3.73333vw;line-height:5.33333vw;color:#fff;}
+
+.share_box {display:flex;justify-content:center;align-items:center;margin:5.33333vw 0;}
+.share_box #btnKakao {display:flex;align-items: flex-end;font-family:'GangwonEdu_OTFBoldA';font-size:3.73333vw;}
+.share_box #btnKakao img {width:4.66667vw;margin-right:1.33333vw;}
+
+.pop_box {position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;background-position:center center;transition:0.3s all;background-size:100% 100%;}
+.pop_box .layer_pop {position:relative;display:flex;justify-content:center;align-items:center;width:100%;height:100%;}
+.pop_box .layer_pop .closed {position:absolute;top:2.66667vw;right:2.66667vw;width:5.33333vw;height:5.33333vw;margin-left:42.66667vw;font-size:0;background-image: url("data:image/svg+xml,%3Csvg fill='%23ffffff' height='40px' width='40px' version='1.1' id='Capa_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 460.775 460.775' xml:space='preserve'%3E%3Cpath d='M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55 c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55 c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505 c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55 l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719 c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z'/%3E%3C/svg%3E");background-size:100% 100%;z-index:101;opacity:0.7;}
+
+.pop_box .layer_pop .tel_cont {width:80vw;height:auto;margin:0 auto;padding:5.33333vw 4vw 6.66667vw;overflow:hidden;background:url('./img/bg.jpg') repeat  #fbfaf0;border-radius:2vw;box-sizing:border-box;z-index:1;}
+.pop_box .layer_pop .tel_cont div {position:relative;display:flex;flex-wrap:nowrap;justify-content:space-around;align-items:center;margin-bottom:2vw;font-size:3.73333vw;z-index:1;font-weight:500;}
+
+.pop_box .layer_pop .tel_cont .bride {margin-top:5.33333vw;}
+.pop_box .layer_pop .tel_cont .sd_ico {margin:0 auto 4vw;}
+.pop_box .layer_pop .tel_cont .info_tit {margin-bottom:4vw;font-size:5.06667vw;}
+.pop_box .layer_pop .tel_cont div:last-child {margin-bottom:0;}
+.pop_box .layer_pop .tel_cont div span.name {width:9.5vw;font-family:'GangwonEdu_OTFBoldA';}
+.pop_box .layer_pop .tel_cont div span.nick {width:8vw;font-family:'GangwonEdu_OTFBoldA';}
+.pop_box .layer_pop .tel_cont div span.hanmun {width:4vw;margin-top:-0.8vw;font-family:"Apple SD Gothic Neo";}
+.pop_box .layer_pop .tel_cont div span.hanmun.emoji {position:relative;left:-0.8vw;}
+.pop_box .layer_pop .tel_cont div span.tel_num {width:26.66667vw;}
+.pop_box .layer_pop .tel_cont div span.ico_tel {width:4vw;height:4vw;background:url('./img/ico_tel.png') no-repeat center center / 100% 100%;}
+.pop_box .layer_pop .tel_cont div span.ico_sms {width:4vw;height:4vw;background:url('./img/ico_sms.png') no-repeat center center / 100% 100%;}
+.pop_box .layer_pop .tel_cont div span a {display:block;width:100%;height:100%;}
+
+.pop_box .layer_pop .sl_cont {max-width:100%;width:100%;height:100%;margin:0 auto;overflow:hidden;}
+.pop_box .layer_pop .sl_cont .pop_wrap {position:relative;width:100%;max-width:100%;}
+.pop_box .layer_pop .sl_cont .pop_wrap .gallery_list {display:flex;justify-content:center;align-items:center;width:100%;margin:0 auto;}
+.pop_box .layer_pop .sl_cont .pop_wrap .gallery_list img {width:100%;}
+.pop_box .swiper-button-next:after, .pop_box .swiper-button-prev:after {color:#333;}
+.pop_box .swiper-pagination-fraction {bottom:0;color:#fff;}
+.pop_box .dimmed {position:absolute;left:0;top:0;display:flex;justify-content:center;align-items:center;width:100%;height:100%;background:rgba(0,0,0,0.65);backdrop-filter:blur(1.33333vw);-webkit-backdrop-filter: blur(1.33333vw);}
+
+} 
+</style>
+<body>
+    <div id="loading"></div>
+    <div id="wrapper" class="evWrap">
+        <!-- kv -->
+        <audio id="bgm-player" loop="loop" autoplay="autoplay"><source src="https://mcard.fromtoday.co.kr/mcard/assets/bgm/piano_03.mp3"></audio>
+        <div class="nav_cont nav_cont_kv">
+            <div class="nav_wrap">
+                <div class="kv_tit ksd">
+                    <span>행복의 시작</span>
+                </div>
+                <div class="kv_ico box">
+                    <img src="./img/kv_ico.png" alt="">
+                </div>
+                <div class="kv_box box">
+                    <div class="kv_wrap">
+                        <div class="kv_img">
+                            <img src="./img/kv.png" alt="">
+                        </div>
+                        <div class="kv_txt box">
+                            <div class="tit">
+                                주용 <span>그리고</span> 소은
+                            </div>
+                            <div class="txt">
+                                두 사람, 결혼합니다.
+                            </div>
+                            <div class="sd_ico"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kv_loca">
+                    <div class="kv_date box">2024년 6월 15일 토요일 오후 1시 30분</div>
+                    <div class="kv_hall box">JK아트컨벤션 4층 그랜드홀</div>
+                </div>
+            </div>
+        </div>
+        <!-- // kv -->
+    
+        <!-- 초대문구 -->
+        <div class="nav_cont nav_cont_1">
+            <div class="nav_wrap">
+                <div class="sd_tit box">INVITATION</div>
+                <div class="sd_ico box"></div>
+                <div class="cont_info">
+                    <div class="info_txt">
+                        <p class="box">하나가 둘이 되어 아홉 번의 사계절을 보내고</p>
+                        <p class="box">또 부부가 되어 열 번째 봄을 맞이하려 합니다.</p>
+                        <p class="box">평생 좋은 친구로, 사랑하는 연인으로</p>
+                        <p class="box">서로 아껴주고 사랑하며 살겠습니다.</p>
+                        <p class="box">&nbsp;</p>
+                        <p class="box">앞으로 함께 나아갈 수많은 계절,</p>
+                        <p class="box">새로운 시작을 축복해 주시면 감사하겠습니다.</p>
+                    </div>
+                </div>
+                <div class="cont_img box">
+                    <div class="img_box">
+                        <img src="./img/img1.jpg" alt="">
+                    </div>
+                </div>
+                <div class="info_box">
+                    <div class="info_txt groom box">
+                        박계순 · 장석순<span>의 장남</span> 박주용
+                    </div>
+                    <div class="info_txt bride box">
+                        이명수 · 정선영<span>의 장녀</span> 이소은
+                    </div>
+                </div>
+                <div class="btn_box box">
+                    <a href="#" class="tel_view"><span>연락 하기</span></a>
+                </div>
+            </div>
+        </div>
+        <!-- // 초대문구 -->
+    
+        <!-- 전화하기 -->
+        <div class="nav_cont nav_cont_2">
+            <div class="nav_wrap">
+                <div class="cont_info">
+                    <div class="sd_tit box">CALENDAR</div>
+                    <div class="sd_ico box"></div>
+                    <div class="cal_box box">
+                        <div class="month">
+                            06
+                        </div>
+                        <div class="calendar">
+                            <div class="calender_wrap">
+                                <div class="days">
+                                    <span>일</span>
+                                    <span>월</span>
+                                    <span>화</span>
+                                    <span>수</span>
+                                    <span>목</span>
+                                    <span>금</span>
+                                    <span>토</span>
+                                </div>
+                                <div class="numb">
+                                    <span>&nbsp;</span>
+                                    <span>&nbsp;</span>
+                                    <span>&nbsp;</span>
+                                    <span>&nbsp;</span>
+                                    <span>&nbsp;</span>
+                                    <span>&nbsp;</span>
+                                    <span>1</span>
+        
+                                    <span>2</span>
+                                    <span>3</span>
+                                    <span>4</span>
+                                    <span>5</span>
+                                    <span>6</span>
+                                    <span>7</span>
+                                    <span>8</span>
+        
+                                    <span>9</span>
+                                    <span>10</span>
+                                    <span>11</span>
+                                    <span>12</span>
+                                    <span>13</span>
+                                    <span>14</span>
+                                    <span class="d_day">15</span>
+        
+                                    <span>16</span>
+                                    <span>17</span>
+                                    <span>18</span>
+                                    <span>19</span>
+                                    <span>20</span>
+                                    <span>21</span>
+                                    <span>22</span>
+        
+                                    <span>23</span>
+                                    <span>24</span>
+                                    <span>25</span>
+                                    <span>26</span>
+                                    <span>27</span>
+                                    <span>28</span>
+                                    <span>29</span>
+        
+                                    <span>30</span>
+                                    <span>&nbsp;</span>
+                                    <span>&nbsp;</span>
+                                    <span>&nbsp;</span>
+                                    <span>&nbsp;</span>
+                                    <span>&nbsp;</span>
+                                    <span>&nbsp;</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="day_count">
+                            주용🧡소은의 결혼식<span id="dayNum"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- // 전화하기 -->
+    
+        <!-- 웨딩앨범보기 -->
+        <div class="nav_cont nav_cont_3">
+            <div class="nav_wrap">
+                <div class="cont_info">
+                    <div class="sd_tit box">GALLERY</div>
+                    <div class="sd_ico box"></div>
+                    <div class="gallery grid hide">
+                        <div class="grid-sizer"></div>
+                        <div class="gutter-sizer"></div>
+
+                        <div class="thumb gallery_box grid-item type1" data-idx="1">
+                            <img src="./gallery/01-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="2">
+                            <img src="./gallery/02-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="3">
+                            <img src="./gallery/03-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="4">
+                            <img src="./gallery/04-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="5">
+                            <img src="./gallery/05-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item type1" data-idx="6">
+                            <img src="./gallery/06-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="7">
+                            <img src="./gallery/07-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="8">
+                            <img src="./gallery/08-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="9">
+                            <img src="./gallery/09-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="10">
+                            <img src="./gallery/10-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item type1" data-idx="11">
+                            <img src="./gallery/11-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item type1" data-idx="12">
+                            <img src="./gallery/12-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="13">
+                            <img src="./gallery/13-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item type1" data-idx="14">
+                            <img src="./gallery/14-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="15">
+                            <img src="./gallery/15-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="16">
+                            <img src="./gallery/16-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="17">
+                            <img src="./gallery/17-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="18">
+                            <img src="./gallery/18-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="19">
+                            <img src="./gallery/19-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="20">
+                            <img src="./gallery/20-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item type1" data-idx="21">
+                            <img src="./gallery/21-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="22">
+                            <img src="./gallery/22-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="24">
+                            <img src="./gallery/24-min.jpg" alt="">
+                        </div>
+                        <div class="thumb gallery_box grid-item" data-idx="23">
+                            <img src="./gallery/23-min.jpg" alt="">
+                        </div>
+                    </div>
+                        <!-- <div class="swiper-pagination"></div> -->
+                    <div class="btn_box box">
+                        <a href="#" class="more_view"><span>더 보기</span></a>
+                    </div>
+                    <div class="btn_box box">
+                        <a href="#" class="gallery_view"><span>크게 보기</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- // 웨딩앨범보기 -->
+    
+        <!-- 지도, 경로 -->
+        <div class="nav_cont nav_cont_4">
+            <div class="nav_wrap">
+                <div class="cont_info">
+                    <div class="sd_tit box">LOCATION</div>
+                    <div class="sd_ico box"></div>
+                    <div class="cont_map">
+                        <div class="map_box box hold">
+                            <div id="map"></div>
+                            <!-- https://apis.map.kakao.com/web/guide/ -->
+                        </div>
+                        <div class="map_search box">
+                            <!-- <div class="search_tit">길찾기</div> -->
+                            <div class="search_list">
+                                <a class="map_kakao" href="https://map.kakao.com/link/to/JK아트컨벤션,37.5177939016069,126.900076883603" target="_blank">
+                                    <span class="ico"></span>
+                                    <span class="txt">카카오맵</span>
+                                </a>
+                                <a class="map_naver" href="https://map.naver.com/?eText=JK%EC%95%84%ED%8A%B8%EC%BB%A8%EB%B2%A4%EC%85%98&amp;eType=SITE_1&amp;edid=1897374821&amp;elng=458ee3ef861e42d1ae701d9236477d25&amp;elat=0eeb685b94d83178fc91dfb607392f27" target="_blank">
+                                    <span class="ico"></span>
+                                    <span class="txt">네이버지도</span>
+                                </a>
+                                <a class="map_hold on" href="javascript:void(0);">
+                                    <span class="ico"></span>
+                                    <span class="txt">지도 고정</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cont_route box">
+                        <div class="route_box">
+                            <div class="route_tit">
+                                주소
+                            </div>
+                            <div class="route_txt">
+                                서울특별시 영등포구 문래로 164 SK리더스뷰 4층 <a href="javascript:void(0);" class="ac_text" data-clipboard-text="서울특별시 영등포구 문래로 164 SK리더스뷰 4층"><span><img src="./img/ico_copy.png" alt=""></span></a>
+                            </div>
+                        </div>
+                        <div class="route_box">
+                            <div class="route_tit">
+                                전화
+                            </div>
+                            <div class="route_txt">
+                                02-2628-9100 <a href="tel:0226289100"><span><img src="./img/ico_tel.png" alt=""></span></a>
+                            </div>
+                        </div>
+                        <div class="route_box">
+                            <div class="route_tit">
+                                지하철
+                            </div>
+                            <div class="route_txt">
+                                문래역 하차 후 <span>5번출구</span>에서 전방으로 <br />
+                                <span>300m 직진</span> 해주시면 됩니다.<br />
+                                <span>셔틀버스는 4번출구(뒷쪽)</span>에서 이용 가능합니다.
+                            </div>
+                        </div>
+                        <div class="route_box">
+                            <div class="route_tit">
+                                버스
+                            </div>
+                            <div class="route_txt">
+                                <span>문래역 정류장</span> : 6211, 6625, 641, 영등포12<br />
+                                <span>문래주민센터 / 영일시장 정류장</span> : 영등포05<br />
+                                <span>벽산메가트리움APT</span> : 6516
+                            </div>
+                        </div>
+                        <div class="route_box">
+                            <div class="route_tit">
+                                자가용
+                            </div>
+                            <div class="route_txt">
+                                주차장 동시 1,000여대 주차 가능<br />
+                                주차장 만차시 외부주차장 안내 예정(도보 5분)
+                            </div>
+                        </div>
+                        <div class="route_box">
+                            <div class="route_tit">
+                                셔틀버스
+                            </div>
+                            <div class="route_txt">
+                                <span>문래역 4번출구</span> 2대 운행<br />
+                                <span>에이스 하이테크 외부 주차장</span> 2대 운행<br />
+				<a href="./img/info.jpg" target="_blank" style="width:auto;text-decoration:underline;color:#af5555;font-weight:bold;">이미지로 보기</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- // 지도, 경로 -->
+
+        <!-- 계좌번호 -->
+        <div class="nav_cont nav_cont_5">
+            <div class="nav_wrap">
+                <div class="cont_info">
+                    <div class="sd_tit box">THANKS TO</div>
+                    <div class="sd_ico box"></div>
+                    <div class="info_tit box">
+                        <span class="tit1 box">마음 전하실 곳</span>
+                    </div>
+                    
+                    <div class="account_cont">
+                        <div class="account_slide box">
+                            <div class="account_top"><span>신랑측 계좌번호 <i><img src="./img/ac_arr.png" alt=""></i></span></div>
+                            <div class="acc_group">
+                                <!-- <div class="ac_tit"></div> -->
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="신한은행 110-452-483011"><span class="bank_name">신한</span> <span class="bank_bar">|</span> <span class="acc_num">110-452-483011</span> <span class="family_name">박주용</span> <span class="nick">신랑</span> <span class="hanmun">🤵🏻</span><span class="ico"></span></div>
+                                </div>
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="국민은행 20224-01-56410"><span class="bank_name">국민</span> <span class="bank_bar">|</span> <span class="acc_num">20224-01-56410</span> <span class="family_name">박계순</span> <span class="nick">신랑</span> <span class="hanmun">父</span><span class="ico"></span></div>
+                                </div>
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="국민은행 642625-01-013776"><span class="bank_name">국민</span> <span class="bank_bar">|</span> <span class="acc_num">642625-01-013776</span> <span class="family_name">장석순</span> <span class="nick">신랑</span> <span class="hanmun">母</span><span class="ico"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="account_slide box">
+                            <div class="account_top"><span>신부측 계좌번호 <i><img src="./img/ac_arr.png" alt=""></i></span></div>
+                            <div class="acc_group">
+                                <!-- <div class="ac_tit"></div> -->
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="신한은행 110-500-474429"><span class="bank_name">신한</span> <span class="bank_bar">|</span> <span class="acc_num">110-500-474429</span> <span class="family_name">이소은</span> <span class="nick">신부</span> <span class="hanmun">👰🏻</span><span class="ico"></span></div>
+                                </div>
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="국민은행 994401-01-131584"><span class="bank_name">국민</span> <span class="bank_bar">|</span> <span class="acc_num">994401-01-131584</span> <span class="family_name">이명수</span> <span class="nick">신부</span> <span class="hanmun">父</span><span class="ico"></span></div>
+                                </div>
+                                <div class="account_box">
+                                    <div class="ac_text" data-clipboard-text="국민은행 019602-04-128410"><span class="bank_name">국민</span> <span class="bank_bar">|</span> <span class="acc_num">019602-04-128410</span> <span class="family_name">정선영</span> <span class="nick">신부</span> <span class="hanmun">母</span><span class="ico"></span></div>
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                    <div class="account_bg">
+                        <div class="bg_box">
+                            <div class="fin_msg">
+                                응원하고 격려해 주신 모든 분들께 감사드리며<br>
+                                행복하게 잘 살겠습니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- // 계좌번호 -->        
+        <div class="share_box">
+            <div id="btnKakao">
+                <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" id="kakao-link-btn" alt="카카오톡 링크 공유하기">
+                카카오톡 공유하기
+            </div>
+            
+            
+            <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+            <script type='text/javascript'>
+                //<![CDATA[
+                // // 사용할 앱의 JavaScript 키를 설정해 주세요.
+                Kakao.init('466df5fc08a2ad909f9cc96b6403ebd2');
+                // // 카카오링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
+                Kakao.Link.createScrapButton({
+                    container: '#btnKakao',
+                    requestUrl: 'https://our-story.site/JYPSEL/',
+                    templateId : 107736
+                });
+                //]]>
+            </script>
+        </div>
+    </div>
+
+    <div class="pop_box tel_pop" style="display:none;">
+        <div class="layer_pop">
+            <a href="#" class="closed">x</a>
+            <div class="tel_cont">
+                <div class="sd_ico box"></div>
+                <div class="info_tit box">
+                    <span class="tit1 box">축하해주세요</span>
+                </div>
+                <div class="groom"><span class="name">박주용</span> <span class="nick">신랑</span> <span class="hanmun emoji">🤵🏻</span><span class="tel_num">010-4110-0568</span><span class="ico_tel"><a href="tel:01041100568"></a></span><span class="ico_sms"><a href="sms:01041100568"></a></span></div>
+                <div><span class="name">박계순</span> <span class="nick">신랑</span> <span class="hanmun">父</span><span class="tel_num">010-5915-0568</span><span class="ico_tel"><a href="tel:01059150568"></a></span><span class="ico_sms"><a href="sms:01059150568"></a></span></div>
+                <div><span class="name">장석순</span> <span class="nick">신랑</span> <span class="hanmun">母</span><span class="tel_num">010-8983-0568</span><span class="ico_tel"><a href="tel:01089830568"></a></span><span class="ico_sms"><a href="sms:01089830568"></a></span></div>
+                <div class="bride"><span class="name">이소은</span> <span class="nick">신부</span> <span class="hanmun emoji">👰🏻</span><span class="tel_num">010-6698-9756</span><span class="ico_tel"><a href="tel:01066989756"></a></span><span class="ico_sms"><a href="sms:01066989756"></a></span></div>
+                <div><span class="name">이명수</span> <span class="nick">신부</span> <span class="hanmun">父</span><span class="tel_num">010-2757-9756</span><span class="ico_tel"><a href="tel:01027579756"></a></span><span class="ico_sms"><a href="sms:01027579756"></a></span></div>
+                <div><span class="name">정선영</span> <span class="nick">신부</span> <span class="hanmun">母</span><span class="tel_num">010-6366-6688</span><span class="ico_tel"><a href="tel:01063666688"></a></span><span class="ico_sms"><a href="sms:01063666688"></a></span></div>
+            </div>
+        </div>
+        <div class="dimmed"></div>
+    </div>
+
+    <div class="pop_box gallery_pop" style="display:none;">
+        <div class="layer_pop">
+            <a href="#" class="closed">x</a>
+            <div class="sl_cont">
+                <div class="pop_wrap swiper-wrapper">
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/01-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/02-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/03-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/04-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/05-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/06-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/07-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/08-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/09-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/10-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/11-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/12-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/13-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/14-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/15-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/16-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/17-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/18-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/19-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/20-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/21-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/22-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/23-min.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="gallery_list swiper-slide">
+                        <div class="swiper-zoom-container">
+                            <img src="./gallery/24-min.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+        <div class="dimmed"></div>
+    </div>
+    <div class="leaf_box"></div>
+</body>
+<script type="text/javascript">/*<![CDATA[*/
+document.addEventListener("contextmenu",function(e){"IMG"===e.target.nodeName&&e.preventDefault()},!1);/*]]>*/</script>
