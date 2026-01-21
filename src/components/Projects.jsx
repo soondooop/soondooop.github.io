@@ -23,7 +23,7 @@ const Projects = () => {
       id: 3,
       title: '콜레오 마케팅 그룹',
       description: '콜레오 마케팅 그룹 홈페이지 구축 및 운영',
-      image: 'https://www.pitap.at/assets/images/kv/ImageAssets_coleo.jpg',
+      image: 'http://www.coleomarketing.com/assets/images/open_graph_logo.png',
       tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery', 'GSAP', 'Ajax'],
       link: 'http://www.coleomarketing.com/'
     },
