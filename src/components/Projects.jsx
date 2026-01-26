@@ -6,7 +6,7 @@ const Projects = () => {
     {
       id: 1,
       title: 'BYRYZN',
-      description: '휴젤(주)의 바이리즌 제품 페이지 제작. GASP를 이용하여 스크롤 애니메이션을 구현하였습니다.',
+      description: '휴젤(주)의 바이리즌 제품 페이지 제작. GSAP를 이용하여 스크롤 애니메이션을 구현하였습니다.',
       image: 'https://byryzn.co.kr/assets/common/images/thumbnail.png',
       tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery', 'GSAP'],
       link: 'https://byryzn.co.kr/'
@@ -14,7 +14,7 @@ const Projects = () => {
     {
       id: 2,
       title: '굿앤굿 어린이케어 APP',
-      description: '휴젤(주)의 바이리즌 제품 페이지 제작. GASP를 이용하여 스크롤 애니메이션을 구현하였습니다.',
+      description: '현대해상 굿앤굿 어린이케어 APP 페이지 제작 및 운영. 하이브리드 웹앱으로 제작하였습니다.',
       image: 'https://www.pitap.at/assets/images/project/projectView8_1.png',
       tags: ['HTML5', 'CSS3', 'JavaScript', 'jQuery', 'GSAP', 'Ajax'],
       link: 'https://apps.apple.com/kr/app/%EA%B5%BF%EC%95%A4%EA%B5%BF-%EC%96%B4%EB%A6%B0%EC%9D%B4%EC%BC%80%EC%96%B4/id1229766852'
