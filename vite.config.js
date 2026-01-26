@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
+  root: 'src',
   plugins: [react()],
   base: '/', // GitHub Pages는 루트 도메인을 사용하므로 '/'로 설정
   server: {
@@ -10,7 +11,8 @@ export default defineConfig({
     open: true
   },
   build: {
-    outDir: 'dist',
-    assetsDir: 'assets'
+    outDir: '../dist',
+    assetsDir: 'assets',
+    emptyOutDir: true
   }
 })
