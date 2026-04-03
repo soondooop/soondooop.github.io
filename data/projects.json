@@ -2,7 +2,7 @@
     {
       "id": 1,
       "title": "BYRYZN",
-      "description": "1휴젤(주)의 바이리즌 제품 페이지 제작. GSAP를 이용하여 스크롤 애니메이션을 구현하였습니다.",
+      "description": "휴젤(주)의 바이리즌 제품 페이지 제작. GSAP를 이용하여 스크롤 애니메이션을 구현하였습니다.",
       "image": "https://byryzn.co.kr/assets/common/images/thumbnail.png",
       "tags": ["HTML5", "CSS3", "JavaScript", "jQuery", "GSAP"],
       "link": "https://byryzn.co.kr"
