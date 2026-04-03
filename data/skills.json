@@ -2,34 +2,34 @@
   {
     "title": "Frontend",
     "skills": [
-      { "name": "HTML5", "icon": "FaHtml5", "level": 99 },
-      { "name": "JavaScript", "icon": "FaJs", "level": 99 },
-      { "name": "jQuery", "icon": "SiJquery", "level": 99 },
-      { "name": "React", "icon": "FaReact", "level": 70 },
-      { "name": "Vue.js", "icon": "SiVuedotjs", "level": 30 },
-      { "name": "Node.js", "icon": "TbBrandNodejs", "level": 40 },
-      { "name": "TypeScript", "icon": "SiTypescript", "level": 70 }
+      { "name": "HTML5", "iconKey": "html5", "level": 99 },
+      { "name": "JavaScript", "iconKey": "js", "level": 99 },
+      { "name": "jQuery", "iconKey": "jquery", "level": 99 },
+      { "name": "React", "iconKey": "react", "level": 70 },
+      { "name": "Vue.js", "iconKey": "vue", "level": 30 },
+      { "name": "Node.js", "iconKey": "nodejs", "level": 40 },
+      { "name": "TypeScript", "iconKey": "typescript", "level": 70 }
     ]
   },
   {
     "title": "Styling",
-    "skills": [ 
-      { "name": "CSS3", "icon": "FaCss3Alt", "level": 99 },
-      { "name": "SASS/SCSS", "icon": "FaSass", "level": 50 },
-      { "name": "Tailwind CSS", "icon": "SiTailwindcss", "level": 30 },
-      { "name": "CSS Modules", "icon": "FaCss3Alt", "level": 30 },
-      { "name": "Styled Components", "icon": "FaCss3Alt", "level": 30 }
+    "skills": [
+      { "name": "CSS3", "iconKey": "css3", "level": 99 },
+      { "name": "SASS/SCSS", "iconKey": "sass", "level": 50 },
+      { "name": "Tailwind CSS", "iconKey": "tailwind", "level": 30 },
+      { "name": "CSS Modules", "iconKey": "css3", "level": 30 },
+      { "name": "Styled Components", "iconKey": "css3", "level": 30 }
     ]
   },
   {
     "title": "Design & Tools",
-    "skills": [ 
-      { "name": "Figma", "icon": "SiFigma", "level": 90 },
-      { "name": "Adobe XD", "icon": "TbBrandAdobeXd", "level": 90 },
-      { "name": "Photoshop", "icon": "TbBrandAdobePhotoshop", "level": 90 },
-      { "name": "Illustrator", "icon": "TbBrandAdobeIllustrator", "level": 80 },
-      { "name": "Github", "icon": "SiGithub", "level": 85 },
-      { "name": "Git", "icon": "SiGit", "level": 85 }
+    "skills": [
+      { "name": "Figma", "iconKey": "figma", "level": 90 },
+      { "name": "Adobe XD", "iconKey": "xd", "level": 90 },
+      { "name": "Photoshop", "iconKey": "photoshop", "level": 90 },
+      { "name": "Illustrator", "iconKey": "illustrator", "level": 80 },
+      { "name": "Github", "iconKey": "github", "level": 85 },
+      { "name": "Git", "iconKey": "git", "level": 85 }
     ]
   }
 ]
