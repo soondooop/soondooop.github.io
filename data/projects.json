@@ -32,6 +32,14 @@
       "link": "https://www.mayfield.co.kr/main"
     },
     {
+      "id": 0,
+      "title": "배터리퀴즈 - 배터리인사이드",
+      "description": "LG에너지 솔루션 배터리 인사이드 페이지 내 배터리 퀴즈 제작.",
+      "image": "https://inside.lgensol.com/batteryquiz/assets/images/batteryquiz_og_image.jpg",
+      "tags": ["HTML5", "CSS3", "JavaScript", "jQuery", "Ajax", "GSAP", "wordpress"],
+      "link": "https://inside.lgensol.com/batteryquiz/"
+    },
+    {
       "id": 5,
       "title": "LG에너지솔루션",
       "description": "LG에너지 솔루션 배터리 인사이드 페이지 제작 및 배터리 퀴즈 이벤트 제작.",
