@@ -8,6 +8,14 @@
       "link": "https://byryzn.co.kr"
     },
     {
+      "id": 7, 
+      "title": "iLab Original",
+      "description": "iLab Original - 푸바오와 무뎅이가 전하는 편지 페이지 제작",
+      "image": "https://innovationlab.co.kr/project/zootopia/og.jpg",
+      "tags": ["HTML5", "CSS3", "JavaScript", "jQuery", "GSAP"],
+      "link": "https://innovationlab.co.kr/project/zootopia"
+    },
+    {
       "id": 2,
       "title": "굿앤굿 어린이케어 APP",
       "description": "현대해상 굿앤굿 어린이케어 APP 페이지 제작 및 운영. 하이브리드 웹앱으로 제작하였습니다.",
@@ -56,12 +64,20 @@
       "link": "https://blog.lgchem.com"
     },
     {
-      "id": 7, 
-      "title": "iLab Original",
-      "description": "iLab Original - 푸바오와 무뎅이가 전하는 편지 페이지 제작",
-      "image": "https://innovationlab.co.kr/project/zootopia/og.jpg",
-      "tags": ["HTML5", "CSS3", "JavaScript", "jQuery", "GSAP"],
-      "link": "https://innovationlab.co.kr/project/zootopia"
+      "id": 10,
+      "title": "신세계그룹뉴스룸",
+      "description": "신세계 그룹 뉴스룸 홈페이지 제작",
+      "image": "https://www.shinsegaegroupnewsroom.com/wp-content/themes/shinsegae/assets/images/ogimage.png",
+      "tags": ["HTML5", "CSS3", "JavaScript", "jQuery", "GSAP", "wordpress"],
+      "link": "https://www.shinsegaegroupnewsroom.com/"
+    },
+    {
+      "id": 9,
+      "title": "경찰박물관",
+      "description": "경찰박물관 홈페이지 리뉴얼 및 유지보수",
+      "image": "https://www.policemuseum.go.kr/images_new/pm_og_image.jpg",
+      "tags": ["HTML5", "CSS3", "JavaScript", "jQuery", "asp"],
+      "link": "https://kor.lottedfs.com/kr/ebtqmain/intro"
     },
     {
       "id": 8,
@@ -73,50 +89,42 @@
     },
     {
       "id": 9,
+      "title": "롯데면세점 명품관",
+      "description": "롯데면세점 명품 페이지 제작 및 운영",
+      "image": "https://soondooop.github.io/ogimage/lux.png",
+      "tags": ["HTML5", "CSS3", "JavaScript", "jQuery"],
+      "link": "https://kor.lottedfs.com/kr/ebtqmain/intro"
+    },
+    {
+      "id": 9,
+      "title": "롯데면세점 건강식품관",
+      "description": "롯데면세점 건강식품 페이지 제작 및 운영",
+      "image": "https://static.lottedfs.com/contents/images/store-img/store-content-img/10067953/02/23277711/20240909091219010b9ae45acf5904c3db954659407474067.jpg",
+      "tags": ["HTML5", "CSS3", "JavaScript", "jQuery"],
+      "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1042647"
+    },
+    {
+      "id": 9,
       "title": "롯데면세점 더모코스메틱",
       "description": "롯데면세점 더모코스메틱 페이지 제작 및 운영",
-      "image": "https://static.lottedfs.com/contents/images/event-img/20240906161815988159fce0010524ffda929b656c113fbb3.png",
+      "image": "https://static.lottedfs.com/contents/images/store-img/store-content-img/10067953/02/23277713/202409121003285829af15ef01b1a408488731ff4fb6cbb16.jpg",
       "tags": ["HTML5", "CSS3", "JavaScript", "jQuery"],
-      "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=104743"
+      "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1047430"
     },
     {
-      "id": 10,
-      "title": "롯데면세점 먼슬리 뷰티",
-      "description": "롯데면세점 먼슬리 뷰티 페이지 제작 및 운영",
-      "image": "https://static.lottedfs.com/contents/images/event-img/2025123110232550782c5508f91864cbfb7c3a00f13eb9b24.webp",
+      "id": 9,
+      "title": "롯데면세점 나와 지구 모두를 위한 제품 모음",
+      "description": "롯데면세점 Save the earth 페이지 제작 및 운영",
+      "image": "https://static.lottedfs.com/contents/images/store-img/store-content-img/10067953/02/23277715/202512301347110580c6e0fc2063641f9ba17a9fa5416e7de.webp",
       "tags": ["HTML5", "CSS3", "JavaScript", "jQuery"],
-      "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=105298"
+      "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1040466"
     },
     {
-      "id": 11,
-      "title": "롯데면세점 Shine in winter",
-      "description": "롯데면세점 Shine in winter 페이지 제작 및 운영",
-      "image": "https://static.lottedfs.com/contents/images/event-img/2025111814345124087a9b09e4b7344fab6bd1e6ddb42e8cd.jpg",
+      "id": 9,
+      "title": "롯데면세점 K-FASHION",
+      "description": "롯데면세점 K-FASHION 페이지 제작 및 운영",
+      "image": "https://static.lottedfs.com/contents/images/store-img/store-content-img/10067953/02/23277714/202512301338005807702774ede4a48c789c6986258c72715.webp",
       "tags": ["HTML5", "CSS3", "JavaScript", "jQuery"],
-      "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=105251"
-    },
-    {
-      "id": 12,
-      "title": "롯데면세점 숨은 면세 찾기",
-      "description": "롯데면세점 숨은 면세 찾기 시리즈 페이지 제작 및 운영",
-      "image": "https://static.lottedfs.com/contents/images/event-img/2025020508403084709b9a911d2024e0ba9dae739206fe881.jpg",
-      "tags": ["HTML5", "CSS3", "JavaScript", "jQuery", "GSAP"],
-      "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=104908"
-    },
-    {
-      "id": 13,
-      "title": "롯데면세점 주류 큐레이션",
-      "description": "롯데면세점 주류 큐레이션 페이지 제작 및 운영",
-      "image": "https://static.lottedfs.com/contents/images/event-img/20250205092750994ab0bffda2e454894a27f4258a3362bd9.jpg",
-      "tags": ["HTML5", "CSS3", "JavaScript", "jQuery", "GSAP"],
-      "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=104900"
-    },
-    {
-      "id": 14, 
-      "title": "롯데면세점 뷰티 큐레이션",
-      "description": "롯데면세점 주류 큐레이션 페이지 제작 및 운영",
-      "image": "https://static.lottedfs.com/contents/images/event-img/2025020509530994236e24c1fc81e436d8317b1437f891b91.jpg",
-      "tags": ["HTML5", "CSS3", "JavaScript", "jQuery", "GSAP"],
-      "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=104900"
+      "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1047861"
     }
   ]
