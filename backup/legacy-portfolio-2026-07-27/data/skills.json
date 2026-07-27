@@ -1,0 +1,35 @@
+[
+  {
+    "title": "Frontend",
+    "skills": [
+      { "name": "HTML5", "iconKey": "html5", "level": 99 },
+      { "name": "JavaScript", "iconKey": "js", "level": 99 },
+      { "name": "jQuery", "iconKey": "jquery", "level": 99 },
+      { "name": "React", "iconKey": "react", "level": 70 },
+      { "name": "Vue.js", "iconKey": "vue", "level": 30 },
+      { "name": "Node.js", "iconKey": "nodejs", "level": 40 },
+      { "name": "TypeScript", "iconKey": "typescript", "level": 70 }
+    ]
+  },
+  {
+    "title": "Styling",
+    "skills": [
+      { "name": "CSS3", "iconKey": "css3", "level": 99 },
+      { "name": "SASS/SCSS", "iconKey": "sass", "level": 50 },
+      { "name": "Tailwind CSS", "iconKey": "tailwind", "level": 30 },
+      { "name": "CSS Modules", "iconKey": "css3", "level": 30 },
+      { "name": "Styled Components", "iconKey": "css3", "level": 30 }
+    ]
+  },
+  {
+    "title": "Design & Tools",
+    "skills": [
+      { "name": "Figma", "iconKey": "figma", "level": 90 },
+      { "name": "Adobe XD", "iconKey": "xd", "level": 90 },
+      { "name": "Photoshop", "iconKey": "photoshop", "level": 90 },
+      { "name": "Illustrator", "iconKey": "illustrator", "level": 80 },
+      { "name": "Github", "iconKey": "github", "level": 85 },
+      { "name": "Git", "iconKey": "git", "level": 85 }
+    ]
+  }
+]

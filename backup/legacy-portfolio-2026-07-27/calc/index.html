@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>국제배송 부피무게 계산기</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="calculator-card">
+            <h1>📦 국제배송 부피무게 계산기</h1>
+            <p class="subtitle">실제 무게와 부피무게를 비교하여 운임 기준 무게를 계산합니다</p>
+            
+            <div class="form-group collapsible">
+                <div class="form-group-header">
+                    <label for="length">가로 (cm)</label>
+                    <button type="button" class="toggle-btn" data-target="length-group" aria-label="가로 영역 접기/펼치기">
+                        <span class="toggle-icon">▼</span>
+                    </button>
+                </div>
+                <div class="form-group-content" id="length-group">
+                    <input type="number" id="length" placeholder="예: 50" min="0" step="0.1">
+                </div>
+            </div>
+            
+            <div class="form-group collapsible">
+                <div class="form-group-header">
+                    <label for="width">세로 (cm)</label>
+                    <button type="button" class="toggle-btn" data-target="width-group" aria-label="세로 영역 접기/펼치기">
+                        <span class="toggle-icon">▼</span>
+                    </button>
+                </div>
+                <div class="form-group-content" id="width-group">
+                    <input type="number" id="width" placeholder="예: 40" min="0" step="0.1">
+                </div>
+            </div>
+            
+            <div class="form-group collapsible">
+                <div class="form-group-header">
+                    <label for="height">높이 (cm)</label>
+                    <button type="button" class="toggle-btn" data-target="height-group" aria-label="높이 영역 접기/펼치기">
+                        <span class="toggle-icon">▼</span>
+                    </button>
+                </div>
+                <div class="form-group-content" id="height-group">
+                    <input type="number" id="height" placeholder="예: 30" min="0" step="0.1">
+                </div>
+            </div>
+            
+            <div class="form-group collapsible">
+                <div class="form-group-header">
+                    <label for="weight">실제 무게</label>
+                    <button type="button" class="toggle-btn" data-target="weight-group" aria-label="실제 무게 영역 접기/펼치기">
+                        <span class="toggle-icon">▶</span>
+                    </button>
+                </div>
+                <div class="form-group-content hidden" id="weight-group">
+                    <div class="weight-input-group">
+                        <input type="number" id="weight" placeholder="예: 5" min="0" step="0.1">
+                        <select id="weightUnit" aria-label="무게 단위">
+                            <option value="g" selected>g</option>
+                            <option value="kg">kg</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group collapsible">
+                <div class="form-group-header">
+                    <label for="divisor">제수 선택</label>
+                    <button type="button" class="toggle-btn" data-target="divisor-group" aria-label="제수 선택 영역 접기/펼치기">
+                        <span class="toggle-icon">▼</span>
+                    </button>
+                </div>
+                <div class="form-group-content" id="divisor-group">
+                    <select id="divisor">
+                        <option value="6000" selected>6000 (일부 택배사)</option>
+                        <option value="5000">5000 (일반: DHL, FedEx 등)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button id="calculateBtn" class="calculate-btn">계산하기</button>
+            
+            <div id="result" class="result-container hidden">
+                <div class="result-item">
+                    <span class="result-label">부피무게:</span>
+                    <div class="result-value-wrapper">
+                        <div class="result-value-group">
+                            <span class="result-value" id="volumetricWeight" data-value="0">-</span>
+                            <span class="result-value-original" id="volumetricWeightOriginal">-</span>
+                        </div>
+                        <button type="button" class="copy-btn" data-target="volumetricWeight" aria-label="부피무게 복사" title="숫자만 복사">
+                            📋
+                        </button>
+                    </div>
+                </div>
+                <div class="result-item" id="actualWeightItem">
+                    <span class="result-label">실제 무게:</span>
+                    <div class="result-value-wrapper">
+                        <span class="result-value" id="actualWeight" data-value="0">-</span>
+                        <button type="button" class="copy-btn" data-target="actualWeight" aria-label="실제 무게 복사" title="숫자만 복사">
+                            📋
+                        </button>
+                    </div>
+                </div>
+                <div class="result-item highlight">
+                    <span class="result-label">운임 기준 무게:</span>
+                    <div class="result-value-wrapper">
+                        <span class="result-value" id="chargeableWeight" data-value="0">-</span>
+                        <button type="button" class="copy-btn" data-target="chargeableWeight" aria-label="운임 기준 무게 복사" title="숫자만 복사">
+                            📋
+                        </button>
+                    </div>
+                </div>
+                <div class="result-note">
+                    <p>💡 실제 무게와 부피무게 중 더 큰 값이 운임 기준 무게로 적용됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
+
