@@ -99,6 +99,26 @@
   },
   {
     "id": 0,
+    "title": "LG디스플레이 뉴스룸 리뉴얼 / 미디어 라이브러리 구축",
+    "description": "워드프레스 기반 LG디스플레이 뉴스룸 리뉴얼, 미디어 라이브러리 UI/UX 구현",
+    "image": "https://news.lgdisplay.com/wp-content/uploads/2023/01/logo_new_2023-4.png",
+    "tags": [
+      "HTML5",
+      "CSS3",
+      "JavaScript",
+      "jQuery",
+      "Ajax",
+      "wordpress"
+    ],
+    "link": "https://news.lgdisplay.com/",
+    "contribution": [
+      "워드프레스 기반 뉴스룸 리뉴얼 퍼블리싱",
+      "미디어 라이브러리 UI/UX 구현",
+      "반응형 레이아웃 및 콘텐츠 템플릿 정리"
+    ]
+  },
+  {
+    "id": 0,
     "title": "배터리퀴즈 - 배터리인사이드",
     "description": "LG에너지 솔루션 배터리 인사이드 페이지 내 배터리 퀴즈 제작.",
     "image": "https://inside.lgensol.com/batteryquiz/assets/images/batteryquiz_og_image.jpg",
