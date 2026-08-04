@@ -1,25 +1,5 @@
 ﻿[
     {
-        "id":  21,
-        "title":  "Chroma Hide",
-        "description":  "환경을 샘플링해 몸을 위장하고 술래의 시야를 피하는 Three.js 숨바꼭질. 로컬 봇 매치로 공개, 이후 .io 멀티 확장 가능한 세션 구조.",
-        "image":  "https://soondooop.github.io/ogimage/chroma-hide.png",
-        "tags":  [
-                     "Three.js",
-                     "TypeScript",
-                     "Vite",
-                     "WebGL",
-                     "Game"
-                 ],
-        "link":  "https://soondooop.github.io/chroma-hide/",
-        "contribution":  [
-                             "페인트 위장·색차 발각 메커닉",
-                             "Three.js 갤러리 맵·페인트 드롭 아바타",
-                             "봇 매치 라운드 루프",
-                             "멀티 대비 GameSession / 메시지 스키마 분리"
-                         ]
-    },
-    {
         "id":  20,
         "title":  "Interior Proposal Studio",
         "description":  "인테리어 리모델링 제안·고객 설문·자재 선택·일정 관리를 위한 웹 스튜디오. React + Vite + Supabase로 구축했습니다.",
