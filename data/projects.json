@@ -1,326 +1,345 @@
-[
-  {
-    "id": 1,
-    "title": "BYRYZN",
-    "description": "휴젤(주)의 바이리즌 제품 페이지 제작. GSAP를 이용하여 스크롤 애니메이션을 구현하였습니다.",
-    "image": "https://byryzn.co.kr/assets/common/images/thumbnail.png",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery",
-      "GSAP"
-    ],
-    "link": "https://byryzn.co.kr",
-    "contribution": [
-      "제품 랜딩 퍼블리싱",
-      "GSAP 스크롤 인터랙션 구현",
-      "반응형 레이아웃 및 모션 타이밍 정리"
-    ]
-  },
-  {
-    "id": 7,
-    "title": "iLab Original",
-    "description": "iLab Original - 푸바오와 무뎅이가 전하는 편지 페이지 제작",
-    "image": "https://innovationlab.co.kr/project/zootopia/og.jpg",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery",
-      "GSAP"
-    ],
-    "link": "https://innovationlab.co.kr/project/zootopia",
-    "contribution": [
-      "캠페인 페이지 퍼블리싱",
-      "스크롤 기반 스토리텔링 연출",
-      "이미지/카피 섹션 구성"
-    ]
-  },
-  {
-    "id": 2,
-    "title": "굿앤굿 어린이케어 APP",
-    "description": "현대해상 굿앤굿 어린이케어 APP 페이지 제작 및 운영. 하이브리드 웹앱으로 제작하였습니다.",
-    "image": "https://www.pitap.at/assets/images/project/projectView8_1.png",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery",
-      "GSAP",
-      "Ajax"
-    ],
-    "link": "https://apps.apple.com/kr/app/%EA%B5%BF%EC%95%A4%EA%B5%BF-%EC%96%B4%EB%A6%B0%EC%9D%B4%EC%BC%80%EC%96%B4/id1229766852",
-    "contribution": [
-      "하이브리드 웹앱 화면 퍼블리싱",
-      "Ajax 기반 동적 UI 연동",
-      "운영 중 이슈 대응 및 개선"
-    ]
-  },
-  {
-    "id": 3,
-    "title": "콜레오 마케팅 그룹",
-    "description": "콜레오 마케팅 그룹 홈페이지 구축 및 운영",
-    "image": "https://www.pitap.at/assets/images/kv/ImageAssets_coleo.jpg",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery",
-      "GSAP",
-      "Ajax"
-    ],
-    "link": "http://www.coleomarketing.com",
-    "contribution": [
-      "기업 사이트 구축 퍼블리싱",
-      "공통 UI 패턴 정리",
-      "운영/유지보수"
-    ]
-  },
-  {
-    "id": 4,
-    "title": "프리미엄 메이필드 호텔",
-    "description": "메이필드 호텔 홈페이지 구축 및 운영, 브랜드 스토리, 브랜드 에센스 등 모든 페이지 제작",
-    "image": "https://www.mayfield.co.kr/assets/share/share_img_v1.png",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery",
-      "GSAP",
-      "Ajax"
-    ],
-    "link": "https://www.mayfield.co.kr/main",
-    "contribution": [
-      "브랜드 스토리·에센스 등 주요 페이지 제작",
-      "호텔 사이트 전반 퍼블리싱",
-      "운영 및 개선 반영"
-    ]
-  },
-  {
-    "id": 0,
-    "title": "LG디스플레이 뉴스룸 리뉴얼 / 미디어 라이브러리 구축",
-    "description": "워드프레스 기반 LG디스플레이 뉴스룸 리뉴얼, 미디어 라이브러리 UI/UX 구현",
-    "image": "https://news.lgdisplay.com/wp-content/uploads/2023/01/logo_new_2023-4.png",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery",
-      "Ajax",
-      "wordpress"
-    ],
-    "link": "https://news.lgdisplay.com/",
-    "contribution": [
-      "워드프레스 기반 뉴스룸 리뉴얼 퍼블리싱",
-      "미디어 라이브러리 UI/UX 구현",
-      "반응형 레이아웃 및 콘텐츠 템플릿 정리"
-    ]
-  },
-  {
-    "id": 0,
-    "title": "배터리퀴즈 - 배터리인사이드",
-    "description": "LG에너지 솔루션 배터리 인사이드 페이지 내 배터리 퀴즈 제작.",
-    "image": "https://inside.lgensol.com/batteryquiz/assets/images/batteryquiz_og_image.jpg",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery",
-      "Ajax",
-      "GSAP",
-      "wordpress"
-    ],
-    "link": "https://inside.lgensol.com/batteryquiz/",
-    "contribution": [
-      "퀴즈 인터랙션 UI 구현",
-      "Ajax 연동 및 결과 플로우",
-      "이벤트 페이지 퍼블리싱"
-    ]
-  },
-  {
-    "id": 5,
-    "title": "LG에너지솔루션",
-    "description": "LG에너지 솔루션 배터리 인사이드 페이지 제작 및 배터리 퀴즈 이벤트 제작.",
-    "image": "https://inside.lgensol.com/wp-content/uploads/2025/04/BATTERY-INSIDE_OG-Image1200x630.webp",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery",
-      "wordpress"
-    ],
-    "link": "https://inside.lgensol.com",
-    "contribution": [
-      "Battery Inside 페이지 퍼블리싱",
-      "워드프레스 기반 화면 구축",
-      "퀴즈 이벤트 연동 지원"
-    ]
-  },
-  {
-    "id": 6,
-    "title": "LG화학블로그",
-    "description": "LG화학 블로그 페이지 제작 및 운영",
-    "image": "https://www.pitap.at/assets/images/kv/ImageAssets_lgblog.jpg",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery",
-      "wordpress"
-    ],
-    "link": "https://blog.lgchem.com",
-    "contribution": [
-      "블로그 템플릿/목록 UI 퍼블리싱",
-      "워드프레스 운영 대응",
-      "콘텐츠 노출 구조 개선"
-    ]
-  },
-  {
-    "id": 10,
-    "title": "신세계그룹뉴스룸",
-    "description": "신세계 그룹 뉴스룸 홈페이지 제작",
-    "image": "https://www.shinsegaegroupnewsroom.com/wp-content/themes/shinsegae/assets/images/ogimage.png",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery",
-      "GSAP",
-      "wordpress"
-    ],
-    "link": "https://www.shinsegaegroupnewsroom.com/",
-    "contribution": [
-      "뉴스룸 사이트 퍼블리싱",
-      "GSAP 모션 섹션 구현",
-      "워드프레스 템플릿 작업"
-    ]
-  },
-  {
-    "id": 9,
-    "title": "경찰박물관",
-    "description": "경찰박물관 홈페이지 리뉴얼 및 유지보수",
-    "image": "https://www.policemuseum.go.kr/images_new/pm_og_image.jpg",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery",
-      "asp"
-    ],
-    "link": "https://www.policemuseum.go.kr/index.asp",
-    "contribution": [
-      "리뉴얼 퍼블리싱",
-      "기존 ASP 환경 유지보수",
-      "정보 구조/목록 UI 개선"
-    ]
-  },
-  {
-    "id": 8,
-    "title": "롯데면세점 컨템포러리",
-    "description": "롯데면세점 컨템포러리 페이지 제작 및 운영",
-    "image": "https://static.lottedfs.com/contents/images/event-img/20240221170954853fc540e1bf9b74c6aaed952cec608f534.jpg",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery"
-    ],
-    "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1044489",
-    "contribution": [
-      "프로모션 페이지 퍼블리싱",
-      "반응형 레이아웃",
-      "운영 반영"
-    ]
-  },
-  {
-    "id": 9,
-    "title": "롯데면세점 명품관",
-    "description": "롯데면세점 명품 페이지 제작 및 운영",
-    "image": "https://soondooop.github.io/ogimage/lux.png",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery"
-    ],
-    "link": "https://kor.lottedfs.com/kr/ebtqmain/intro",
-    "contribution": [
-      "명품관 소개/진입 UI 퍼블리싱",
-      "비주얼 섹션 구성",
-      "운영 유지보수"
-    ]
-  },
-  {
-    "id": 9,
-    "title": "롯데면세점 건강식품관",
-    "description": "롯데면세점 건강식품 페이지 제작 및 운영",
-    "image": "https://static.lottedfs.com/contents/images/store-img/store-content-img/10067953/02/23277711/20240909091219010b9ae45acf5904c3db954659407474067.jpg",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery"
-    ],
-    "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1042647",
-    "contribution": [
-      "카테고리 프로모션 페이지 제작",
-      "상품 노출 UI 구성",
-      "운영 대응"
-    ]
-  },
-  {
-    "id": 9,
-    "title": "롯데면세점 더모코스메틱",
-    "description": "롯데면세점 더모코스메틱 페이지 제작 및 운영",
-    "image": "https://static.lottedfs.com/contents/images/store-img/store-content-img/10067953/02/23277713/202409121003285829af15ef01b1a408488731ff4fb6cbb16.jpg",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery"
-    ],
-    "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1047430",
-    "contribution": [
-      "더모 카테고리 페이지 퍼블리싱",
-      "비주얼/카피 블록 구성",
-      "운영 반영"
-    ]
-  },
-  {
-    "id": 9,
-    "title": "롯데면세점 나와 지구 모두를 위한 제품 모음",
-    "description": "롯데면세점 Save the earth 페이지 제작 및 운영",
-    "image": "https://static.lottedfs.com/contents/images/store-img/store-content-img/10067953/02/23277715/202512301347110580c6e0fc2063641f9ba17a9fa5416e7de.webp",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery"
-    ],
-    "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1040466",
-    "contribution": [
-      "캠페인 페이지 퍼블리싱",
-      "콘텐츠 섹션 구성",
-      "운영 유지보수"
-    ]
-  },
-  {
-    "id": 9,
-    "title": "롯데면세점 K-FASHION",
-    "description": "롯데면세점 K-FASHION 페이지 제작 및 운영",
-    "image": "https://static.lottedfs.com/contents/images/store-img/store-content-img/10067953/02/23277714/202512301338005807702774ede4a48c789c6986258c72715.webp",
-    "tags": [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "jQuery"
-    ],
-    "link": "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1047861",
-    "contribution": [
-      "K-Fashion 프로모션 페이지 제작",
-      "반응형 UI 구현",
-      "운영 반영"
-    ]
-  }
+﻿[
+    {
+        "id":  20,
+        "title":  "Interior Proposal Studio",
+        "description":  "인테리어 리모델링 제안·고객 설문·자재 선택·일정 관리를 위한 웹 스튜디오. React + Vite + Supabase로 구축했습니다.",
+        "image":  "https://soondooop.github.io/ogimage/interior-proposal.png",
+        "tags":  [
+                     "React",
+                     "TypeScript",
+                     "Vite",
+                     "Supabase",
+                     "GSAP"
+                 ],
+        "link":  "https://soondooop.github.io/interior-proposal/",
+        "contribution":  [
+                             "제안서/설문 플로우 UI 설계·구현",
+                             "자재 라이브러리·도면 존 선택 UX",
+                             "프로젝트 일정·멀티테넌트 워크스페이스"
+                         ]
+    },
+    {
+        "id":  1,
+        "title":  "BYRYZN",
+        "description":  "휴젤(주)의 바이리즌 제품 페이지 제작. GSAP를 이용하여 스크롤 애니메이션을 구현하였습니다.",
+        "image":  "https://byryzn.co.kr/assets/common/images/thumbnail.png",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery",
+                     "GSAP"
+                 ],
+        "link":  "https://byryzn.co.kr",
+        "contribution":  [
+                             "제품 랜딩 퍼블리싱",
+                             "GSAP 스크롤 인터랙션 구현",
+                             "반응형 레이아웃 및 모션 타이밍 정리"
+                         ]
+    },
+    {
+        "id":  7,
+        "title":  "iLab Original",
+        "description":  "iLab Original - 푸바오와 무뎅이가 전하는 편지 페이지 제작",
+        "image":  "https://innovationlab.co.kr/project/zootopia/og.jpg",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery",
+                     "GSAP"
+                 ],
+        "link":  "https://innovationlab.co.kr/project/zootopia",
+        "contribution":  [
+                             "캠페인 페이지 퍼블리싱",
+                             "스크롤 기반 스토리텔링 연출",
+                             "이미지/카피 섹션 구성"
+                         ]
+    },
+    {
+        "id":  2,
+        "title":  "굿앤굿 어린이케어 APP",
+        "description":  "현대해상 굿앤굿 어린이케어 APP 페이지 제작 및 운영. 하이브리드 웹앱으로 제작하였습니다.",
+        "image":  "https://www.pitap.at/assets/images/project/projectView8_1.png",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery",
+                     "GSAP",
+                     "Ajax"
+                 ],
+        "link":  "https://apps.apple.com/kr/app/%EA%B5%BF%EC%95%A4%EA%B5%BF-%EC%96%B4%EB%A6%B0%EC%9D%B4%EC%BC%80%EC%96%B4/id1229766852",
+        "contribution":  [
+                             "하이브리드 웹앱 화면 퍼블리싱",
+                             "Ajax 기반 동적 UI 연동",
+                             "운영 중 이슈 대응 및 개선"
+                         ]
+    },
+    {
+        "id":  3,
+        "title":  "콜레오 마케팅 그룹",
+        "description":  "콜레오 마케팅 그룹 홈페이지 구축 및 운영",
+        "image":  "https://www.pitap.at/assets/images/kv/ImageAssets_coleo.jpg",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery",
+                     "GSAP",
+                     "Ajax"
+                 ],
+        "link":  "http://www.coleomarketing.com",
+        "contribution":  [
+                             "기업 사이트 구축 퍼블리싱",
+                             "공통 UI 패턴 정리",
+                             "운영/유지보수"
+                         ]
+    },
+    {
+        "id":  4,
+        "title":  "프리미엄 메이필드 호텔",
+        "description":  "메이필드 호텔 홈페이지 구축 및 운영, 브랜드 스토리, 브랜드 에센스 등 모든 페이지 제작",
+        "image":  "https://www.mayfield.co.kr/assets/share/share_img_v1.png",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery",
+                     "GSAP",
+                     "Ajax"
+                 ],
+        "link":  "https://www.mayfield.co.kr/main",
+        "contribution":  [
+                             "브랜드 스토리·에센스 등 주요 페이지 제작",
+                             "호텔 사이트 전반 퍼블리싱",
+                             "운영 및 개선 반영"
+                         ]
+    },
+    {
+        "id":  0,
+        "title":  "LG디스플레이 뉴스룸 리뉴얼 / 미디어 라이브러리 구축",
+        "description":  "워드프레스 기반 LG디스플레이 뉴스룸 리뉴얼, 미디어 라이브러리 UI/UX 구현",
+        "image":  "https://news.lgdisplay.com/wp-content/uploads/2023/01/logo_new_2023-4.png",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery",
+                     "Ajax",
+                     "wordpress"
+                 ],
+        "link":  "https://news.lgdisplay.com/",
+        "contribution":  [
+                             "워드프레스 기반 뉴스룸 리뉴얼 퍼블리싱",
+                             "미디어 라이브러리 UI/UX 구현",
+                             "반응형 레이아웃 및 콘텐츠 템플릿 정리"
+                         ]
+    },
+    {
+        "id":  0,
+        "title":  "배터리퀴즈 - 배터리인사이드",
+        "description":  "LG에너지 솔루션 배터리 인사이드 페이지 내 배터리 퀴즈 제작.",
+        "image":  "https://inside.lgensol.com/batteryquiz/assets/images/batteryquiz_og_image.jpg",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery",
+                     "Ajax",
+                     "GSAP",
+                     "wordpress"
+                 ],
+        "link":  "https://inside.lgensol.com/batteryquiz/",
+        "contribution":  [
+                             "퀴즈 인터랙션 UI 구현",
+                             "Ajax 연동 및 결과 플로우",
+                             "이벤트 페이지 퍼블리싱"
+                         ]
+    },
+    {
+        "id":  5,
+        "title":  "LG에너지솔루션",
+        "description":  "LG에너지 솔루션 배터리 인사이드 페이지 제작 및 배터리 퀴즈 이벤트 제작.",
+        "image":  "https://inside.lgensol.com/wp-content/uploads/2025/04/BATTERY-INSIDE_OG-Image1200x630.webp",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery",
+                     "wordpress"
+                 ],
+        "link":  "https://inside.lgensol.com",
+        "contribution":  [
+                             "Battery Inside 페이지 퍼블리싱",
+                             "워드프레스 기반 화면 구축",
+                             "퀴즈 이벤트 연동 지원"
+                         ]
+    },
+    {
+        "id":  6,
+        "title":  "LG화학블로그",
+        "description":  "LG화학 블로그 페이지 제작 및 운영",
+        "image":  "https://www.pitap.at/assets/images/kv/ImageAssets_lgblog.jpg",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery",
+                     "wordpress"
+                 ],
+        "link":  "https://blog.lgchem.com",
+        "contribution":  [
+                             "블로그 템플릿/목록 UI 퍼블리싱",
+                             "워드프레스 운영 대응",
+                             "콘텐츠 노출 구조 개선"
+                         ]
+    },
+    {
+        "id":  10,
+        "title":  "신세계그룹뉴스룸",
+        "description":  "신세계 그룹 뉴스룸 홈페이지 제작",
+        "image":  "https://www.shinsegaegroupnewsroom.com/wp-content/themes/shinsegae/assets/images/ogimage.png",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery",
+                     "GSAP",
+                     "wordpress"
+                 ],
+        "link":  "https://www.shinsegaegroupnewsroom.com/",
+        "contribution":  [
+                             "뉴스룸 사이트 퍼블리싱",
+                             "GSAP 모션 섹션 구현",
+                             "워드프레스 템플릿 작업"
+                         ]
+    },
+    {
+        "id":  9,
+        "title":  "경찰박물관",
+        "description":  "경찰박물관 홈페이지 리뉴얼 및 유지보수",
+        "image":  "https://www.policemuseum.go.kr/images_new/pm_og_image.jpg",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery",
+                     "asp"
+                 ],
+        "link":  "https://www.policemuseum.go.kr/index.asp",
+        "contribution":  [
+                             "리뉴얼 퍼블리싱",
+                             "기존 ASP 환경 유지보수",
+                             "정보 구조/목록 UI 개선"
+                         ]
+    },
+    {
+        "id":  8,
+        "title":  "롯데면세점 컨템포러리",
+        "description":  "롯데면세점 컨템포러리 페이지 제작 및 운영",
+        "image":  "https://static.lottedfs.com/contents/images/event-img/20240221170954853fc540e1bf9b74c6aaed952cec608f534.jpg",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery"
+                 ],
+        "link":  "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1044489",
+        "contribution":  [
+                             "프로모션 페이지 퍼블리싱",
+                             "반응형 레이아웃",
+                             "운영 반영"
+                         ]
+    },
+    {
+        "id":  9,
+        "title":  "롯데면세점 명품관",
+        "description":  "롯데면세점 명품 페이지 제작 및 운영",
+        "image":  "https://soondooop.github.io/ogimage/lux.png",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery"
+                 ],
+        "link":  "https://kor.lottedfs.com/kr/ebtqmain/intro",
+        "contribution":  [
+                             "명품관 소개/진입 UI 퍼블리싱",
+                             "비주얼 섹션 구성",
+                             "운영 유지보수"
+                         ]
+    },
+    {
+        "id":  9,
+        "title":  "롯데면세점 건강식품관",
+        "description":  "롯데면세점 건강식품 페이지 제작 및 운영",
+        "image":  "https://static.lottedfs.com/contents/images/store-img/store-content-img/10067953/02/23277711/20240909091219010b9ae45acf5904c3db954659407474067.jpg",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery"
+                 ],
+        "link":  "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1042647",
+        "contribution":  [
+                             "카테고리 프로모션 페이지 제작",
+                             "상품 노출 UI 구성",
+                             "운영 대응"
+                         ]
+    },
+    {
+        "id":  9,
+        "title":  "롯데면세점 더모코스메틱",
+        "description":  "롯데면세점 더모코스메틱 페이지 제작 및 운영",
+        "image":  "https://static.lottedfs.com/contents/images/store-img/store-content-img/10067953/02/23277713/202409121003285829af15ef01b1a408488731ff4fb6cbb16.jpg",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery"
+                 ],
+        "link":  "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1047430",
+        "contribution":  [
+                             "더모 카테고리 페이지 퍼블리싱",
+                             "비주얼/카피 블록 구성",
+                             "운영 반영"
+                         ]
+    },
+    {
+        "id":  9,
+        "title":  "롯데면세점 나와 지구 모두를 위한 제품 모음",
+        "description":  "롯데면세점 Save the earth 페이지 제작 및 운영",
+        "image":  "https://static.lottedfs.com/contents/images/store-img/store-content-img/10067953/02/23277715/202512301347110580c6e0fc2063641f9ba17a9fa5416e7de.webp",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery"
+                 ],
+        "link":  "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1040466",
+        "contribution":  [
+                             "캠페인 페이지 퍼블리싱",
+                             "콘텐츠 섹션 구성",
+                             "운영 유지보수"
+                         ]
+    },
+    {
+        "id":  9,
+        "title":  "롯데면세점 K-FASHION",
+        "description":  "롯데면세점 K-FASHION 페이지 제작 및 운영",
+        "image":  "https://static.lottedfs.com/contents/images/store-img/store-content-img/10067953/02/23277714/202512301338005807702774ede4a48c789c6986258c72715.webp",
+        "tags":  [
+                     "HTML5",
+                     "CSS3",
+                     "JavaScript",
+                     "jQuery"
+                 ],
+        "link":  "https://kor.lottedfs.com/kr/event/eventDetail?evtDispNo=1047861",
+        "contribution":  [
+                             "K-Fashion 프로모션 페이지 제작",
+                             "반응형 UI 구현",
+                             "운영 반영"
+                         ]
+    }
 ]
