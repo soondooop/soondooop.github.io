@@ -60,6 +60,13 @@ kbd{font:12px/1 ui-monospace,monospace;border:1px solid var(--line);border-botto
 .q-text.is-exam{font-size:16px;font-weight:500}
 .q-text.is-exam p{margin:0 0 10px}
 .q-text img{max-width:100%;height:auto;border-radius:8px;margin:8px 0;border:1px solid var(--line)}
+.q-text pre.code{
+  white-space:pre;overflow:auto;font-family:ui-monospace,Consolas,monospace;
+  font-size:13px;font-weight:400;line-height:1.45;background:#f6f1e6;
+  padding:12px;border-radius:8px;margin:10px 0
+}
+.q-text table{width:100%;border-collapse:collapse;font-size:13px;font-weight:400;margin:10px 0}
+.q-text td{border:1px solid var(--line);padding:6px 8px;vertical-align:top}
 .write-box textarea{
   width:100%;min-height:96px;padding:12px 14px;font:inherit;font-size:16px;
   border:1px solid var(--line);border-radius:12px;background:#fff;resize:vertical
@@ -74,12 +81,13 @@ kbd{font:12px/1 ui-monospace,monospace;border:1px solid var(--line);border-botto
 <div class="wrap">
   <header>
     <h1>정처기 퀴즈</h1>
-    <p>암기 카드와 실기 기출을 회차별로 풀니다. 주관식은 입력 후 <kbd>Enter</kbd></p>
+    <p>암기 카드와 실기 기출을 회차별로 풉니다. 주관식은 입력 후 <kbd>Enter</kbd></p>
     <div class="tabs">
       <button class="chip tab is-on" data-tab="memo">암기 카드</button>
       <button class="chip tab" data-tab="exam">실전 기출</button>
     </div>
   </header>
+
   <section class="panel" id="setup">
     <label class="k">범위</label>
     <div class="row" id="cats"></div>
@@ -102,6 +110,7 @@ kbd{font:12px/1 ui-monospace,monospace;border:1px solid var(--line);border-botto
       <button class="btn ghost" id="wrongStart">오답만 다시</button>
     </div>
   </section>
+
   <section class="panel hidden" id="examSetup">
     <label class="k">회차 · 2020년 1회 ~ 2026년 2회, 회차당 20문항</label>
     <div id="examRounds"></div>
@@ -116,6 +125,7 @@ kbd{font:12px/1 ui-monospace,monospace;border:1px solid var(--line);border-botto
       <button class="btn ghost" id="examWrong">기출 오답만 다시</button>
     </div>
   </section>
+
   <section class="panel hidden" id="quiz">
     <div class="stat"><span id="pos"></span><span id="live"></span></div>
     <div class="progress"><i id="bar"></i></div>
@@ -129,6 +139,7 @@ kbd{font:12px/1 ui-monospace,monospace;border:1px solid var(--line);border-botto
       <button class="btn ghost" id="quit">그만두기</button>
     </div>
   </section>
+
   <section class="panel hidden" id="result">
     <div class="q-cat">결과</div>
     <div class="score" id="score"></div>

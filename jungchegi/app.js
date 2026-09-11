@@ -117,7 +117,7 @@ function startExam(fromWrong){
     src = inRound.length ? inRound : all;
     if (!src.length) { alert("저장된 기출 오답이 없습니다."); return; }
   }
-  if (!src.length) { alert("이 회차 문항을 불러오지 못했습니다."); return; }
+  if (!src.length) { alert("이 회차 문항을 불러오지 못했습니다. exams-data.js를 같은 폴더에 두었는지 확인하세요."); return; }
   const ordered = examOrder === "rand" ? shuffle(src) : src.slice().sort((a,b) => a.n - b.n);
   queue = ordered.map(q => ({
     exam: true,
