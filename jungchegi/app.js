@@ -1,3 +1,15 @@
+async function inflateB64(b64){
+  const bin = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const text = await new Response(new Blob([bin]).stream().pipeThrough(new DecompressionStream("gzip"))).text();
+  return JSON.parse(text);
+}
+async function loadB64File(src){
+  const t = await (await fetch(src, {cache: "no-store"})).text();
+  const m = t.match(/=\s*"([^"]+)"/);
+  if (!m) throw new Error("데이터 파일을 읽지 못했습니다: " + src);
+  return inflateB64(m[1]);
+}
+
 let EXAM_DATA = {};
 let CARDS = [];
 const LS = "jungchegi-wrong-v1";
@@ -409,14 +421,14 @@ document.addEventListener("keydown", (e) => {
 
 async function boot(){
   const parts = await Promise.all([
-    inflateB64(EXAMS_2020_B64),
-    inflateB64(EXAMS_2021_B64),
-    inflateB64(EXAMS_2022_B64),
-    inflateB64(EXAMS_2023_B64),
-    inflateB64(EXAMS_2024_B64),
-    inflateB64(EXAMS_2025_B64),
-    inflateB64(EXAMS_2026_B64),
-    inflateB64(CARDS_B64)
+    loadB64File("exams-2020.js"),
+    loadB64File("exams-2021.js"),
+    loadB64File("exams-2022.js"),
+    loadB64File("exams-2023.js"),
+    loadB64File("exams-2024.js"),
+    loadB64File("exams-2025.js"),
+    loadB64File("exams-2026.js"),
+    loadB64File("cards-data.js")
   ]);
   EXAM_DATA = Object.assign({}, ...parts.slice(0, 7));
   CARDS = parts[7];
