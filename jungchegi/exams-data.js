@@ -1,9 +1,5 @@
-const EXAMS = Object.assign({},
-  (typeof EXAMS_2020 === "undefined" ? {} : EXAMS_2020),
-  (typeof EXAMS_2021 === "undefined" ? {} : EXAMS_2021),
-  (typeof EXAMS_2022 === "undefined" ? {} : EXAMS_2022),
-  (typeof EXAMS_2023 === "undefined" ? {} : EXAMS_2023),
-  (typeof EXAMS_2024 === "undefined" ? {} : EXAMS_2024),
-  (typeof EXAMS_2025 === "undefined" ? {} : EXAMS_2025),
-  (typeof EXAMS_2026 === "undefined" ? {} : EXAMS_2026)
-);
+async function inflateB64(b64){
+  const bin = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const text = await new Response(new Blob([bin]).stream().pipeThrough(new DecompressionStream("gzip"))).text();
+  return JSON.parse(text);
+}
