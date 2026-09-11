@@ -97,9 +97,9 @@
       "id": "2026 - Current",
       "label": "2026-Current",
       "range": "2026 — Current",
-      "role": "인하우스 프론트엔드 개발자",
+      "role": "Publisher / Frontend",
       "company": "팜스빌",
-      "summary": "팜스빌에서 인하우스 프론트엔드 개발자로 합류. 퍼블리싱 강점을 기반으로 React·상태관리·비동기 역량을 실무에 더 깊게 연결하고 있습니다.",
+      "summary": "인하우스 프론트엔드 개발자로 근무 중. 퍼블리싱 강점을 기반으로 React·상태관리·비동기 역량을 실무에 깊게 연결하고 있습니다.",
       "skills": {
         "craft": 97,
         "collab": 90,
@@ -326,11 +326,12 @@
   },
   "contact": {
     "headline": "함께 일해요!",
-    "sub": "협업·문의는 이메일로 전달됩니다. 관심 주제나 프로젝트 맥락을 알려주세요!",
+    "sub": "협업·프로젝트 문의는 이메일로 전달됩니다. 희망 역할·근무 형태·관심 스택을 알려주세요!",
     "email": "tmdehk02@gmail.com",
     "terms": [
       "현재: 인하우스 프론트엔드 개발자 @ 팜스빌",
-      "역할: Publisher / Frontend",
+      "관심 역할: Publisher / Frontend",
+      "가능 형태: 프로젝트 · 협업",
       "강점: 퍼블 디테일 + 협업 커뮤니케이션 + 프론트엔드 개발 역량",
       "성장 중: React · Redux · Axios"
     ],

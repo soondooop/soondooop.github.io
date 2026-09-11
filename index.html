@@ -9,6 +9,16 @@
       content="Kim Seungdo — 웹 퍼블리셔 / 프론트엔드 포트폴리오"
     />
     <script>
+      // SPA routing support - restore path from 404.html redirect
+      (function () {
+        var redirect = sessionStorage.redirect
+        delete sessionStorage.redirect
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect)
+        }
+      })()
+    </script>
+    <script>
       (function () {
         try {
           var key = 'fm-portfolio-theme'
@@ -29,16 +39,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Figtree:wght@400;500;600;700&family=Press+Start+2P&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Figtree:wght@400;500;600;700&display=swap"
       rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/neodgm/neodgm-webfont@1.601/neodgm/style.css"
     />
     <title>Kim Seungdo — Talent Profile</title>
-    <script type="module" crossorigin src="/assets/index-jrisa3nL.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BodMbEC2.css">
+    <script type="module" crossorigin src="/assets/index-CB9tppM2.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DbbQW8bl.css">
   </head>
   <body>
     <div id="root"></div>

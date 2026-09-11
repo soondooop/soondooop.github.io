@@ -2,45 +2,33 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Kim Seungdo — 웹 퍼블리셔 / 프론트엔드 포트폴리오"
-    />
+    <title>Redirecting...</title>
     <script>
+      // Single Page Application routing support for GitHub Pages
+      // https://github.com/rafgraph/spa-github-pages
       (function () {
-        try {
-          var key = 'fm-portfolio-theme'
-          var pref = localStorage.getItem(key) || 'system'
-          var light = window.matchMedia('(prefers-color-scheme: light)').matches
-          var theme =
-            pref === 'light' || pref === 'dark'
-              ? pref
-              : light
-                ? 'light'
-                : 'dark'
-          document.documentElement.dataset.theme = theme
-        } catch (e) {
-          document.documentElement.dataset.theme = 'dark'
+        var redirect = sessionStorage.redirect
+        delete sessionStorage.redirect
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect)
         }
       })()
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Figtree:wght@400;500;600;700&family=Press+Start+2P&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/neodgm/neodgm-webfont@1.601/neodgm/style.css"
-    />
-    <title>Kim Seungdo — Talent Profile</title>
-    <script type="module" crossorigin src="/assets/index-jrisa3nL.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BodMbEC2.css">
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Redirect to index.html with path preserved
+      var path = window.location.pathname
+      var query = window.location.search
+      var hash = window.location.hash
+      
+      // Store the current path for restoration after redirect
+      sessionStorage.redirect = path + query + hash
+      
+      // Redirect to index.html (GitHub Pages will serve this from root)
+      window.location.replace('/')
+    </script>
   </body>
 </html>
