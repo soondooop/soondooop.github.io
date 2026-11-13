@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="오늘의 할 일을 정리하는 개인 업무 체크. 데이터는 비공개 GitHub 저장소에 저장됩니다.">
+  <meta name="theme-color" content="#f3f1eb" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#131311" media="(prefers-color-scheme: dark)">
+  <title>오늘 · 업무 체크</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%232f6fed'/%3E%3Cpath d='M4 8.2 6.6 11 12 5' fill='none' stroke='white' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    (function () {
+      try {
+        var pref = localStorage.getItem('todo.theme') || 'system';
+        var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var resolved = pref === 'dark' || (pref !== 'light' && dark) ? 'dark' : 'light';
+        if (pref === 'light') resolved = 'light';
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-pref', pref);
+        document.documentElement.style.colorScheme = resolved;
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip" href="#list">할 일 목록으로 건너뛰기</a>
+
+  <section id="login" class="login" hidden>
+    <div class="login-inner">
+      <p class="eyebrow">개인 업무</p>
+      <h1>업무 체크</h1>
+      <p class="lede">오늘의 할 일을 차분히 남깁니다. 목록은 비공개 GitHub 저장소에만 저장되고, 이 페이지 저장소에는 올라가지 않습니다.</p>
+      <form id="loginForm">
+        <label for="token">Fine-grained Personal Access Token</label>
+        <input id="token" name="token" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="500" required aria-describedby="loginError tokenHelp">
+        <label class="checkline" for="persist">
+          <input id="persist" type="checkbox" checked>
+          <span>이 기기에서 로그인 유지</span>
+        </label>
+        <p id="loginError" class="error" role="alert"></p>
+        <button id="loginBtn" class="btn-primary" type="submit">로그인</button>
+      </form>
+      <div class="help-create" id="tokenHelp">
+        <h2>토큰 만드는 방법</h2>
+        <ol>
+          <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Fine-grained token 만들기</a>로 이동합니다. Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token 입니다.</li>
+          <li>Repository access는 <strong>Only select repositories</strong>로 두고, 데이터를 둘 저장소만 선택합니다. 기본값은 비공개 저장소 <strong>soondooop/todo-data</strong> 입니다.</li>
+          <li>Repository permissions에서 <strong>Contents</strong>만 <strong>Read and write</strong>로 설정합니다. 다른 권한은 필요 없습니다.</li>
+          <li>발급한 토큰(<code>github_pat_…</code>)을 위에 붙여 넣습니다.</li>
+        </ol>
+        <p class="warn-note">soondooop.github.io는 공개 저장소입니다. 할 일 JSON을 이 사이트 저장소에 저장하지 마세요. 토큰은 이 브라우저에만 남고, 페이지 소스나 커밋에는 포함되지 않습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <main id="main" class="app" hidden>
+    <header class="hero">
+      <div class="hero-top">
+        <p class="eyebrow">업무 체크</p>
+        <div class="userbox">
+          <span id="avatarSlot" class="avatar-slot"></span>
+          <span id="username"></span>
+          <button id="logoutBtn" type="button">로그아웃</button>
+        </div>
+      </div>
+      <h1 id="todayDate"></h1>
+      <div
+        id="progress"
+        class="progress"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="0"
+        aria-valuenow="0"
+        aria-label="오늘 진행률"
+      >
+        <span id="progressFill"></span>
+      </div>
+      <p id="progressLabel" class="progress-label"></p>
+    </header>
+
+    <div class="toolbar">
+      <div class="views" role="tablist" aria-label="목록">
+        <button type="button" role="tab" id="tab-today" data-view="today" aria-selected="true" aria-controls="list" tabindex="0">오늘 <span id="count-today" class="count"></span></button>
+        <button type="button" role="tab" id="tab-backlog" data-view="backlog" aria-selected="false" aria-controls="list" tabindex="-1">백로그 <span id="count-backlog" class="count"></span></button>
+        <button type="button" role="tab" id="tab-done" data-view="done" aria-selected="false" aria-controls="list" tabindex="-1">완료</button>
+      </div>
+      <div class="toolbar-actions">
+        <label class="search">
+          <span class="sr-only" id="searchLabel">검색</span>
+          <input id="search" type="search" placeholder="검색" autocomplete="off" enterkeyhint="search" aria-labelledby="searchLabel">
+        </label>
+        <span id="syncPill" class="pill" role="status" data-state="saved">저장됨</span>
+        <button id="saveBtn" class="btn" type="button">저장</button>
+        <button id="themeBtn" class="btn" type="button">시스템</button>
+        <button id="settingsBtn" class="btn" type="button">설정</button>
+        <button id="helpBtn" class="btn" type="button" aria-label="단축키 도움말">?</button>
+      </div>
+    </div>
+    <p id="syncDetail" class="sync-detail" aria-live="polite"></p>
+
+    <form id="composerForm" class="composer" autocomplete="off">
+      <label class="sr-only" for="composer">할 일 추가</label>
+      <input id="composer" type="text" maxlength="500" placeholder="오늘 할 일 추가  ·  #태그  !높음  2026-11-20" enterkeyhint="done" autocomplete="off">
+      <button class="btn-primary" type="submit">추가</button>
+    </form>
+
+    <div id="tagBar" class="tagbar" aria-label="태그 필터"></div>
+    <div id="list" role="tabpanel" aria-labelledby="tab-today"></div>
+    <p id="dataLoc" class="footnote"></p>
+    <div id="live" class="sr-only" aria-live="polite"></div>
+  </main>
+
+  <div id="toast" class="toast" hidden role="status">
+    <span id="toastText"></span>
+    <button id="undoBtn" type="button">실행 취소</button>
+  </div>
+
+  <dialog id="helpDialog" aria-labelledby="helpTitle">
+    <form method="dialog">
+      <h2 id="helpTitle">단축키</h2>
+      <p class="dialog-lede">입력란에 커서가 있을 때는 단축키가 동작하지 않습니다. 한글 입력기에서는 영문 입력 상태에서 사용해 주세요.</p>
+      <table class="shortcuts">
+        <tbody>
+          <tr><th><kbd>N</kbd></th><td>새 할 일</td></tr>
+          <tr><th><kbd>/</kbd></th><td>검색</td></tr>
+          <tr><th><kbd>Enter</kbd></th><td>행에서 편집, 편집 저장</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>취소, 닫기</td></tr>
+          <tr><th><kbd>J</kbd> <kbd>K</kbd></th><td>아래 / 위 항목으로 이동</td></tr>
+          <tr><th><kbd>X</kbd> <kbd>Space</kbd></th><td>완료 토글</td></tr>
+          <tr><th><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd></th><td>우선순위 높음 / 보통 / 낮음</td></tr>
+          <tr><th><kbd>T</kbd> <kbd>B</kbd></th><td>오늘 / 백로그로 이동</td></tr>
+          <tr><th><kbd>Alt</kbd>+<kbd>↑</kbd> <kbd>↓</kbd></th><td>순서 변경 (Alt+J / Alt+K)</td></tr>
+          <tr><th><kbd>Delete</kbd></th><td>삭제 (실행 취소 가능)</td></tr>
+          <tr><th><kbd>?</kbd></th><td>이 도움말</td></tr>
+        </tbody>
+      </table>
+      <div class="dialog-actions">
+        <button class="btn-primary" type="submit">닫기</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="settingsDialog" aria-labelledby="settingsTitle">
+    <form id="settingsForm">
+      <h2 id="settingsTitle">데이터 저장소</h2>
+      <p class="dialog-lede">GitHub Contents API로 <code>todos.json</code>을 읽고 씁니다. 저장소는 <strong>Private</strong>으로 두세요.</p>
+      <div class="fields">
+        <label>소유자 <input id="setOwner" class="field" autocomplete="off" spellcheck="false" required></label>
+        <label>저장소 <input id="setRepo" class="field" autocomplete="off" spellcheck="false" required></label>
+        <label>브랜치 <input id="setBranch" class="field" autocomplete="off" spellcheck="false" required></label>
+        <label>경로 <input id="setPath" class="field" autocomplete="off" spellcheck="false" required></label>
+      </div>
+      <p class="note">soondooop.github.io는 공개 저장소라 할 일을 두면 안 됩니다. 기본 위치는 비공개 저장소 <strong>soondooop/todo-data</strong>의 <strong>main</strong> 브랜치, <strong>todos.json</strong> 입니다. 파일이 없으면 처음 저장할 때 만듭니다.</p>
+      <p id="settingsError" class="error" role="alert"></p>
+      <div class="dialog-actions">
+        <button id="exportBtn" class="btn" type="button">JSON 내보내기</button>
+        <button id="importBtn" class="btn" type="button">JSON 가져오기</button>
+        <button class="btn" type="button" data-close-dialog>닫기</button>
+        <button class="btn-primary" type="submit">적용</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="importDialog" aria-labelledby="importTitle">
+    <form method="dialog">
+      <h2 id="importTitle">가져오기</h2>
+      <p id="importSummary" class="dialog-lede"></p>
+      <p id="importError" class="error" role="alert"></p>
+      <div class="dialog-actions">
+        <button id="importCancel" class="btn" type="button">취소</button>
+        <button id="importMerge" class="btn" type="button">병합</button>
+        <button id="importReplace" class="btn-primary" type="button">교체</button>
+      </div>
+    </form>
+  </dialog>
+
+  <input id="importFile" type="file" accept="application/json,.json" hidden>
+
+  <noscript><p class="noscript">이 앱은 자바스크립트가 필요합니다.</p></noscript>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
