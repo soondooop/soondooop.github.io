@@ -92,6 +92,7 @@ const state = {
   calendarMonth: null,
   calendarDay: null,
   calendarMode: 'all',
+  paintedCalendarMode: null,
   expandedIds: new Set(),
   cardId: null,
   notifyEnabled: false,
@@ -633,6 +634,64 @@ function resolvedTheme(pref) {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
+function segmentItems(segment) {
+  const thumb = segment.querySelector(':scope > .segment-thumb');
+  return [...segment.children].filter((el) => el !== thumb && (el.matches('button, label')));
+}
+
+function segmentSelection(el) {
+  return el.getAttribute('aria-pressed') === 'true'
+    || el.getAttribute('aria-current') === 'true'
+    || Boolean(el.querySelector('input:checked'));
+}
+
+function syncSegmentThumbs(root = document, animate = true) {
+  const list = root.classList?.contains('segment') ? [root] : [...root.querySelectorAll('.segment')];
+  list.forEach((segment) => positionSegmentThumb(segment, animate));
+}
+
+function positionSegmentThumb(segment, animate) {
+  let thumb = segment.querySelector(':scope > .segment-thumb');
+  if (!thumb) {
+    thumb = document.createElement('span');
+    thumb.className = 'segment-thumb';
+    thumb.setAttribute('aria-hidden', 'true');
+    segment.prepend(thumb);
+  }
+  const items = segmentItems(segment);
+  const selected = items.find(segmentSelection);
+  if (!selected || selected.offsetWidth === 0) {
+    thumb.hidden = true;
+    return;
+  }
+  thumb.hidden = false;
+  const place = (el) => {
+    thumb.style.width = `${el.offsetWidth}px`;
+    thumb.style.height = `${el.offsetHeight}px`;
+    thumb.style.transform = `translate(${el.offsetLeft}px, ${el.offsetTop}px)`;
+  };
+  const from = segment.dataset.slideFrom;
+  delete segment.dataset.slideFrom;
+  const fromEl = from ? items.find((el) => el.dataset.seg === from || el.querySelector(`input[value="${CSS.escape(from)}"]`)) : null;
+  const jump = (el, smooth) => {
+    if (!smooth) thumb.style.transition = 'none';
+    place(el);
+    if (!smooth) {
+      thumb.offsetWidth;
+      thumb.style.transition = '';
+    }
+  };
+  if (fromEl && fromEl !== selected) {
+    jump(fromEl, false);
+    requestAnimationFrame(() => jump(selected, !window.matchMedia('(prefers-reduced-motion: reduce)').matches));
+    thumb.dataset.ready = '1';
+    return;
+  }
+  const smooth = animate && thumb.dataset.ready === '1' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  jump(selected, smooth);
+  thumb.dataset.ready = '1';
+}
+
 function applyTheme(pref) {
   const resolved = resolvedTheme(pref);
   document.documentElement.dataset.theme = resolved;
@@ -642,6 +701,7 @@ function applyTheme(pref) {
   document.querySelectorAll('input[name="modeChoice"]').forEach((input) => {
     input.checked = input.value === pref;
   });
+  requestAnimationFrame(() => syncSegmentThumbs(document));
 }
 
 function applySkin(skin) {
@@ -655,6 +715,7 @@ function applySkin(skin) {
     input.checked = input.value === next;
   });
   if (!state.bgCustom) applyBg(SKIN_BG[next] || 'lavender');
+  requestAnimationFrame(() => syncSegmentThumbs(document));
 }
 
 function applyBg(id) {
@@ -1016,6 +1077,7 @@ function renderTagBar() {
 }
 
 function renderList() {
+  requestAnimationFrame(() => syncSegmentThumbs(document));
   const list = $('list');
   const active = document.activeElement;
   const restoreId = active?.closest?.('#list [data-id]')?.getAttribute('data-id');
@@ -1211,12 +1273,16 @@ function renderCalendar(list) {
     renderList();
   });
   const filter = document.createElement('div');
-  filter.className = 'cal-filter';
+  filter.className = 'cal-filter segment';
   filter.setAttribute('role', 'group');
   filter.setAttribute('aria-label', '달력에 표시할 일');
+  if (state.paintedCalendarMode && state.paintedCalendarMode !== state.calendarMode) {
+    filter.dataset.slideFrom = state.paintedCalendarMode;
+  }
   for (const [mode, label] of [['all', '모두'], ['open', '할 일 보기'], ['done', '완료 보기']]) {
     const button = document.createElement('button');
     button.type = 'button';
+    button.dataset.seg = mode;
     button.textContent = label;
     button.setAttribute('aria-pressed', state.calendarMode === mode ? 'true' : 'false');
     button.addEventListener('click', () => {
@@ -1226,6 +1292,7 @@ function renderCalendar(list) {
     });
     filter.append(button);
   }
+  state.paintedCalendarMode = state.calendarMode;
   bar.append(prev, title, next, jump, filter);
   wrap.append(bar);
   const weekdays = document.createElement('div');
@@ -2986,6 +3053,7 @@ function openSettings() {
   applySkin(state.skin);
   applyTheme(state.theme);
   $('settingsDialog').showModal();
+  requestAnimationFrame(() => syncSegmentThumbs($('settingsDialog')));
 }
 
 async function applySettings(event) {
@@ -3229,6 +3297,12 @@ function bind() {
     });
   });
   $('settingsBtn').addEventListener('click', openSettings);
+  document.querySelectorAll('dialog').forEach((dialog) => {
+    dialog.addEventListener('toggle', () => {
+      if (dialog.open) requestAnimationFrame(() => syncSegmentThumbs(dialog));
+    });
+  });
+  window.addEventListener('resize', () => syncSegmentThumbs(document, false));
   $('hideDoneBtn').addEventListener('click', () => {
     state.hideCompleted = !state.hideCompleted;
     localStorage.setItem(HIDE_DONE_KEY, state.hideCompleted ? '1' : '0');
