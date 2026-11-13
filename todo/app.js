@@ -4,6 +4,25 @@
  * 토큰은 이 브라우저의 localStorage/sessionStorage에만 둔다. 로그나 커밋에 남기지 않는다.
  */
 
+import {
+  CATEGORY_COLORS,
+  addDays,
+  isOverdue,
+  isYmd,
+  monthGrid,
+  normalizeRepeat,
+  parseQuickAdd,
+  planNextTask,
+  planNotifications,
+  projectOccurrences,
+  ruleLabel,
+  seoulDate,
+  thisWeekday,
+  nextWeekMonday,
+} from './model.js';
+
+export { parseQuickAdd };
+
 const TZ = 'Asia/Seoul';
 const SAVE_DELAY = 1500;
 const UNDO_MS = 5000;
@@ -14,6 +33,12 @@ const PERSIST_KEY = 'todo.auth.persist';
 const SETTINGS_KEY = 'todo.settings';
 const THEME_KEY = 'todo.theme';
 const HIDE_DONE_KEY = 'todo.hideCompleted';
+const SORT_KEY = 'todo.sort';
+const GROUP_KEY = 'todo.groupCategory';
+const OVERDUE_KEY = 'todo.dueOverdue';
+const NOTIFY_KEY = 'todo.notify';
+const BRIEF_KEY = 'todo.briefingTime';
+const NOTIFIED_KEY = 'todo.notified';
 
 export const DEFAULT_SETTINGS = Object.freeze({
   owner: 'soondooop',
@@ -46,6 +71,17 @@ const state = {
   ready: false,
   view: 'today',
   hideCompleted: false,
+  sort: 'manual',
+  groupByCategory: false,
+  dueOnlyOverdue: false,
+  categoryFilter: null,
+  collapsedGroups: {},
+  calendarYear: null,
+  calendarMonth: null,
+  calendarDay: null,
+  expandedIds: new Set(),
+  notifyEnabled: false,
+  briefingTime: '09:00',
   query: '',
   tag: null,
   focusId: null,
@@ -79,15 +115,7 @@ export class GitHubError extends Error {
   }
 }
 
-export function seoulDate(value = new Date()) {
-  const date = value instanceof Date ? value : new Date(value);
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: TZ,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(date);
-}
+export { seoulDate, addDays, isYmd };
 
 export function seoulStamp(value = new Date()) {
   const date = value instanceof Date ? value : new Date(value);
@@ -113,11 +141,6 @@ export function formatKoreanFull(value = new Date()) {
     day: 'numeric',
     weekday: 'long',
   }).format(date);
-}
-
-export function addDays(ymd, amount) {
-  const utc = Date.parse(`${ymd}T00:00:00Z`) + amount * 86400000;
-  return new Date(utc).toISOString().slice(0, 10);
 }
 
 export function daysBetween(from, to) {
@@ -166,53 +189,12 @@ function mapPriority(value) {
   return null;
 }
 
-export function isYmd(value) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return false;
-  const [year, month, day] = value.split('-').map(Number);
-  const date = new Date(Date.UTC(year, month - 1, day));
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
-}
-
-export function parseQuickAdd(text) {
-  const src = String(text ?? '').normalize('NFC');
-  const tags = [];
-  let priority = null;
-  let due = null;
-  const re = /(^|\s)(#([^\s#]+)|!(높음|보통|낮음|high|medium|low|[123])|(\d{4}-\d{2}-\d{2}))(?=\s|$)/giu;
-  let out = '';
-  let last = 0;
-  let match = re.exec(src);
-  while (match) {
-    const ws = match[1] || '';
-    const tokenStart = match.index + ws.length;
-    out += src.slice(last, tokenStart);
-    last = match.index + match[0].length;
-    if (match[3]) tags.push(match[3]);
-    else if (match[4]) priority = mapPriority(match[4]);
-    else if (match[5]) {
-      if (isYmd(match[5])) due = match[5];
-      else out += match[5];
-    }
-    match = re.exec(src);
-  }
-  out += src.slice(last);
-  const title = out.replace(/\s+/g, ' ').trim().slice(0, 500);
-  const uniq = [];
-  for (const tag of tags) {
-    const clean = tag.replace(/^#+/, '').trim().slice(0, 30);
-    if (!clean) continue;
-    if (!uniq.some((item) => item.toLocaleLowerCase('ko') === clean.toLocaleLowerCase('ko'))) uniq.push(clean);
-    if (uniq.length >= 12) break;
-  }
-  return { title, tags: uniq, priority: priority || 'medium', due };
-}
-
 function normalizeTask(raw, index) {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
     throw new Error(`할 일 ${index + 1}이 객체가 아닙니다.`);
   }
   const id = typeof raw.id === 'string' ? raw.id.trim() : '';
-  if (!id || id.length > 80 || /\s/.test(id)) throw new Error(`할 일 ${index + 1}의 id가 올바르지 않습니다.`);
+  if (!id || id.length > 140 || /\s/.test(id)) throw new Error(`할 일 ${index + 1}의 id가 올바르지 않습니다.`);
   const title = typeof raw.title === 'string' ? raw.title.replace(/\s+/g, ' ').trim() : '';
   if (!title) throw new Error(`할 일 ${index + 1}의 제목이 필요합니다.`);
   const priority = mapPriority(raw.priority) || 'medium';
@@ -244,12 +226,20 @@ function normalizeTask(raw, index) {
     ? Math.max(0, Math.min(9999, Math.floor(Number(raw.carriedDays))))
     : 0;
   const order = Number.isFinite(Number(raw.order)) ? Number(raw.order) : index;
+  const dueTime = typeof raw.dueTime === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(raw.dueTime) ? raw.dueTime : null;
+  const reminder = ['at', '10m', '30m', '1h', '1d9'].includes(raw.reminder) ? raw.reminder : null;
+  const seriesId = typeof raw.seriesId === 'string' && raw.seriesId.trim() && raw.seriesId.trim().length <= 80
+    ? raw.seriesId.trim()
+    : null;
+  const occurrenceDate = typeof raw.occurrenceDate === 'string' && isYmd(raw.occurrenceDate) ? raw.occurrenceDate : null;
+  const categoryId = typeof raw.categoryId === 'string' && raw.categoryId.trim() ? raw.categoryId.trim() : null;
   return {
     id,
     title: title.slice(0, 500),
     memo: typeof raw.memo === 'string' ? raw.memo.slice(0, 5000) : '',
     priority,
     due,
+    dueTime,
     tags,
     list,
     status,
@@ -258,7 +248,29 @@ function normalizeTask(raw, index) {
     updatedAt,
     completedAt,
     carriedDays,
+    repeat: normalizeRepeat(raw.repeat),
+    seriesId,
+    occurrenceDate,
+    reminder,
+    categoryId,
   };
+}
+
+function normalizeCategories(raw) {
+  if (!Array.isArray(raw)) return [];
+  const seen = new Set();
+  const categories = [];
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') continue;
+    const id = typeof item.id === 'string' ? item.id.trim() : '';
+    const name = typeof item.name === 'string' ? item.name.replace(/\s+/g, ' ').trim().slice(0, 24) : '';
+    if (!id || !name || seen.has(id) || id.length > 40) continue;
+    seen.add(id);
+    const color = CATEGORY_COLORS.includes(item.color) ? item.color : CATEGORY_COLORS[categories.length % CATEGORY_COLORS.length];
+    categories.push({ id, name, color });
+    if (categories.length >= 40) break;
+  }
+  return categories;
 }
 
 export function validateDoc(input) {
@@ -279,11 +291,11 @@ export function validateDoc(input) {
   const updatedAt = typeof input.updatedAt === 'string' && !Number.isNaN(Date.parse(input.updatedAt))
     ? new Date(input.updatedAt).toISOString()
     : new Date().toISOString();
-  return { version: 1, updatedAt, rolloverDate, tasks };
+  return { version: 2, updatedAt, rolloverDate, categories: normalizeCategories(input.categories), tasks };
 }
 
-export function emptyDoc(today = seoulDate(new Date()), now = new Date().toISOString()) {
-  return { version: 1, updatedAt: now, rolloverDate: today, tasks: [] };
+export function emptyDoc(today = todayKey(), now = new Date().toISOString()) {
+  return { version: 2, updatedAt: now, rolloverDate: today, categories: [], tasks: [] };
 }
 
 export function validateSettings(input) {
@@ -352,10 +364,17 @@ export function mergeDocs(localDoc, remoteDoc, baseDoc = { tasks: [] }, deletedA
     }
   }
   tasks.sort((a, b) => a.order - b.order || String(a.createdAt).localeCompare(String(b.createdAt)));
+  const localCats = normalizeCategories(localDoc.categories);
+  const remoteCats = normalizeCategories(remoteDoc.categories);
+  const newerFirst = timeOf(localDoc.updatedAt) >= timeOf(remoteDoc.updatedAt);
+  const categoryMap = new Map();
+  for (const category of (newerFirst ? remoteCats : localCats)) categoryMap.set(category.id, category);
+  for (const category of (newerFirst ? localCats : remoteCats)) categoryMap.set(category.id, category);
   return validateDoc({
-    version: 1,
+    version: 2,
     updatedAt: new Date().toISOString(),
     rolloverDate: laterYmd(localDoc.rolloverDate, remoteDoc.rolloverDate),
+    categories: [...categoryMap.values()],
     tasks,
   });
 }
@@ -615,12 +634,72 @@ function renderThemeButton() {
   button.setAttribute('aria-label', `테마 ${THEME_LABEL[state.theme]}. 클릭하면 바뀝니다.`);
 }
 
+function appNow() {
+  if (typeof window !== 'undefined' && window.__TODO_NOW) return new Date(window.__TODO_NOW);
+  return new Date();
+}
+
+function todayKey() {
+  return seoulDate(appNow());
+}
+
+function categoryById(id) {
+  return (state.doc?.categories || []).find((category) => category.id === id) || null;
+}
+
+function compareDue(a, b) {
+  if (!a.due && !b.due) return 0;
+  if (!a.due) return 1;
+  if (!b.due) return -1;
+  if (a.due !== b.due) return a.due < b.due ? -1 : 1;
+  if (!a.dueTime && !b.dueTime) return 0;
+  if (!a.dueTime) return 1;
+  if (!b.dueTime) return -1;
+  return a.dueTime < b.dueTime ? -1 : a.dueTime > b.dueTime ? 1 : 0;
+}
+
+const PRIORITY_RANK = { high: 0, medium: 1, low: 2 };
+
+function compareBySort(a, b) {
+  if (state.sort === 'priority') {
+    const diff = (PRIORITY_RANK[a.priority] ?? 1) - (PRIORITY_RANK[b.priority] ?? 1);
+    if (diff) return diff;
+  } else if (state.sort === 'due') {
+    const diff = compareDue(a, b);
+    if (diff) return diff;
+  } else if (state.sort === 'created') {
+    const diff = String(a.createdAt).localeCompare(String(b.createdAt));
+    if (diff) return diff;
+  } else if (state.sort === 'category') {
+    const an = categoryById(a.categoryId)?.name || '힣';
+    const bn = categoryById(b.categoryId)?.name || '힣';
+    const diff = an.localeCompare(bn, 'ko');
+    if (diff) return diff;
+  }
+  return byOrder(a, b);
+}
+
+function ensureCategory(name) {
+  const clean = String(name || '').replace(/\s+/g, ' ').trim().slice(0, 24);
+  if (!clean || !state.doc) return null;
+  if (!Array.isArray(state.doc.categories)) state.doc.categories = [];
+  const found = state.doc.categories.find((category) => category.name.toLocaleLowerCase('ko') === clean.toLocaleLowerCase('ko'));
+  if (found) return found.id;
+  const id = `cat-${Math.random().toString(36).slice(2, 10)}`;
+  state.doc.categories.push({
+    id,
+    name: clean,
+    color: CATEGORY_COLORS[state.doc.categories.length % CATEGORY_COLORS.length],
+  });
+  return id;
+}
+
 function inView(task, view) {
   if (view === 'done') return task.status === 'done';
   if (task.list !== view) return false;
   if (task.status === 'open') return true;
   if (task.status !== 'done') return false;
-  if (view === 'today') return Boolean(task.completedAt && seoulDate(task.completedAt) === seoulDate(new Date()));
+  if (view === 'today') return Boolean(task.completedAt && seoulDate(task.completedAt) === todayKey());
   return true;
 }
 
@@ -629,6 +708,9 @@ function hideDoneInList() {
 }
 
 function matchesFilter(task) {
+  if (state.categoryFilter === 'none' && task.categoryId) return false;
+  if (state.categoryFilter && state.categoryFilter !== 'none' && task.categoryId !== state.categoryFilter) return false;
+  if (state.dueOnlyOverdue && state.view !== 'done' && state.view !== 'calendar' && task.status !== 'done' && !isOverdue(task, appNow())) return false;
   if (state.tag && !task.tags.includes(state.tag)) return false;
   const query = state.query.trim().toLocaleLowerCase('ko');
   if (!query) return true;
@@ -651,13 +733,13 @@ function orderedVisibleTasks() {
     return tasks.sort((a, b) => String(b.completedAt || '').localeCompare(String(a.completedAt || '')));
   }
   if (hideDoneInList()) tasks = tasks.filter((task) => task.status !== 'done');
-  const open = tasks.filter((task) => task.status !== 'done').sort(byOrder);
-  const done = tasks.filter((task) => task.status === 'done').sort(byOrder);
+  const open = tasks.filter((task) => task.status !== 'done').sort(compareBySort);
+  const done = tasks.filter((task) => task.status === 'done').sort(compareBySort);
   return [...open, ...done];
 }
 
 function groupLabel(ymd) {
-  const today = seoulDate(new Date());
+  const today = todayKey();
   if (ymd === today) return '오늘';
   if (ymd === addDays(today, -1)) return '어제';
   if (!isYmd(ymd)) return '날짜 없음';
@@ -670,20 +752,24 @@ function groupLabel(ymd) {
   }).format(new Date(`${ymd}T12:00:00+09:00`));
 }
 
-function formatDue(ymd, today, status) {
+function formatDue(task, today) {
+  const ymd = task?.due;
   if (!ymd) return '기한';
-  if (ymd === today) return '오늘';
-  if (ymd === addDays(today, 1)) return '내일';
-  if (status === 'open' && ymd === addDays(today, -1)) return '어제';
-  const [year, month, day] = ymd.split('-').map(Number);
-  if (String(year) === today.slice(0, 4)) return `${month}월 ${day}일`;
-  return `${year}.${month}.${day}`;
+  let label = '';
+  if (ymd === today) label = '오늘';
+  else if (ymd === addDays(today, 1)) label = '내일';
+  else if (task.status === 'open' && ymd === addDays(today, -1)) label = '어제';
+  else {
+    const [year, month, day] = ymd.split('-').map(Number);
+    label = String(year) === today.slice(0, 4) ? `${month}월 ${day}일` : `${year}.${month}.${day}`;
+  }
+  return task.dueTime ? `${label} ${task.dueTime}` : label;
 }
 
-function dueClass(ymd, today, status) {
-  if (!ymd) return 'due is-empty';
-  if (status === 'open' && ymd < today) return 'due is-overdue';
-  if (ymd === today) return 'due is-today';
+function dueClass(task, today) {
+  if (!task?.due) return 'due is-empty';
+  if (isOverdue(task, appNow())) return 'due is-overdue';
+  if (task.due === today && task.status !== 'done') return 'due is-today';
   return 'due';
 }
 
@@ -767,7 +853,7 @@ function fallbackAvatar(login) {
 }
 
 function renderTabs() {
-  for (const view of ['today', 'backlog', 'done']) {
+  for (const view of ['today', 'backlog', 'done', 'calendar']) {
     const tab = $(`tab-${view}`);
     const selected = state.view === view;
     tab.setAttribute('aria-selected', selected ? 'true' : 'false');
@@ -776,8 +862,8 @@ function renderTabs() {
   $('list').setAttribute('aria-labelledby', `tab-${state.view}`);
   const composer = $('composer');
   composer.placeholder = state.view === 'backlog'
-    ? '백로그에 추가  ·  #태그  !높음  2026-11-20'
-    : '오늘 할 일 추가  ·  #태그  !높음  2026-11-20';
+    ? '백로그에 추가  ·  @카테고리  #태그  내일 오후 3시'
+    : '오늘 할 일 추가  ·  @카테고리  #태그  내일 오후 3시';
   composer.disabled = !state.ready || !state.doc;
   $('composerForm').querySelector('button').disabled = composer.disabled;
 }
@@ -790,7 +876,7 @@ function renderCounts() {
 }
 
 function renderProgress() {
-  const today = seoulDate(new Date());
+  const today = todayKey();
   const { done, total } = todayProgress(state.doc?.tasks || [], today);
   const bar = $('progress');
   const max = Math.max(total, 1);
@@ -799,6 +885,8 @@ function renderProgress() {
   bar.setAttribute('aria-valuetext', progressText(done, total));
   $('progressFill').style.width = total === 0 ? '0%' : `${Math.round((done / total) * 100)}%`;
   $('progressLabel').textContent = progressText(done, total);
+  const overdue = (state.doc?.tasks || []).filter((task) => isOverdue(task, appNow())).length;
+  document.title = overdue > 0 ? `(${overdue}) 오늘 · 업무 체크` : '오늘 · 업무 체크';
 }
 
 function renderTagBar() {
@@ -850,6 +938,10 @@ function renderList() {
     list.append(emptyNode('불러오는 중…'));
     return;
   }
+  if (state.view === 'calendar') {
+    renderCalendar(list);
+    return;
+  }
   const tasks = orderedVisibleTasks();
   if (!tasks.length) {
     list.append(emptyNode(emptyMessage()));
@@ -873,6 +965,8 @@ function renderList() {
       section.append(heading, ul);
       list.append(section);
     }
+  } else if (state.groupByCategory) {
+    renderGrouped(list, tasks);
   } else {
     const open = tasks.filter((task) => task.status !== 'done');
     const done = tasks.filter((task) => task.status === 'done');
@@ -886,6 +980,7 @@ function renderList() {
       list.append(taskList('완료한 할 일', done));
     }
   }
+  window.requestAnimationFrame(() => bindOverflow(list));
   if (state.editingId) {
     const input = list.querySelector('.title-input');
     if (input) {
@@ -901,6 +996,234 @@ function renderList() {
     if (!restoreKind || restoreKind === 'row') row.focus();
     else row.querySelector(`[data-restore="${CSS.escape(restoreKind)}"]`)?.focus();
   }
+}
+
+function renderGrouped(list, tasks) {
+  const categories = state.doc.categories || [];
+  const buckets = new Map();
+  for (const category of categories) buckets.set(category.id, []);
+  buckets.set('none', []);
+  for (const task of tasks) {
+    const key = task.categoryId && buckets.has(task.categoryId) ? task.categoryId : 'none';
+    buckets.get(key).push(task);
+  }
+  let any = false;
+  for (const [key, items] of buckets) {
+    if (!items.length) continue;
+    any = true;
+    const category = key === 'none' ? null : categoryById(key);
+    const section = document.createElement('section');
+    section.className = 'cat-group';
+    const head = document.createElement('button');
+    head.type = 'button';
+    head.className = 'cat-head';
+    const open = !state.collapsedGroups[key];
+    head.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (category) {
+      const dot = document.createElement('span');
+      dot.className = `cat-dot cat-${category.color}`;
+      head.append(dot);
+    }
+    const name = document.createElement('span');
+    name.textContent = category ? category.name : '카테고리 없음';
+    const count = document.createElement('span');
+    count.className = 'count';
+    count.textContent = String(items.length);
+    head.append(name, count);
+    head.addEventListener('click', () => {
+      state.collapsedGroups[key] = !state.collapsedGroups[key];
+      renderList();
+    });
+    section.append(head);
+    if (open) {
+      const undone = items.filter((task) => task.status !== 'done');
+      const done = items.filter((task) => task.status === 'done');
+      if (undone.length) section.append(taskList(category ? category.name : '카테고리 없음', undone));
+      if (done.length) {
+        const split = document.createElement('h3');
+        split.className = 'done-split';
+        split.textContent = `완료 ${done.length}`;
+        section.append(split, taskList('완료한 할 일', done));
+      }
+    }
+    list.append(section);
+  }
+  if (!any) list.append(emptyNode(emptyMessage()));
+}
+
+function renderCalendar(list) {
+  const today = todayKey();
+  if (!state.calendarYear) {
+    state.calendarYear = Number(today.slice(0, 4));
+    state.calendarMonth = Number(today.slice(5, 7));
+  }
+  const year = state.calendarYear;
+  const month = state.calendarMonth;
+  const days = monthGrid(year, month);
+  const wrap = document.createElement('section');
+  wrap.className = 'calendar';
+  const bar = document.createElement('div');
+  bar.className = 'cal-bar';
+  const title = document.createElement('h2');
+  title.textContent = `${year}년 ${month}월`;
+  const prev = document.createElement('button');
+  prev.type = 'button';
+  prev.className = 'btn';
+  prev.textContent = '이전';
+  prev.setAttribute('aria-label', '이전 달');
+  prev.addEventListener('click', () => shiftMonth(-1));
+  const next = document.createElement('button');
+  next.type = 'button';
+  next.className = 'btn';
+  next.textContent = '다음';
+  next.setAttribute('aria-label', '다음 달');
+  next.addEventListener('click', () => shiftMonth(1));
+  const jump = document.createElement('button');
+  jump.type = 'button';
+  jump.className = 'btn';
+  jump.textContent = '오늘';
+  jump.addEventListener('click', () => {
+    state.calendarYear = Number(today.slice(0, 4));
+    state.calendarMonth = Number(today.slice(5, 7));
+    state.calendarDay = today;
+    renderList();
+  });
+  bar.append(prev, title, next, jump);
+  wrap.append(bar);
+  const weekdays = document.createElement('div');
+  weekdays.className = 'cal-weekdays';
+  for (const name of ['월', '화', '수', '목', '금', '토', '일']) {
+    const cell = document.createElement('span');
+    cell.textContent = name;
+    weekdays.append(cell);
+  }
+  wrap.append(weekdays);
+  const grid = document.createElement('div');
+  grid.className = 'cal-grid';
+  const rangeStart = days[0];
+  const rangeEnd = days[days.length - 1];
+  const projections = projectOccurrences(state.doc.tasks, today, rangeEnd).filter((item) => item.date > today);
+  for (const day of days) {
+    const inMonth = Number(day.slice(5, 7)) === month;
+    const completed = state.doc.tasks.filter((task) => task.status === 'done' && task.completedAt && seoulDate(task.completedAt) === day && passesCalendarFilter(task));
+    const due = state.doc.tasks.filter((task) => task.status !== 'done' && task.due === day && passesCalendarFilter(task));
+    const planned = projections.filter((item) => item.date === day && passesCalendarFilter(item));
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'cal-day';
+    if (!inMonth) button.classList.add('is-outside');
+    if (day === today) button.classList.add('is-today');
+    if (day > today) button.classList.add('is-future');
+    if (day === state.calendarDay) button.classList.add('is-selected');
+    const heat = completed.length === 0 ? 0 : completed.length === 1 ? 1 : completed.length < 4 ? 2 : 3;
+    button.dataset.heat = String(heat);
+    button.setAttribute('aria-pressed', day === state.calendarDay ? 'true' : 'false');
+    button.setAttribute('aria-label', `${day} 완료 ${completed.length}개`);
+    const num = document.createElement('span');
+    num.className = 'cal-num';
+    num.textContent = String(Number(day.slice(8, 10)));
+    button.append(num);
+    if (completed.length) {
+      const count = document.createElement('span');
+      count.className = 'cal-count';
+      count.textContent = String(completed.length);
+      button.append(count);
+    }
+    const dots = document.createElement('span');
+    dots.className = 'cal-dots';
+    if (due.length) {
+      const dot = document.createElement('span');
+      dot.className = 'dot due-dot';
+      dots.append(dot);
+    }
+    if (planned.length) {
+      const dot = document.createElement('span');
+      dot.className = 'dot plan-dot';
+      dots.append(dot);
+    }
+    button.append(dots);
+    button.addEventListener('click', () => {
+      state.calendarDay = day;
+      renderList();
+    });
+    grid.append(button);
+  }
+  wrap.append(grid);
+  if (state.calendarDay) wrap.append(renderDayDetail(state.calendarDay, projections));
+  list.append(wrap);
+}
+
+function passesCalendarFilter(task) {
+  if (state.categoryFilter === 'none') return !task.categoryId;
+  if (state.categoryFilter) return task.categoryId === state.categoryFilter;
+  return true;
+}
+
+function renderDayDetail(day, projections) {
+  const panel = document.createElement('div');
+  panel.className = 'day-detail';
+  const heading = document.createElement('h3');
+  heading.textContent = groupLabel(day);
+  panel.append(heading);
+  const completed = state.doc.tasks.filter((task) => task.status === 'done' && task.completedAt && seoulDate(task.completedAt) === day && passesCalendarFilter(task));
+  const due = state.doc.tasks.filter((task) => task.status !== 'done' && task.due === day && passesCalendarFilter(task));
+  const planned = projections.filter((item) => item.date === day && passesCalendarFilter(item));
+  if (completed.length) panel.append(detailBlock('완료', completed.map((task) => detailLine(task.title, `${formatDoneTime(task.completedAt)}${categorySuffix(task)}`, false))));
+  if (due.length) panel.append(detailBlock('기한', due.map((task) => detailLine(task.title, `${task.dueTime || '시간 없음'}${categorySuffix(task)}`, isOverdue(task, appNow())))));
+  if (planned.length) panel.append(detailBlock('예정 반복', planned.map((item) => detailLine(item.title, `${ruleLabel(item.rule) || '반복'}${categorySuffix(item)}`, false, true))));
+  if (!completed.length && !due.length && !planned.length) {
+    const empty = document.createElement('p');
+    empty.className = 'empty';
+    empty.textContent = '이 날짜에 표시할 일이 없습니다.';
+    panel.append(empty);
+  }
+  return panel;
+}
+
+function categorySuffix(task) {
+  const category = categoryById(task.categoryId);
+  return category ? ` · ${category.name}` : '';
+}
+
+function detailBlock(label, lines) {
+  const section = document.createElement('section');
+  const title = document.createElement('h4');
+  title.textContent = label;
+  section.append(title);
+  if (!lines.length) return section;
+  const ul = document.createElement('ul');
+  ul.className = 'detail-list';
+  for (const line of lines) ul.append(line);
+  section.append(ul);
+  return section;
+}
+
+function detailLine(title, meta, overdue, projected) {
+  const li = document.createElement('li');
+  if (projected) li.classList.add('is-projection');
+  const strong = document.createElement('span');
+  strong.textContent = title;
+  const small = document.createElement('span');
+  small.textContent = meta;
+  if (overdue) small.classList.add('is-overdue');
+  li.append(strong, small);
+  return li;
+}
+
+function shiftMonth(delta) {
+  let month = state.calendarMonth + delta;
+  let year = state.calendarYear;
+  if (month < 1) {
+    month = 12;
+    year -= 1;
+  }
+  if (month > 12) {
+    month = 1;
+    year += 1;
+  }
+  state.calendarMonth = month;
+  state.calendarYear = year;
+  renderList();
 }
 
 function taskList(label, tasks) {
@@ -964,7 +1287,7 @@ function flagIcon(priority) {
 }
 
 function renderTask(task) {
-  const today = seoulDate(new Date());
+  const today = todayKey();
   const li = document.createElement('li');
   li.className = 'task';
   if (task.status === 'done') li.classList.add('is-done');
@@ -1025,19 +1348,48 @@ function renderTask(task) {
   } else {
     const title = document.createElement('span');
     title.className = 'title';
+    title.id = `title-${task.id}`;
     title.textContent = task.title;
-    title.title = task.title;
     title.addEventListener('dblclick', (event) => {
       event.preventDefault();
       startEdit(task.id);
     });
     titleLine.append(title);
-    if (state.view === 'today' && task.carriedDays > 0) {
+    const expand = document.createElement('button');
+    expand.type = 'button';
+    expand.className = 'expand-btn';
+    expand.hidden = !state.expandedIds.has(task.id);
+    expand.dataset.restore = 'expand';
+    expand.textContent = state.expandedIds.has(task.id) ? '접기' : '더보기';
+    expand.setAttribute('aria-expanded', state.expandedIds.has(task.id) ? 'true' : 'false');
+    expand.setAttribute('aria-controls', `title-${task.id}`);
+    expand.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (state.expandedIds.has(task.id)) state.expandedIds.delete(task.id);
+      else state.expandedIds.add(task.id);
+      renderList();
+    });
+    titleLine.append(expand);
+    if (state.view === 'today' && task.carriedDays > 0 && task.status !== 'done') {
       const badge = document.createElement('span');
       badge.className = 'carry';
       badge.textContent = `이월 ${task.carriedDays}`;
       titleLine.append(badge);
     }
+    if (task.memo) {
+      const measure = document.createElement('span');
+      measure.className = 'memo-measure';
+      measure.setAttribute('aria-hidden', 'true');
+      measure.textContent = task.memo;
+      titleLine.append(measure);
+    }
+    if (state.expandedIds.has(task.id) && task.memo) {
+      const memoRead = document.createElement('p');
+      memoRead.className = 'memo-read';
+      memoRead.textContent = task.memo;
+      titleLine.append(memoRead);
+    }
+    if (state.expandedIds.has(task.id)) li.classList.add('is-expanded');
   }
 
   const meta = document.createElement('div');
@@ -1071,49 +1423,44 @@ function renderTask(task) {
     meta.append(moreTags);
   }
 
-  if (state.dueId === task.id) {
-    const dateInput = document.createElement('input');
-    dateInput.type = 'date';
-    dateInput.className = 'due-input';
-    dateInput.value = task.due || '';
-    dateInput.setAttribute('aria-label', `${task.title} 기한`);
-    dateInput.addEventListener('change', () => {
-      setDue(task.id, dateInput.value || null);
-    });
-    dateInput.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        event.stopPropagation();
-        state.dueId = null;
-        renderList();
-      }
-    });
-    dateInput.addEventListener('blur', () => {
-      window.setTimeout(() => {
-        if (state.dueId === task.id) {
-          state.dueId = null;
-          renderList();
-        }
-      }, 120);
-    });
-    meta.append(dateInput);
-  } else {
-    const due = document.createElement('button');
-    due.type = 'button';
-    due.className = dueClass(task.due, today, task.status);
-    due.dataset.restore = 'due';
-    due.textContent = formatDue(task.due, today, task.status);
-    due.setAttribute('aria-label', task.due ? `기한 ${task.due}` : '기한 설정');
-    due.addEventListener('click', (event) => {
+  const category = categoryById(task.categoryId);
+  if (category) {
+    const label = document.createElement('button');
+    label.type = 'button';
+    label.className = `cat-label cat-${category.color}`;
+    label.textContent = category.name;
+    label.setAttribute('aria-label', `카테고리 ${category.name}`);
+    label.addEventListener('click', (event) => {
       event.stopPropagation();
       state.focusId = task.id;
-      state.dueId = task.id;
-      state.menu = null;
-      renderList();
-      $('list').querySelector('.due-input')?.focus();
+      openCategoryPicker(task.id);
     });
-    meta.append(due);
+    meta.append(label);
   }
+  if (task.repeat) {
+    const repeat = document.createElement('button');
+    repeat.type = 'button';
+    repeat.className = 'repeat-label';
+    repeat.textContent = `↻ ${ruleLabel(task.repeat)}`;
+    repeat.setAttribute('aria-label', `반복 ${ruleLabel(task.repeat)}`);
+    repeat.addEventListener('click', (event) => {
+      event.stopPropagation();
+      openRepeatDialog(task.id);
+    });
+    meta.append(repeat);
+  }
+  const due = document.createElement('button');
+  due.type = 'button';
+  due.className = dueClass(task, today);
+  due.dataset.restore = 'due';
+  due.textContent = formatDue(task, today);
+  const dueLabel = task.due ? `기한 ${task.due}${task.dueTime ? ` ${task.dueTime}` : ''}` : '기한 설정';
+  due.setAttribute('aria-label', dueLabel);
+  due.addEventListener('click', (event) => {
+    event.stopPropagation();
+    openDueDialog(task.id);
+  });
+  meta.append(due);
 
   const flag = document.createElement('button');
   flag.type = 'button';
@@ -1219,6 +1566,20 @@ function renderMenu(task) {
     }
     return menu;
   }
+  if (state.menu.kind === 'category') {
+    menu.setAttribute('aria-label', '카테고리');
+    const none = menuAction('없음', () => setCategory(task.id, null));
+    none.setAttribute('aria-pressed', task.categoryId ? 'false' : 'true');
+    menu.append(none);
+    for (const category of state.doc?.categories || []) {
+      const button = menuAction(category.name, () => setCategory(task.id, category.id));
+      button.classList.add(`cat-${category.color}`);
+      button.setAttribute('aria-pressed', task.categoryId === category.id ? 'true' : 'false');
+      menu.append(button);
+    }
+    menu.append(menuAction('카테고리 관리', openCategoryDialog));
+    return menu;
+  }
   menu.setAttribute('aria-label', '할 일 메뉴');
   const items = orderedVisibleTasks();
   const index = items.findIndex((item) => item.id === task.id);
@@ -1230,6 +1591,9 @@ function renderMenu(task) {
   if (!(task.status === 'open' && task.list === 'today')) menu.append(menuAction('오늘로 이동', () => moveToList(task.id, 'today')));
   if (!(task.status === 'open' && task.list === 'backlog')) menu.append(menuAction('백로그로 이동', () => moveToList(task.id, 'backlog')));
   menu.append(menuAction(task.memo ? '메모 편집' : '메모 추가', () => toggleMemo(task.id)));
+  menu.append(menuAction('기한', () => openDueDialog(task.id)));
+  menu.append(menuAction(task.repeat ? '반복 수정' : '반복', () => openRepeatDialog(task.id)));
+  menu.append(menuAction('카테고리', () => openCategoryPicker(task.id)));
   const danger = menuAction('삭제', () => deleteTask(task.id));
   danger.classList.add('danger');
   menu.append(danger);
@@ -1250,9 +1614,11 @@ function menuAction(label, onClick, disabled = false) {
 
 function bindDrag(li, task) {
   li.addEventListener('dragstart', (event) => {
-    if (state.view === 'done' || state.query.trim() || state.tag || state.editingId) {
+    if (state.view === 'done' || state.view === 'calendar' || state.query.trim() || state.tag || state.categoryFilter || state.dueOnlyOverdue || state.sort !== 'manual' || state.groupByCategory || state.editingId) {
       event.preventDefault();
-      if (state.query.trim() || state.tag) announce('필터를 해제하면 순서를 바꿀 수 있습니다.');
+      if (state.query.trim() || state.tag || state.categoryFilter || state.dueOnlyOverdue || state.sort !== 'manual' || state.groupByCategory) {
+        announce('수동 순서에서만, 필터와 그룹을 끄면 순서를 바꿀 수 있습니다.');
+      }
       return;
     }
     if (event.target.closest('button, input, textarea, a')) {
@@ -1292,6 +1658,34 @@ function bindDrag(li, task) {
   });
 }
 
+const overflowObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver((entries) => {
+  for (const entry of entries) measureOverflow(entry.target.closest('.task'));
+});
+
+function measureOverflow(row) {
+  if (!row) return;
+  const button = row.querySelector('.expand-btn');
+  const title = row.querySelector('.title');
+  if (!button || !title) return;
+  const expanded = row.classList.contains('is-expanded');
+  if (expanded) {
+    button.hidden = false;
+    return;
+  }
+  const memo = row.querySelector('.memo-measure');
+  const titleOverflow = title.scrollWidth > title.clientWidth + 1;
+  const memoOverflow = memo ? memo.scrollWidth > memo.clientWidth + 1 : false;
+  button.hidden = !(titleOverflow || memoOverflow);
+}
+
+function bindOverflow(root) {
+  root.querySelectorAll('.task').forEach((row) => {
+    measureOverflow(row);
+    const line = row.querySelector('.title-line');
+    if (line && overflowObserver) overflowObserver.observe(line);
+  });
+}
+
 function renderHideButton() {
   const button = $('hideDoneBtn');
   if (!button) return;
@@ -1303,9 +1697,12 @@ function renderDynamic() {
   renderCounts();
   renderProgress();
   renderTagBar();
+  renderCategoryBar();
+  renderViewControls();
   renderHideButton();
   renderList();
   renderDataLoc();
+  checkNotifications();
 }
 
 function focusTask(id, domFocus) {
@@ -1352,7 +1749,7 @@ function scheduleSave() {
 
 function applyCarryIfNeeded() {
   if (!state.doc) return false;
-  const result = applyCarryOver(state.doc, seoulDate(new Date()));
+  const result = applyCarryOver(state.doc, todayKey());
   if (!result.changed) return false;
   state.doc = result.doc;
   state.dirty = true;
@@ -1719,6 +2116,7 @@ function submitComposer() {
     memo: '',
     priority: parsed.priority,
     due: parsed.due,
+    dueTime: parsed.dueTime || null,
     tags: parsed.tags,
     list,
     status: 'open',
@@ -1727,6 +2125,11 @@ function submitComposer() {
     updatedAt: now,
     completedAt: null,
     carriedDays: 0,
+    repeat: null,
+    seriesId: null,
+    occurrenceDate: parsed.due,
+    reminder: null,
+    categoryId: parsed.categoryName ? ensureCategory(parsed.categoryName) : (state.categoryFilter && state.categoryFilter !== 'none' ? state.categoryFilter : null),
   };
   state.doc.tasks.push(task);
   state.focusId = task.id;
@@ -1801,17 +2204,19 @@ function setPriority(id, priority) {
   renderDynamic();
 }
 
-function setDue(id, due) {
+function setDue(id, due, dueTime = undefined, reminder = undefined) {
   const task = findTask(id);
   state.dueId = null;
   if (!task) return;
   const next = due && isYmd(due) ? due : null;
-  if (next !== task.due) {
-    task.due = next;
-    task.updatedAt = new Date().toISOString();
-    markDirty();
-  }
+  task.due = next;
+  if (dueTime !== undefined) task.dueTime = dueTime && /^([01]\d|2[0-3]):[0-5]\d$/.test(dueTime) ? dueTime : null;
+  if (!next) task.dueTime = null;
+  if (reminder !== undefined) task.reminder = ['at', '10m', '30m', '1h', '1d9'].includes(reminder) ? reminder : null;
+  if (task.repeat && !task.occurrenceDate) task.occurrenceDate = next;
+  task.updatedAt = new Date().toISOString();
   state.focusId = id;
+  markDirty();
   renderDynamic();
 }
 
@@ -1826,6 +2231,12 @@ function toggleComplete(id) {
     if (wantDone) {
       current.status = 'done';
       current.completedAt = new Date().toISOString();
+      if (current.repeat) {
+        if (!current.seriesId) current.seriesId = String(current.id).split('@')[0];
+        if (!current.occurrenceDate) current.occurrenceDate = current.due || seoulDate(current.completedAt);
+        const next = planNextTask(current, state.doc.tasks, current.completedAt);
+        if (next) state.doc.tasks.push(next);
+      }
     } else {
       current.status = 'open';
       current.completedAt = null;
@@ -1935,9 +2346,9 @@ function applyOrder(ids) {
 function moveTask(id, delta) {
   state.menu = null;
   state.focusId = id;
-  if (state.view === 'done') return;
-  if (state.query.trim() || state.tag) {
-    announce('필터를 해제하면 순서를 바꿀 수 있습니다.');
+  if (state.view === 'done' || state.view === 'calendar') return;
+  if (state.query.trim() || state.tag || state.categoryFilter || state.dueOnlyOverdue || state.sort !== 'manual' || state.groupByCategory) {
+    announce('수동 순서에서만, 필터와 그룹을 끄면 순서를 바꿀 수 있습니다.');
     renderList();
     return;
   }
@@ -1972,7 +2383,7 @@ function reorderTo(fromId, toId, after) {
 }
 
 function setView(view) {
-  if (!['today', 'backlog', 'done'].includes(view) || state.view === view) return;
+  if (!['today', 'backlog', 'done', 'calendar'].includes(view) || state.view === view) return;
   state.view = view;
   state.editingId = null;
   state.menu = null;
@@ -1983,16 +2394,17 @@ function setView(view) {
 function exportJson() {
   if (!state.doc) return;
   const doc = {
-    version: 1,
+    version: 2,
     updatedAt: state.doc.updatedAt,
     rolloverDate: state.doc.rolloverDate,
+    categories: state.doc.categories || [],
     tasks: state.doc.tasks,
   };
   const blob = new Blob([`${JSON.stringify(doc, null, 2)}\n`], { type: 'application/json' });
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
   link.href = url;
-  link.download = `todos-${seoulDate(new Date())}.json`;
+  link.download = `todos-${todayKey()}.json`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -2008,16 +2420,21 @@ function applyImport(mode) {
     }
     for (const id of nextIds) delete state.deletedAt[id];
     state.doc = {
-      version: 1,
+      version: 2,
       updatedAt: now,
-      rolloverDate: incoming.rolloverDate || state.doc.rolloverDate || seoulDate(new Date()),
+      rolloverDate: incoming.rolloverDate || state.doc.rolloverDate || todayKey(),
+      categories: incoming.categories || [],
       tasks: incoming.tasks.map((task) => clone(task)),
     };
   } else {
+    const categoryMap = new Map();
+    for (const category of state.doc.categories || []) categoryMap.set(category.id, category);
+    for (const category of incoming.categories || []) categoryMap.set(category.id, category);
     state.doc = validateDoc({
-      version: 1,
+      version: 2,
       updatedAt: now,
       rolloverDate: laterYmd(state.doc.rolloverDate, incoming.rolloverDate),
+      categories: [...categoryMap.values()],
       tasks: mergeByUpdatedAt(state.doc.tasks, incoming.tasks),
     });
   }
@@ -2181,6 +2598,21 @@ function onKeyDown(event) {
     moveToList(state.focusId, 'backlog');
     return;
   }
+  if (event.code === 'KeyC' && !event.shiftKey) {
+    event.preventDefault();
+    setView('calendar');
+    return;
+  }
+  if (event.code === 'KeyD' && state.focusId) {
+    event.preventDefault();
+    openDueDialog(state.focusId);
+    return;
+  }
+  if (event.code === 'KeyR' && state.focusId) {
+    event.preventDefault();
+    openRepeatDialog(state.focusId);
+    return;
+  }
   if ((event.key === 'Delete' || event.key === 'Backspace') && state.focusId) {
     event.preventDefault();
     deleteTask(state.focusId);
@@ -2190,7 +2622,7 @@ function onKeyDown(event) {
 function rolloverTick() {
   if (!state.doc || $('main').hidden) return;
   fillDate();
-  if (state.doc.rolloverDate && state.doc.rolloverDate < seoulDate(new Date())) {
+  if (state.doc.rolloverDate && state.doc.rolloverDate < todayKey()) {
     if (!applyCarryIfNeeded()) return;
     renderDynamic();
     if (navigator.onLine) scheduleSave();
@@ -2226,6 +2658,74 @@ function bind() {
     localStorage.setItem(HIDE_DONE_KEY, state.hideCompleted ? '1' : '0');
     renderDynamic();
     announce(state.hideCompleted ? '완료한 항목을 숨겼습니다.' : '완료한 항목을 표시합니다.');
+  });
+  $('sortSelect').addEventListener('change', () => {
+    state.sort = $('sortSelect').value;
+    localStorage.setItem(SORT_KEY, state.sort);
+    renderList();
+  });
+  $('groupBtn').addEventListener('click', () => {
+    state.groupByCategory = !state.groupByCategory;
+    localStorage.setItem(GROUP_KEY, state.groupByCategory ? '1' : '0');
+    renderDynamic();
+  });
+  $('overdueBtn').addEventListener('click', () => {
+    state.dueOnlyOverdue = !state.dueOnlyOverdue;
+    localStorage.setItem(OVERDUE_KEY, state.dueOnlyOverdue ? '1' : '0');
+    renderDynamic();
+  });
+  $('dueForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const id = $('dueTaskId').value;
+    setDue(id, $('dueDate').value || null, $('dueTime').value || null, $('dueReminder').value || null);
+    $('dueDialog').close();
+  });
+  document.querySelectorAll('[data-due-quick]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const today = todayKey();
+      const kind = button.dataset.dueQuick;
+      const date = kind === 'today' ? today
+        : kind === 'tomorrow' ? addDays(today, 1)
+          : kind === 'friday' ? thisWeekday(today, 5)
+            : nextWeekMonday(today);
+      $('dueDate').value = date;
+    });
+  });
+  $('dueClear').addEventListener('click', () => {
+    setDue($('dueTaskId').value, null, null, null);
+    $('dueDialog').close();
+  });
+  document.querySelectorAll('input[name="repeatFreq"]').forEach((input) => {
+    input.addEventListener('change', syncRepeatFields);
+  });
+  $('repeatForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    saveRepeat();
+  });
+  $('repeatStop').addEventListener('click', stopRepeat);
+  $('addCatBtn').addEventListener('click', addCategoryFromDialog);
+  $('categoryForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    addCategoryFromDialog();
+  });
+  $('notifyToggle').addEventListener('change', async () => {
+    if ($('notifyToggle').checked) {
+      if (typeof Notification === 'undefined') {
+        $('notifyToggle').checked = false;
+        return;
+      }
+      const permission = await Notification.requestPermission();
+      state.notifyEnabled = permission === 'granted';
+      $('notifyToggle').checked = state.notifyEnabled;
+    } else state.notifyEnabled = false;
+    localStorage.setItem(NOTIFY_KEY, state.notifyEnabled ? '1' : '0');
+    renderNotifyControls();
+    checkNotifications();
+  });
+  $('briefingTime').addEventListener('change', () => {
+    if (!/^\d{2}:\d{2}$/.test($('briefingTime').value)) return;
+    state.briefingTime = $('briefingTime').value;
+    localStorage.setItem(BRIEF_KEY, state.briefingTime);
   });
   $('helpBtn').addEventListener('click', () => $('helpDialog').showModal());
   $('settingsForm').addEventListener('submit', (event) => { void applySettings(event); });
@@ -2353,6 +2853,284 @@ function bind() {
   });
 }
 
+function renderCategoryBar() {
+  const bar = $('catBar');
+  if (!bar || !state.doc) return;
+  bar.replaceChildren();
+  const all = document.createElement('button');
+  all.type = 'button';
+  all.textContent = '전체';
+  all.setAttribute('aria-pressed', state.categoryFilter ? 'false' : 'true');
+  all.addEventListener('click', () => {
+    state.categoryFilter = null;
+    renderDynamic();
+  });
+  bar.append(all);
+  for (const category of state.doc.categories || []) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `cat-${category.color}`;
+    button.textContent = category.name;
+    button.setAttribute('aria-pressed', state.categoryFilter === category.id ? 'true' : 'false');
+    button.addEventListener('click', () => {
+      state.categoryFilter = state.categoryFilter === category.id ? null : category.id;
+      renderDynamic();
+    });
+    bar.append(button);
+  }
+  const manage = document.createElement('button');
+  manage.type = 'button';
+  manage.textContent = '카테고리';
+  manage.addEventListener('click', openCategoryDialog);
+  bar.append(manage);
+}
+
+function renderViewControls() {
+  const sort = $('sortSelect');
+  const group = $('groupBtn');
+  const overdue = $('overdueBtn');
+  if (sort) sort.value = state.sort;
+  if (group) group.setAttribute('aria-pressed', state.groupByCategory ? 'true' : 'false');
+  if (overdue) overdue.setAttribute('aria-pressed', state.dueOnlyOverdue ? 'true' : 'false');
+  const tools = document.querySelector('.list-tools');
+  if (tools) tools.hidden = state.view === 'calendar';
+}
+
+function openDueDialog(id) {
+  const task = findTask(id);
+  if (!task) return;
+  state.focusId = id;
+  $('dueTaskId').value = id;
+  $('dueDate').value = task.due || '';
+  $('dueTime').value = task.dueTime || '';
+  $('dueReminder').value = task.reminder || '';
+  $('dueDialog').showModal();
+}
+
+function openRepeatDialog(id) {
+  const task = findTask(id);
+  if (!task) return;
+  state.focusId = id;
+  $('repeatTaskId').value = id;
+  const rule = task.repeat;
+  const freq = rule?.freq || 'daily';
+  document.querySelectorAll('input[name="repeatFreq"]').forEach((input) => {
+    input.checked = input.value === freq;
+  });
+  $('repeatInterval').value = rule?.interval || 2;
+  $('repeatMonthDay').value = rule?.monthDay === 'last' ? '' : (rule?.monthDay || '');
+  $('repeatLastDay').checked = rule?.monthDay === 'last';
+  document.querySelectorAll('input[name="repeatWeekday"]').forEach((input) => {
+    input.checked = (rule?.weekdays || []).includes(Number(input.value));
+  });
+  $('repeatStop').hidden = !rule;
+  syncRepeatFields();
+  $('repeatDialog').showModal();
+}
+
+function syncRepeatFields() {
+  const freq = document.querySelector('input[name="repeatFreq"]:checked')?.value || 'daily';
+  $('repeatWeekly').hidden = freq !== 'weekly';
+  $('repeatMonthly').hidden = freq !== 'monthly';
+  $('repeatEvery').hidden = freq !== 'interval';
+}
+
+function saveRepeat() {
+  const task = findTask($('repeatTaskId').value);
+  if (!task) return;
+  const freq = document.querySelector('input[name="repeatFreq"]:checked')?.value || 'daily';
+  const weekdays = [...document.querySelectorAll('input[name="repeatWeekday"]:checked')].map((input) => Number(input.value));
+  const monthDay = $('repeatLastDay').checked ? 'last' : (Number($('repeatMonthDay').value) || Number((task.due || todayKey()).slice(8, 10)) || 1);
+  task.repeat = normalizeRepeat({
+    freq,
+    interval: Number($('repeatInterval').value) || 1,
+    weekdays,
+    monthDay,
+  });
+  if (!task.seriesId) task.seriesId = String(task.id).split('@')[0];
+  if (!task.occurrenceDate) task.occurrenceDate = task.due || todayKey();
+  if (!task.due) task.due = task.occurrenceDate;
+  task.updatedAt = new Date().toISOString();
+  $('repeatDialog').close();
+  markDirty();
+  renderDynamic();
+  announce(`반복을 ${ruleLabel(task.repeat)}로 저장했습니다.`);
+}
+
+function stopRepeat() {
+  const task = findTask($('repeatTaskId').value);
+  if (!task) return;
+  task.repeat = null;
+  task.updatedAt = new Date().toISOString();
+  $('repeatDialog').close();
+  markDirty();
+  renderDynamic();
+  announce('반복을 멈췄습니다.');
+}
+
+function openCategoryPicker(id) {
+  state.focusId = id;
+  state.menu = { id, kind: 'category' };
+  renderList();
+}
+
+function setCategory(id, categoryId) {
+  const task = findTask(id);
+  state.menu = null;
+  if (!task) return;
+  task.categoryId = categoryId || null;
+  task.updatedAt = new Date().toISOString();
+  markDirty();
+  renderDynamic();
+}
+
+function openCategoryDialog() {
+  renderCategoryManager();
+  $('categoryDialog').showModal();
+}
+
+function renderCategoryManager() {
+  const list = $('catManager');
+  if (!list || !state.doc) return;
+  list.replaceChildren();
+  for (const category of state.doc.categories || []) {
+    const row = document.createElement('div');
+    row.className = 'cat-edit';
+    const input = document.createElement('input');
+    input.value = category.name;
+    input.maxLength = 24;
+    input.setAttribute('aria-label', `${category.name} 이름`);
+    const colors = document.createElement('div');
+    colors.className = 'swatches';
+    for (const color of CATEGORY_COLORS) {
+      const swatch = document.createElement('button');
+      swatch.type = 'button';
+      swatch.className = `swatch cat-${color}`;
+      swatch.setAttribute('aria-label', color);
+      swatch.setAttribute('aria-pressed', category.color === color ? 'true' : 'false');
+      swatch.addEventListener('click', () => {
+        category.color = color;
+        markDirty();
+        renderCategoryManager();
+        renderDynamic();
+      });
+      colors.append(swatch);
+    }
+    const save = document.createElement('button');
+    save.type = 'button';
+    save.className = 'btn';
+    save.textContent = '이름 저장';
+    save.addEventListener('click', () => {
+      const name = input.value.replace(/\s+/g, ' ').trim().slice(0, 24);
+      if (!name) return;
+      category.name = name;
+      markDirty();
+      renderCategoryManager();
+      renderDynamic();
+    });
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'btn';
+    remove.textContent = '삭제';
+    remove.addEventListener('click', () => {
+      state.doc.categories = state.doc.categories.filter((item) => item.id !== category.id);
+      for (const task of state.doc.tasks) if (task.categoryId === category.id) task.categoryId = null;
+      if (state.categoryFilter === category.id) state.categoryFilter = null;
+      markDirty();
+      renderCategoryManager();
+      renderDynamic();
+    });
+    row.append(input, colors, save, remove);
+    list.append(row);
+  }
+}
+
+function addCategoryFromDialog() {
+  const name = $('newCatName').value;
+  const id = ensureCategory(name);
+  if (!id) return;
+  const color = document.querySelector('input[name="newCatColor"]:checked')?.value;
+  const category = categoryById(id);
+  if (category && CATEGORY_COLORS.includes(color)) category.color = color;
+  $('newCatName').value = '';
+  markDirty();
+  renderCategoryManager();
+  renderDynamic();
+}
+
+function loadNotified() {
+  try { return new Set(JSON.parse(localStorage.getItem(NOTIFIED_KEY) || '[]')); }
+  catch { return new Set(); }
+}
+
+function saveNotified(keys) {
+  localStorage.setItem(NOTIFIED_KEY, JSON.stringify([...keys].slice(-400)));
+}
+
+function showNotice(text) {
+  const notice = $('notice');
+  if (!notice) return;
+  notice.textContent = text;
+  notice.hidden = false;
+  window.clearTimeout(showNotice.timer);
+  showNotice.timer = window.setTimeout(() => { notice.hidden = true; }, 5000);
+}
+
+async function pushNotification(item) {
+  showNotice(`${item.title} — ${item.body}`);
+  try {
+    const registration = await navigator.serviceWorker?.ready;
+    if (registration?.showNotification && Notification.permission === 'granted') {
+      await registration.showNotification(item.title, {
+        body: item.body,
+        tag: item.key,
+        lang: 'ko',
+        icon: '/todo/icon-192.png',
+        data: { url: '/todo/' },
+      });
+      return;
+    }
+  } catch { /* 페이지 알림으로 대체 */ }
+  if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+    try { new Notification(item.title, { body: item.body, tag: item.key, lang: 'ko' }); } catch { /* ignore */ }
+  }
+}
+
+function checkNotifications() {
+  if (!state.notifyEnabled || !state.doc) return;
+  const items = planNotifications({
+    tasks: state.doc.tasks,
+    now: appNow(),
+    briefingTime: state.briefingTime,
+    notified: loadNotified(),
+  });
+  if (!items.length) return;
+  const keys = loadNotified();
+  for (const item of items) {
+    keys.add(item.key);
+    void pushNotification(item);
+  }
+  saveNotified(keys);
+}
+
+function renderNotifyControls() {
+  const toggle = $('notifyToggle');
+  const time = $('briefingTime');
+  if (!toggle) return;
+  toggle.checked = state.notifyEnabled;
+  toggle.disabled = typeof Notification === 'undefined';
+  if (time) time.value = state.briefingTime;
+  const note = $('notifyState');
+  if (note) {
+    const permission = typeof Notification === 'undefined' ? 'unsupported' : Notification.permission;
+    note.textContent = permission === 'granted'
+      ? '알림이 허용되어 있습니다. 이 탭이나 설치한 앱이 켜져 있을 때만 울립니다.'
+      : permission === 'denied'
+        ? '브라우저에서 알림이 차단되어 있습니다.'
+        : '알림은 이 브라우저나 설치한 앱이 실행 중일 때만 울립니다. 푸시 서버는 없습니다.';
+  }
+}
+
 function boot() {
   bind();
   const pref = localStorage.getItem(THEME_KEY) || 'system';
@@ -2360,7 +3138,26 @@ function boot() {
   renderThemeButton();
   state.settings = loadSettings();
   state.hideCompleted = localStorage.getItem(HIDE_DONE_KEY) === '1';
+  const sort = localStorage.getItem(SORT_KEY);
+  if (['manual', 'category', 'priority', 'due', 'created'].includes(sort)) state.sort = sort;
+  state.groupByCategory = localStorage.getItem(GROUP_KEY) === '1';
+  state.dueOnlyOverdue = localStorage.getItem(OVERDUE_KEY) === '1';
+  state.notifyEnabled = localStorage.getItem(NOTIFY_KEY) === '1' && typeof Notification !== 'undefined' && Notification.permission === 'granted';
+  const brief = localStorage.getItem(BRIEF_KEY);
+  if (brief && /^\d{2}:\d{2}$/.test(brief)) state.briefingTime = brief;
   renderHideButton();
+  renderViewControls();
+  renderNotifyControls();
+  if (new URLSearchParams(location.search).has('e2e')) {
+    window.__todo = { checkNotifications, planNotifications };
+  }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/todo/sw.js', { scope: '/todo/' }).catch(() => {});
+  }
+  window.setInterval(checkNotifications, 30000);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') checkNotifications();
+  });
   const persisted = localStorage.getItem(PERSIST_KEY);
   $('persist').checked = persisted !== '0';
   const token = readToken();
