@@ -10,28 +10,35 @@
   <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)">
   <title>오늘 · 업무 체크</title>
-  <link rel="manifest" href="/todo/manifest.json">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%232f6fed'/%3E%3Cpath d='M4 8.2 6.6 11 12 5' fill='none' stroke='white' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css">
   <script>
     (function () {
       try {
+        var skin = localStorage.getItem('todo.skin') || 'pastel';
+        if (skin !== 'paper' && skin !== 'pastel' && skin !== 'focus') skin = 'pastel';
         var pref = localStorage.getItem('todo.theme') || 'system';
         var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         var resolved = pref === 'dark' || (pref !== 'light' && dark) ? 'dark' : 'light';
         if (pref === 'light') resolved = 'light';
-        document.documentElement.setAttribute('data-theme', resolved);
-        document.documentElement.setAttribute('data-theme-pref', pref);
-        document.documentElement.style.colorScheme = resolved;
+        var root = document.documentElement;
+        root.setAttribute('data-skin', skin);
+        root.setAttribute('data-theme', resolved);
+        root.setAttribute('data-theme-pref', pref);
+        root.style.colorScheme = resolved;
       } catch (e) {}
     })();
   </script>
+  <link rel="manifest" href="/todo/manifest.json">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%235b78f6'/%3E%3Cpath d='M4 8.2 6.6 11 12 5' fill='none' stroke='white' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="ambient" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
   <a class="skip" href="#list">할 일 목록으로 건너뛰기</a>
 
   <section id="login" class="login" hidden>
-    <div class="login-inner">
+    <div class="login-inner glass">
       <p class="eyebrow">개인 업무</p>
       <h1>업무 체크</h1>
       <p class="lede">오늘의 할 일을 차분히 남깁니다. 목록은 비공개 GitHub 저장소에만 저장되고, 이 페이지 저장소에는 올라가지 않습니다.</p>
@@ -61,38 +68,43 @@
   <main id="main" class="shell" hidden>
     <button id="navToggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="sidebar">목록</button>
     <div id="navBackdrop" class="nav-backdrop" hidden></div>
-    <aside id="sidebar" class="sidebar">
+    <aside id="sidebar" class="sidebar glass">
       <div class="side-user">
         <span id="avatarSlot" class="avatar-slot"></span>
         <span id="username"></span>
         <button id="logoutBtn" type="button">로그아웃</button>
       </div>
       <button id="sideQuick" class="side-item side-quick" type="button">
-        <span class="side-ico ico-inbox" aria-hidden="true"></span>
+        <svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
         <span>새 할 일</span>
       </button>
       <div class="views" role="tablist" aria-label="목록">
         <button type="button" role="tab" id="tab-today" class="side-item" data-view="today" aria-selected="true" aria-controls="list" tabindex="0">
-          <span class="side-ico ico-star" aria-hidden="true"></span>
+          <svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg>
           <span>오늘</span>
           <span id="count-today" class="count"></span>
         </button>
         <button type="button" role="tab" id="tab-calendar" class="side-item" data-view="calendar" aria-selected="false" aria-controls="list" tabindex="-1">
-          <span class="side-ico ico-cal" aria-hidden="true"></span>
+          <svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>
           <span>예정</span>
         </button>
         <button type="button" role="tab" id="tab-backlog" class="side-item" data-view="backlog" aria-selected="false" aria-controls="list" tabindex="-1">
-          <span class="side-ico ico-box" aria-hidden="true"></span>
+          <svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z"/><path d="m4 8 3-4h10l3 4"/></svg>
           <span>백로그</span>
           <span id="count-backlog" class="count"></span>
         </button>
         <button type="button" role="tab" id="tab-done" class="side-item" data-view="done" aria-selected="false" aria-controls="list" tabindex="-1">
-          <span class="side-ico ico-check" aria-hidden="true"></span>
+          <svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg>
           <span>완료</span>
         </button>
       </div>
       <p class="side-label">카테고리</p>
       <div id="catBar" class="side-cats" aria-label="카테고리 필터"></div>
+      <div class="skin-switch" role="radiogroup" aria-label="테마">
+        <button type="button" data-skin-set="paper">페이퍼</button>
+        <button type="button" data-skin-set="pastel">파스텔</button>
+        <button type="button" data-skin-set="focus">포커스</button>
+      </div>
       <div class="side-tools">
         <label class="search">
           <span class="sr-only" id="searchLabel">검색</span>
@@ -107,18 +119,29 @@
     </aside>
     <div class="workspace">
       <div class="column">
-        <header class="hero">
+        <header class="hero glass">
+          <p id="greeting" class="hello">좋은 아침이에요</p>
           <h1 id="viewTitle"><span id="viewIcon" class="hero-mark" aria-hidden="true">★</span> <span id="viewName">오늘</span></h1>
           <p id="todayDate" class="view-sub"></p>
-          <div id="progress" class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" aria-label="오늘 진행률">
-            <span id="progressFill"></span>
-          </div>
-          <p id="progressLabel" class="progress-label"></p>
         </header>
+        <div class="widgets">
+          <div id="progress" class="widget glass ring-card" role="progressbar" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" aria-label="오늘 진행률">
+            <h3>오늘 진행</h3>
+            <div class="ringbox">
+              <svg viewBox="0 0 54 54" aria-hidden="true">
+                <circle class="ring-track" cx="27" cy="27" r="20"></circle>
+                <circle id="progressFill" class="ring-value" cx="27" cy="27" r="20"></circle>
+              </svg>
+              <p id="progressLabel" class="progress-label"></p>
+            </div>
+          </div>
+          <section id="dueSoon" class="widget glass" aria-label="마감 임박"><h3>마감 임박</h3></section>
+          <section id="weekChart" class="widget glass" aria-label="이번 주 완료"><h3>이번 주 완료</h3></section>
+        </div>
         <p id="syncDetail" class="sync-detail" aria-live="polite"></p>
-        <form id="composerForm" class="composer" autocomplete="off">
+        <form id="composerForm" class="composer glass" autocomplete="off">
           <label class="sr-only" for="composer">할 일 추가</label>
-          <input id="composer" type="text" maxlength="500" placeholder="새 할 일  ·  @카테고리  #태그  내일 오후 3시" enterkeyhint="done" autocomplete="off">
+          <input id="composer" type="text" maxlength="500" placeholder="할 일을 적고 Enter  ·  @카테고리  #태그  내일 오후 3시" enterkeyhint="done" autocomplete="off">
           <button class="btn-primary" type="submit">추가</button>
         </form>
         <div id="tagBar" class="tagbar" aria-label="태그 필터"></div>
@@ -136,12 +159,23 @@
           <button id="overdueBtn" class="text-toggle" type="button" aria-pressed="false">지난 기한</button>
           <button id="hideDoneBtn" class="text-toggle" type="button" aria-pressed="false">완료 항목 숨기기</button>
         </div>
-        <div id="list" role="tabpanel" aria-labelledby="tab-today"></div>
+        <div class="list-panel glass">
+          <div id="list" role="tabpanel" aria-labelledby="tab-today"></div>
+        </div>
         <p id="dataLoc" class="footnote"></p>
         <div id="live" class="sr-only" aria-live="polite"></div>
       </div>
-      <button id="magicPlus" class="magic-plus" type="button" aria-label="새 할 일">+</button>
+      <aside id="rail" class="rail glass" aria-label="이번 달">
+        <div id="miniCal"></div>
+      </aside>
+      <button id="magicPlus" class="magic-plus glass" type="button" aria-label="새 할 일">+</button>
     </div>
+    <nav class="tabbar glass" aria-label="목록">
+      <button type="button" data-goto="today">오늘</button>
+      <button type="button" data-goto="calendar">예정</button>
+      <button type="button" data-goto="backlog">백로그</button>
+      <button type="button" data-goto="done">완료</button>
+    </nav>
   </main>
 
   <div id="notice" class="toast notice" hidden role="status"></div>
@@ -188,6 +222,19 @@
         <label>브랜치 <input id="setBranch" class="field" autocomplete="off" spellcheck="false" required></label>
         <label>경로 <input id="setPath" class="field" autocomplete="off" spellcheck="false" required></label>
       </div>
+      <fieldset class="notify-box">
+        <legend>테마</legend>
+        <div class="choice-row" role="radiogroup" aria-label="색 테마">
+          <label><input type="radio" name="skinChoice" value="paper"> 페이퍼</label>
+          <label><input type="radio" name="skinChoice" value="pastel"> 파스텔</label>
+          <label><input type="radio" name="skinChoice" value="focus"> 다크 포커스</label>
+        </div>
+        <div class="choice-row" role="radiogroup" aria-label="밝기">
+          <label><input type="radio" name="modeChoice" value="system"> 시스템</label>
+          <label><input type="radio" name="modeChoice" value="light"> 라이트</label>
+          <label><input type="radio" name="modeChoice" value="dark"> 다크</label>
+        </div>
+      </fieldset>
       <fieldset class="notify-box">
         <legend>알림</legend>
         <label class="checkline" for="notifyToggle"><input id="notifyToggle" type="checkbox"> 브라우저 알림 사용</label>

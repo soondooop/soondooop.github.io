@@ -34,6 +34,7 @@ const USER_KEY = 'todo.auth.user';
 const PERSIST_KEY = 'todo.auth.persist';
 const SETTINGS_KEY = 'todo.settings';
 const THEME_KEY = 'todo.theme';
+const SKIN_KEY = 'todo.skin';
 const HIDE_DONE_KEY = 'todo.hideCompleted';
 const SORT_KEY = 'todo.sort';
 const GROUP_KEY = 'todo.groupCategory';
@@ -60,6 +61,8 @@ const SYNC_LABEL = {
 const PRIORITY_LABEL = { high: '높음', medium: '보통', low: '낮음' };
 const THEME_ORDER = ['system', 'light', 'dark'];
 const THEME_LABEL = { system: '시스템', light: '라이트', dark: '다크' };
+const SKINS = ['paper', 'pastel', 'focus'];
+const SKIN_LABEL = { paper: '페이퍼', pastel: '파스텔', focus: '다크 포커스' };
 
 const state = {
   token: '',
@@ -72,6 +75,7 @@ const state = {
   dirty: false,
   ready: false,
   view: 'today',
+  skin: 'pastel',
   hideCompleted: false,
   sort: 'manual',
   groupByCategory: false,
@@ -629,13 +633,28 @@ function applyTheme(pref) {
   document.documentElement.dataset.themePref = pref;
   document.documentElement.style.colorScheme = resolved;
   state.theme = pref;
+  document.querySelectorAll('input[name="modeChoice"]').forEach((input) => {
+    input.checked = input.value === pref;
+  });
+}
+
+function applySkin(skin) {
+  const next = SKINS.includes(skin) ? skin : 'pastel';
+  state.skin = next;
+  document.documentElement.dataset.skin = next;
+  document.querySelectorAll('[data-skin-set]').forEach((button) => {
+    button.setAttribute('aria-pressed', button.dataset.skinSet === next ? 'true' : 'false');
+  });
+  document.querySelectorAll('input[name="skinChoice"]').forEach((input) => {
+    input.checked = input.value === next;
+  });
 }
 
 function renderThemeButton() {
   const button = $('themeBtn');
   if (!button) return;
   button.textContent = THEME_LABEL[state.theme] || '시스템';
-  button.setAttribute('aria-label', `테마 ${THEME_LABEL[state.theme]}. 클릭하면 바뀝니다.`);
+  button.setAttribute('aria-label', `밝기 ${THEME_LABEL[state.theme]}. 클릭하면 바뀝니다.`);
 }
 
 function appNow() {
@@ -818,8 +837,20 @@ function showMain() {
   renderDataLoc();
 }
 
+function greetingFor(date) {
+  const hour = Number(new Intl.DateTimeFormat('en-US', { timeZone: TZ, hour: 'numeric', hourCycle: 'h23' }).format(date));
+  if (hour < 11) return '좋은 아침이에요';
+  if (hour < 18) return '좋은 오후예요';
+  return '좋은 저녁이에요';
+}
+
 function fillDate() {
-  $('todayDate').textContent = formatKoreanFull(new Date());
+  const now = appNow();
+  $('todayDate').textContent = formatKoreanFull(now);
+  const hello = $('greeting');
+  if (!hello) return;
+  const name = state.user?.name || state.user?.login || '';
+  hello.textContent = name ? `${greetingFor(now)}, ${name}님` : greetingFor(now);
 }
 
 function renderDataLoc() {
@@ -833,6 +864,7 @@ function renderUser() {
   slot.replaceChildren();
   const login = state.user?.login || '';
   name.textContent = login;
+  fillDate();
   if (!login) return;
   if (state.user.avatarUrl) {
     const img = document.createElement('img');
@@ -874,6 +906,9 @@ function renderTabs() {
     icon.dataset.view = state.view;
   }
   document.querySelector('.workspace')?.setAttribute('data-view', state.view);
+  document.querySelectorAll('[data-goto]').forEach((button) => {
+    button.setAttribute('aria-current', button.dataset.goto === state.view ? 'true' : 'false');
+  });
   const composer = $('composer');
   composer.placeholder = state.view === 'backlog'
     ? '백로그에 추가  ·  @카테고리  #태그  내일 오후 3시'
@@ -897,8 +932,14 @@ function renderProgress() {
   bar.setAttribute('aria-valuemax', String(total === 0 ? 0 : max));
   bar.setAttribute('aria-valuenow', String(done));
   bar.setAttribute('aria-valuetext', progressText(done, total));
-  $('progressFill').style.width = total === 0 ? '0%' : `${Math.round((done / total) * 100)}%`;
-  $('progressLabel').textContent = progressText(done, total);
+  const ratio = total === 0 ? 0 : done / total;
+  const ring = $('progressFill');
+  if (ring) {
+    const length = 2 * Math.PI * 20;
+    ring.style.width = `${Math.round(ratio * 100)}%`;
+    ring.setAttribute('stroke-dasharray', `${(length * ratio).toFixed(2)} ${length.toFixed(2)}`);
+  }
+  $('progressLabel').textContent = total === 0 ? '0' : `${done}/${total}`;
   const overdue = (state.doc?.tasks || []).filter((task) => isOverdue(task, appNow())).length;
   document.title = overdue > 0 ? `(${overdue}) 오늘 · 업무 체크` : '오늘 · 업무 체크';
 }
@@ -2018,10 +2059,137 @@ function renderHideButton() {
   button.setAttribute('aria-pressed', state.hideCompleted ? 'true' : 'false');
 }
 
+function renderDueSoon() {
+  const host = $('dueSoon');
+  if (!host || !state.doc) return;
+  const today = todayKey();
+  const soon = state.doc.tasks
+    .filter((task) => task.status === 'open' && task.due && task.due <= addDays(today, 3))
+    .sort(compareDue)
+    .slice(0, 4);
+  host.replaceChildren();
+  const heading = document.createElement('h3');
+  heading.textContent = '마감 임박';
+  host.append(heading);
+  if (!soon.length) {
+    const empty = document.createElement('p');
+    empty.className = 'widget-empty';
+    empty.textContent = '다가오는 마감이 없습니다.';
+    host.append(empty);
+    return;
+  }
+  const list = document.createElement('ul');
+  for (const task of soon) {
+    const item = document.createElement('li');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = `${task.title} · ${formatDue(task, today)}`;
+    if (isOverdue(task, appNow()) || task.due < today) button.classList.add('is-overdue');
+    button.addEventListener('click', () => openTaskFromWidget(task));
+    item.append(button);
+    list.append(item);
+  }
+  host.append(list);
+}
+
+function openTaskFromWidget(task) {
+  state.cardId = task.id;
+  state.focusId = task.id;
+  const view = task.list === 'backlog' ? 'backlog' : 'today';
+  if (state.view === view) renderDynamic();
+  else setView(view);
+}
+
+function renderWeekChart() {
+  const host = $('weekChart');
+  if (!host || !state.doc) return;
+  const monday = thisWeekday(todayKey(), 1);
+  const labels = ['월', '화', '수', '목', '금', '토', '일'];
+  const counts = labels.map((_, index) => {
+    const day = addDays(monday, index);
+    return state.doc.tasks.filter((task) => task.status === 'done' && task.completedAt && seoulDate(task.completedAt) === day).length;
+  });
+  const max = Math.max(1, ...counts);
+  const todayIndex = (weekday(todayKey()) + 6) % 7;
+  host.replaceChildren();
+  const heading = document.createElement('h3');
+  heading.textContent = '이번 주 완료';
+  const bars = document.createElement('div');
+  bars.className = 'bars';
+  counts.forEach((count, index) => {
+    const cell = document.createElement('span');
+    const bar = document.createElement('i');
+    bar.style.height = `${Math.max(8, Math.round((count / max) * 48))}px`;
+    if (index === todayIndex) bar.className = 'on';
+    cell.append(bar, document.createTextNode(labels[index]));
+    bars.append(cell);
+  });
+  host.append(heading, bars);
+}
+
+function renderMiniCal() {
+  const host = $('miniCal');
+  if (!host || !state.doc) return;
+  const today = todayKey();
+  const year = Number(today.slice(0, 4));
+  const month = Number(today.slice(5, 7));
+  const days = monthGrid(year, month);
+  host.replaceChildren();
+  const top = document.createElement('div');
+  top.className = 'mini-top';
+  const title = document.createElement('strong');
+  title.textContent = `${month}월`;
+  const open = document.createElement('button');
+  open.type = 'button';
+  open.className = 'btn';
+  open.textContent = '크게';
+  open.addEventListener('click', () => {
+    state.calendarYear = year;
+    state.calendarMonth = month;
+    state.calendarDay = today;
+    setView('calendar');
+  });
+  top.append(title, open);
+  const week = document.createElement('div');
+  week.className = 'week';
+  ['일', '월', '화', '수', '목', '금', '토'].forEach((name, index) => {
+    const cell = document.createElement('span');
+    cell.textContent = name;
+    if (index === 0) cell.classList.add('is-sun');
+    if (index === 6) cell.classList.add('is-sat');
+    week.append(cell);
+  });
+  const grid = document.createElement('div');
+  grid.className = 'mini-grid';
+  for (const day of days) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'mini-day';
+    const dow = weekday(day);
+    if (Number(day.slice(5, 7)) !== month) button.classList.add('is-outside');
+    if (dow === 0) button.classList.add('is-sun');
+    if (dow === 6) button.classList.add('is-sat');
+    if (holidayLabel(day)) button.classList.add('is-holiday');
+    if (day === today) button.classList.add('is-today');
+    button.textContent = String(Number(day.slice(8, 10)));
+    button.addEventListener('click', () => {
+      state.calendarYear = Number(day.slice(0, 4));
+      state.calendarMonth = Number(day.slice(5, 7));
+      state.calendarDay = day;
+      setView('calendar');
+    });
+    grid.append(button);
+  }
+  host.append(top, week, grid);
+}
+
 function renderDynamic() {
   renderTabs();
   renderCounts();
   renderProgress();
+  renderDueSoon();
+  renderWeekChart();
+  renderMiniCal();
   renderTagBar();
   renderCategoryBar();
   renderViewControls();
@@ -2781,6 +2949,8 @@ function openSettings() {
   $('setBranch').value = settings.branch;
   $('setPath').value = settings.path;
   $('settingsError').textContent = '';
+  applySkin(state.skin);
+  applyTheme(state.theme);
   $('settingsDialog').showModal();
 }
 
@@ -2979,6 +3149,30 @@ function bind() {
     localStorage.setItem(THEME_KEY, next);
     applyTheme(next);
     renderThemeButton();
+  });
+  document.querySelectorAll('[data-skin-set]').forEach((button) => {
+    button.addEventListener('click', () => {
+      localStorage.setItem(SKIN_KEY, button.dataset.skinSet);
+      applySkin(button.dataset.skinSet);
+    });
+  });
+  document.querySelectorAll('[data-goto]').forEach((button) => {
+    button.addEventListener('click', () => setView(button.dataset.goto));
+  });
+  document.querySelectorAll('input[name="skinChoice"]').forEach((input) => {
+    input.addEventListener('change', () => {
+      if (!input.checked) return;
+      localStorage.setItem(SKIN_KEY, input.value);
+      applySkin(input.value);
+    });
+  });
+  document.querySelectorAll('input[name="modeChoice"]').forEach((input) => {
+    input.addEventListener('change', () => {
+      if (!input.checked) return;
+      localStorage.setItem(THEME_KEY, input.value);
+      applyTheme(input.value);
+      renderThemeButton();
+    });
   });
   $('settingsBtn').addEventListener('click', openSettings);
   $('hideDoneBtn').addEventListener('click', () => {
@@ -3522,8 +3716,11 @@ function renderNotifyControls() {
 function boot() {
   bind();
   const pref = localStorage.getItem(THEME_KEY) || 'system';
+  const skin = localStorage.getItem(SKIN_KEY) || 'pastel';
+  applySkin(skin);
   applyTheme(THEME_ORDER.includes(pref) ? pref : 'system');
   renderThemeButton();
+  requestAnimationFrame(() => document.documentElement.classList.add('theme-ready'));
   state.settings = loadSettings();
   state.hideCompleted = localStorage.getItem(HIDE_DONE_KEY) === '1';
   const sort = localStorage.getItem(SORT_KEY);
