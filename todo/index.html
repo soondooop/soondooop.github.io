@@ -106,7 +106,7 @@
       </div>
       <p class="side-label">카테고리</p>
       <div id="catBar" class="side-cats" aria-label="카테고리 필터"></div>
-      <div class="skin-switch" role="radiogroup" aria-label="테마">
+      <div class="skin-switch segment" role="radiogroup" aria-label="테마">
         <button type="button" data-skin-set="paper">페이퍼</button>
         <button type="button" data-skin-set="pastel">파스텔</button>
         <button type="button" data-skin-set="focus">포커스</button>
@@ -188,7 +188,7 @@
       </aside>
       <button id="magicPlus" class="magic-plus glass" type="button" aria-label="새 할 일">+</button>
     </div>
-    <nav class="tabbar glass" aria-label="목록">
+    <nav class="tabbar glass segment" aria-label="목록">
       <button type="button" data-goto="today">오늘</button>
       <button type="button" data-goto="calendar">예정</button>
       <button type="button" data-goto="backlog">백로그</button>
@@ -246,12 +246,12 @@
       </div>
       <fieldset class="notify-box">
         <legend>테마</legend>
-        <div class="choice-row" role="radiogroup" aria-label="색 테마">
+        <div class="choice-row segment" role="radiogroup" aria-label="색 테마">
           <label><input type="radio" name="skinChoice" value="paper"> 페이퍼</label>
           <label><input type="radio" name="skinChoice" value="pastel"> 파스텔</label>
           <label><input type="radio" name="skinChoice" value="focus"> 다크 포커스</label>
         </div>
-        <div class="choice-row" role="radiogroup" aria-label="밝기">
+        <div class="choice-row segment" role="radiogroup" aria-label="밝기">
           <label><input type="radio" name="modeChoice" value="system"> 시스템</label>
           <label><input type="radio" name="modeChoice" value="light"> 라이트</label>
           <label><input type="radio" name="modeChoice" value="dark"> 다크</label>
@@ -360,7 +360,7 @@
     <form id="repeatForm">
       <h2 id="repeatTitle">반복</h2>
       <input id="repeatTaskId" type="hidden">
-      <div class="repeat-options">
+      <div class="repeat-options segment">
         <label><input type="radio" name="repeatFreq" value="daily" checked> 매일</label>
         <label><input type="radio" name="repeatFreq" value="weekdays"> 평일 (월~금)</label>
         <label><input type="radio" name="repeatFreq" value="weekly"> 매주</label>
