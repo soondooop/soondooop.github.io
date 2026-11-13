@@ -35,6 +35,8 @@ const PERSIST_KEY = 'todo.auth.persist';
 const SETTINGS_KEY = 'todo.settings';
 const THEME_KEY = 'todo.theme';
 const SKIN_KEY = 'todo.skin';
+const BG_KEY = 'todo.bg';
+const BG_CUSTOM_KEY = 'todo.bgCustom';
 const HIDE_DONE_KEY = 'todo.hideCompleted';
 const SORT_KEY = 'todo.sort';
 const GROUP_KEY = 'todo.groupCategory';
@@ -63,6 +65,8 @@ const THEME_ORDER = ['system', 'light', 'dark'];
 const THEME_LABEL = { system: '시스템', light: '라이트', dark: '다크' };
 const SKINS = ['paper', 'pastel', 'focus'];
 const SKIN_LABEL = { paper: '페이퍼', pastel: '파스텔', focus: '다크 포커스' };
+const BG_IDS = ['lavender', 'mint', 'peach', 'cream', 'ocean', 'mono'];
+const SKIN_BG = { pastel: 'lavender', paper: 'cream', focus: 'ocean' };
 
 const state = {
   token: '',
@@ -76,6 +80,8 @@ const state = {
   ready: false,
   view: 'today',
   skin: 'pastel',
+  bg: 'lavender',
+  bgCustom: false,
   hideCompleted: false,
   sort: 'manual',
   groupByCategory: false,
@@ -631,8 +637,8 @@ function applyTheme(pref) {
   const resolved = resolvedTheme(pref);
   document.documentElement.dataset.theme = resolved;
   document.documentElement.dataset.themePref = pref;
-  document.documentElement.style.colorScheme = resolved;
   state.theme = pref;
+  document.documentElement.style.colorScheme = document.documentElement.dataset.bg === 'ocean' ? 'dark' : resolved;
   document.querySelectorAll('input[name="modeChoice"]').forEach((input) => {
     input.checked = input.value === pref;
   });
@@ -648,13 +654,28 @@ function applySkin(skin) {
   document.querySelectorAll('input[name="skinChoice"]').forEach((input) => {
     input.checked = input.value === next;
   });
+  if (!state.bgCustom) applyBg(SKIN_BG[next] || 'lavender');
+}
+
+function applyBg(id) {
+  const next = BG_IDS.includes(id) ? id : (SKIN_BG[state.skin] || 'lavender');
+  state.bg = next;
+  document.documentElement.dataset.bg = next;
+  document.documentElement.style.colorScheme = next === 'ocean' ? 'dark' : (document.documentElement.dataset.theme || 'light');
+  document.querySelectorAll('[data-bg-set]').forEach((button) => {
+    button.setAttribute('aria-pressed', button.dataset.bgSet === next ? 'true' : 'false');
+  });
 }
 
 function renderThemeButton() {
   const button = $('themeBtn');
   if (!button) return;
-  button.textContent = THEME_LABEL[state.theme] || '시스템';
-  button.setAttribute('aria-label', `밝기 ${THEME_LABEL[state.theme]}. 클릭하면 바뀝니다.`);
+  const label = THEME_LABEL[state.theme] || '시스템';
+  const text = button.querySelector('.btn-label');
+  if (text) text.textContent = label;
+  else button.textContent = label;
+  button.dataset.tip = `밝기 · ${label}`;
+  button.setAttribute('aria-label', `밝기 ${label}. 클릭하면 바뀝니다.`);
 }
 
 function appNow() {
@@ -1756,6 +1777,7 @@ function renderTask(task) {
     label.className = `cat-label cat-${category.color}`;
     label.textContent = category.name;
     label.setAttribute('aria-label', `카테고리 ${category.name}`);
+    check.classList.add(`cat-${category.color}`);
     label.addEventListener('click', (event) => {
       event.stopPropagation();
       state.focusId = task.id;
@@ -3166,6 +3188,14 @@ function bind() {
       applySkin(input.value);
     });
   });
+  document.querySelectorAll('[data-bg-set]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.bgCustom = true;
+      localStorage.setItem(BG_CUSTOM_KEY, '1');
+      localStorage.setItem(BG_KEY, button.dataset.bgSet);
+      applyBg(button.dataset.bgSet);
+    });
+  });
   document.querySelectorAll('input[name="modeChoice"]').forEach((input) => {
     input.addEventListener('change', () => {
       if (!input.checked) return;
@@ -3211,6 +3241,28 @@ function bind() {
           : kind === 'friday' ? thisWeekday(today, 5)
             : nextWeekMonday(today);
       $('dueDate').value = date;
+      dueView = { year: Number(date.slice(0, 4)), month: Number(date.slice(5, 7)) };
+      renderDueCalendar();
+    });
+  });
+  document.querySelectorAll('[data-due-time]').forEach((button) => {
+    button.addEventListener('click', () => {
+      $('dueTime').value = button.dataset.dueTime;
+      syncDueControls();
+    });
+  });
+  $('dueReminderBtn')?.addEventListener('click', () => {
+    const menu = $('dueReminderMenu');
+    const open = menu.hidden;
+    menu.hidden = !open;
+    $('dueReminderBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+    syncDueControls();
+  });
+  document.querySelectorAll('[data-brief]').forEach((button) => {
+    button.addEventListener('click', () => {
+      $('briefingTime').value = button.dataset.brief;
+      $('briefingTime').dispatchEvent(new Event('change'));
+      syncBriefChips();
     });
   });
   $('dueClear').addEventListener('click', () => {
@@ -3321,15 +3373,32 @@ function bind() {
   });
   $('search').addEventListener('input', () => {
     state.query = $('search').value;
+    if ($('searchClear')) $('searchClear').hidden = !$('search').value;
     renderList();
     renderTagBar();
   });
+  $('searchClear')?.addEventListener('click', () => {
+    $('search').value = '';
+    $('search').dispatchEvent(new Event('input'));
+    $('search').focus();
+  });
+  $('composer')?.addEventListener('input', renderComposerMirror);
+  $('sortBtn')?.addEventListener('click', () => {
+    const menu = $('sortMenu');
+    const open = menu.hidden;
+    menu.hidden = !open;
+    $('sortBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+    renderViewControls();
+  });
+  mountMenus();
+  renderTimeCols();
   $('search').addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
     event.stopPropagation();
     if ($('search').value) {
       $('search').value = '';
       state.query = '';
+      if ($('searchClear')) $('searchClear').hidden = true;
       renderList();
       renderTagBar();
     } else $('search').blur();
@@ -3472,10 +3541,228 @@ function renderViewControls() {
   const group = $('groupBtn');
   const overdue = $('overdueBtn');
   if (sort) sort.value = state.sort;
+  const sortLabel = $('sortLabel');
+  if (sort && sortLabel) sortLabel.textContent = sort.selectedOptions[0]?.textContent || '수동 순서';
+  document.querySelectorAll('#sortMenu [role="option"]').forEach((option) => {
+    option.setAttribute('aria-selected', option.dataset.value === state.sort ? 'true' : 'false');
+  });
   if (group) group.setAttribute('aria-pressed', state.groupByCategory ? 'true' : 'false');
   if (overdue) overdue.setAttribute('aria-pressed', state.dueOnlyOverdue ? 'true' : 'false');
   const tools = document.querySelector('.list-tools');
   if (tools) tools.hidden = state.view === 'calendar';
+}
+
+let dueView = null;
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[char]));
+}
+
+function renderComposerMirror() {
+  const input = $('composer');
+  const mirror = $('composerMirror');
+  if (!input || !mirror) return;
+  const text = input.value;
+  if (!text) {
+    mirror.textContent = '';
+    return;
+  }
+  const re = /(#[^\s#@]+|@[^\s#@]+|!(?:높음|보통|낮음|high|medium|low|[123])|\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}|내일|모레|[일월화수목금토]요일|(?:오전|오후)\s*\d{1,2}시(?:\s*\d{1,2}분)?|\d{1,2}:\d{2})/gu;
+  let html = '';
+  let last = 0;
+  for (const match of text.matchAll(re)) {
+    html += escapeHtml(text.slice(last, match.index));
+    const token = match[0];
+    const kind = token.startsWith('#') ? 'tag' : token.startsWith('@') ? 'at' : token.startsWith('!') ? 'bang' : 'when';
+    html += `<span class="tok ${kind}">${escapeHtml(token)}</span>`;
+    last = match.index + token.length;
+  }
+  html += escapeHtml(text.slice(last));
+  mirror.innerHTML = html;
+}
+
+function syncDueControls() {
+  const reminder = $('dueReminder');
+  const button = $('dueReminderBtn');
+  if (reminder && button) button.textContent = reminder.selectedOptions[0]?.textContent || '없음';
+  const time = $('dueTime')?.value || '';
+  document.querySelectorAll('[data-due-time]').forEach((chip) => {
+    chip.setAttribute('aria-pressed', chip.dataset.dueTime === time ? 'true' : 'false');
+  });
+  document.querySelectorAll('#dueTimeCols button').forEach((chip) => {
+    chip.setAttribute('aria-pressed', chip.dataset.part === time ? 'true' : 'false');
+  });
+  document.querySelectorAll('#dueReminderMenu [role="option"]').forEach((option) => {
+    option.setAttribute('aria-selected', option.dataset.value === reminder?.value ? 'true' : 'false');
+  });
+}
+
+function syncBriefChips() {
+  const value = $('briefingTime')?.value || '';
+  document.querySelectorAll('[data-brief]').forEach((chip) => {
+    chip.setAttribute('aria-pressed', chip.dataset.brief === value ? 'true' : 'false');
+  });
+}
+
+function renderDueCalendar() {
+  const host = $('dueCal');
+  if (!host) return;
+  const today = todayKey();
+  const selected = $('dueDate')?.value || '';
+  if (!dueView) {
+    const base = selected || today;
+    dueView = { year: Number(base.slice(0, 4)), month: Number(base.slice(5, 7)) };
+  }
+  const { year, month } = dueView;
+  host.replaceChildren();
+  const bar = document.createElement('div');
+  bar.className = 'due-nav';
+  const prev = document.createElement('button');
+  prev.type = 'button';
+  prev.className = 'icon-btn';
+  prev.textContent = '‹';
+  prev.setAttribute('aria-label', '이전 달');
+  prev.addEventListener('click', () => {
+    dueView = month === 1 ? { year: year - 1, month: 12 } : { year, month: month - 1 };
+    renderDueCalendar();
+  });
+  const title = document.createElement('strong');
+  title.textContent = `${year}년 ${month}월`;
+  const next = document.createElement('button');
+  next.type = 'button';
+  next.className = 'icon-btn';
+  next.textContent = '›';
+  next.setAttribute('aria-label', '다음 달');
+  next.addEventListener('click', () => {
+    dueView = month === 12 ? { year: year + 1, month: 1 } : { year, month: month + 1 };
+    renderDueCalendar();
+  });
+  bar.append(prev, title, next);
+  const week = document.createElement('div');
+  week.className = 'week';
+  ['일', '월', '화', '수', '목', '금', '토'].forEach((name, index) => {
+    const cell = document.createElement('span');
+    cell.textContent = name;
+    if (index === 0) cell.classList.add('is-sun');
+    if (index === 6) cell.classList.add('is-sat');
+    week.append(cell);
+  });
+  const grid = document.createElement('div');
+  grid.className = 'grid';
+  grid.tabIndex = 0;
+  grid.setAttribute('aria-label', '날짜 선택');
+  for (const day of monthGrid(year, month)) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'due-day';
+    const dow = weekday(day);
+    if (Number(day.slice(5, 7)) !== month) button.classList.add('is-out');
+    if (dow === 0) button.classList.add('is-sun');
+    if (dow === 6) button.classList.add('is-sat');
+    if (holidayLabel(day)) button.classList.add('is-holiday');
+    if (day === selected) button.classList.add('is-on');
+    button.textContent = String(Number(day.slice(8, 10)));
+    button.dataset.day = day;
+    if (holidayLabel(day)) button.setAttribute('aria-label', `${day} ${holidayLabel(day)}`);
+    button.addEventListener('click', () => {
+      $('dueDate').value = day;
+      renderDueCalendar();
+    });
+    grid.append(button);
+  }
+  grid.addEventListener('keydown', (event) => {
+    const current = $('dueDate').value || today;
+    const move = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[event.key];
+    if (!move) return;
+    event.preventDefault();
+    const next = addDays(current, move);
+    $('dueDate').value = next;
+    dueView = { year: Number(next.slice(0, 4)), month: Number(next.slice(5, 7)) };
+    renderDueCalendar();
+    host.querySelector('.grid')?.focus();
+  });
+  host.append(bar, week, grid);
+}
+
+function renderTimeCols() {
+  const host = $('dueTimeCols');
+  if (!host || host.childElementCount) return;
+  const hours = document.createElement('div');
+  const minutes = document.createElement('div');
+  for (let hour = 0; hour < 24; hour += 1) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = String(hour).padStart(2, '0');
+    button.addEventListener('click', () => setDueTimePart('hour', hour));
+    hours.append(button);
+  }
+  for (const minute of [0, 15, 30, 45]) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = String(minute).padStart(2, '0');
+    button.addEventListener('click', () => setDueTimePart('minute', minute));
+    minutes.append(button);
+  }
+  host.append(hours, minutes);
+  host.addEventListener('keydown', (event) => {
+    if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
+    event.preventDefault();
+    const current = $('dueTime').value || '09:00';
+    const [h, m] = current.split(':').map(Number);
+    const delta = event.key === 'ArrowUp' ? 1 : -1;
+    const hour = (h + delta + 24) % 24;
+    $('dueTime').value = `${String(hour).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    syncDueControls();
+  });
+}
+
+function setDueTimePart(part, value) {
+  const current = $('dueTime').value || '09:00';
+  const [hour, minute] = current.split(':').map(Number);
+  const nextHour = part === 'hour' ? value : hour;
+  const nextMinute = part === 'minute' ? value : (Number.isFinite(minute) ? minute : 0);
+  $('dueTime').value = `${String(nextHour).padStart(2, '0')}:${String(nextMinute).padStart(2, '0')}`;
+  syncDueControls();
+}
+
+function mountMenus() {
+  const sortMenu = $('sortMenu');
+  const sort = $('sortSelect');
+  if (sortMenu && sort && !sortMenu.childElementCount) {
+    [...sort.options].forEach((option) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.setAttribute('role', 'option');
+      button.dataset.value = option.value;
+      button.textContent = option.textContent;
+      button.addEventListener('click', () => {
+        sort.value = option.value;
+        sort.dispatchEvent(new Event('change'));
+        sortMenu.hidden = true;
+        $('sortBtn')?.setAttribute('aria-expanded', 'false');
+        renderViewControls();
+      });
+      sortMenu.append(button);
+    });
+  }
+  const reminderMenu = $('dueReminderMenu');
+  const reminder = $('dueReminder');
+  if (reminderMenu && reminder && !reminderMenu.childElementCount) {
+    [...reminder.options].forEach((option) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.setAttribute('role', 'option');
+      button.dataset.value = option.value;
+      button.textContent = option.textContent;
+      button.addEventListener('click', () => {
+        reminder.value = option.value;
+        reminderMenu.hidden = true;
+        $('dueReminderBtn')?.setAttribute('aria-expanded', 'false');
+        syncDueControls();
+      });
+      reminderMenu.append(button);
+    });
+  }
 }
 
 function openDueDialog(id) {
@@ -3486,6 +3773,10 @@ function openDueDialog(id) {
   $('dueDate').value = task.due || '';
   $('dueTime').value = task.dueTime || '';
   $('dueReminder').value = task.reminder || '';
+  const base = task.due || todayKey();
+  dueView = { year: Number(base.slice(0, 4)), month: Number(base.slice(5, 7)) };
+  renderDueCalendar();
+  syncDueControls();
   $('dueDialog').showModal();
 }
 
@@ -3702,6 +3993,7 @@ function renderNotifyControls() {
   toggle.checked = state.notifyEnabled;
   toggle.disabled = typeof Notification === 'undefined';
   if (time) time.value = state.briefingTime;
+  syncBriefChips();
   const note = $('notifyState');
   if (note) {
     const permission = typeof Notification === 'undefined' ? 'unsupported' : Notification.permission;
@@ -3717,7 +4009,10 @@ function boot() {
   bind();
   const pref = localStorage.getItem(THEME_KEY) || 'system';
   const skin = localStorage.getItem(SKIN_KEY) || 'pastel';
+  state.bgCustom = localStorage.getItem(BG_CUSTOM_KEY) === '1';
+  const storedBg = localStorage.getItem(BG_KEY);
   applySkin(skin);
+  if (state.bgCustom && BG_IDS.includes(storedBg)) applyBg(storedBg);
   applyTheme(THEME_ORDER.includes(pref) ? pref : 'system');
   renderThemeButton();
   requestAnimationFrame(() => document.documentElement.classList.add('theme-ready'));

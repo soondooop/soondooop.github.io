@@ -19,11 +19,17 @@
         var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         var resolved = pref === 'dark' || (pref !== 'light' && dark) ? 'dark' : 'light';
         if (pref === 'light') resolved = 'light';
+        var defaults = { pastel: 'lavender', paper: 'cream', focus: 'ocean' };
+        var allowed = { lavender: 1, mint: 1, peach: 1, cream: 1, ocean: 1, mono: 1 };
+        var custom = localStorage.getItem('todo.bgCustom') === '1';
+        var bg = localStorage.getItem('todo.bg');
+        if (!custom || !allowed[bg]) bg = defaults[skin] || 'lavender';
         var root = document.documentElement;
         root.setAttribute('data-skin', skin);
         root.setAttribute('data-theme', resolved);
         root.setAttribute('data-theme-pref', pref);
-        root.style.colorScheme = resolved;
+        root.setAttribute('data-bg', bg);
+        root.style.colorScheme = bg === 'ocean' ? 'dark' : resolved;
       } catch (e) {}
     })();
   </script>
@@ -34,7 +40,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="ambient" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+  <div class="ambient" aria-hidden="true"><span class="mesh a"></span><span class="mesh b"></span><span class="mesh c"></span></div>
   <a class="skip" href="#list">할 일 목록으로 건너뛰기</a>
 
   <section id="login" class="login" hidden>
@@ -106,15 +112,20 @@
         <button type="button" data-skin-set="focus">포커스</button>
       </div>
       <div class="side-tools">
-        <label class="search">
+        <label class="search field-shell">
+          <svg class="field-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m20 20-3.5-3.5"/></svg>
           <span class="sr-only" id="searchLabel">검색</span>
           <input id="search" type="search" placeholder="검색" autocomplete="off" enterkeyhint="search" aria-labelledby="searchLabel">
+          <button id="searchClear" class="icon-btn" type="button" hidden aria-label="검색 지우기">×</button>
+          <kbd class="kbd-hint">/</kbd>
         </label>
-        <span id="syncPill" class="pill" role="status" data-state="saved">저장됨</span>
-        <button id="saveBtn" class="btn" type="button">저장</button>
-        <button id="themeBtn" class="btn" type="button">시스템</button>
-        <button id="settingsBtn" class="btn" type="button">설정</button>
-        <button id="helpBtn" class="btn" type="button" aria-label="단축키 도움말">?</button>
+        <div class="side-actions">
+          <span id="syncPill" class="pill" role="status" data-state="saved"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 9.2 17 19 7"/></svg>저장됨</span>
+          <button id="saveBtn" class="icon-btn" type="button" data-tip="저장" aria-label="저장"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h10l4 4v12H6z"/><path d="M8 4v6h8M8 20v-6h8"/></svg></button>
+          <button id="themeBtn" class="icon-btn" type="button" data-tip="밝기"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg><span class="btn-label">시스템</span></button>
+          <button id="settingsBtn" class="icon-btn" type="button" data-tip="설정" aria-label="설정"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg></button>
+          <button id="helpBtn" class="icon-btn" type="button" data-tip="단축키" aria-label="단축키 도움말">?</button>
+        </div>
       </div>
     </aside>
     <div class="workspace">
@@ -139,25 +150,33 @@
           <section id="weekChart" class="widget glass" aria-label="이번 주 완료"><h3>이번 주 완료</h3></section>
         </div>
         <p id="syncDetail" class="sync-detail" aria-live="polite"></p>
-        <form id="composerForm" class="composer glass" autocomplete="off">
+        <form id="composerForm" class="composer glass field-shell" autocomplete="off">
+          <svg class="field-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
           <label class="sr-only" for="composer">할 일 추가</label>
-          <input id="composer" type="text" maxlength="500" placeholder="할 일을 적고 Enter  ·  @카테고리  #태그  내일 오후 3시" enterkeyhint="done" autocomplete="off">
+          <div class="composer-stack">
+            <div id="composerMirror" class="composer-mirror" aria-hidden="true"></div>
+            <input id="composer" class="overlay" type="text" maxlength="500" placeholder="할 일을 적고 Enter  ·  @카테고리  #태그  내일 오후 3시" enterkeyhint="done" autocomplete="off">
+          </div>
           <button class="btn-primary" type="submit">추가</button>
         </form>
         <div id="tagBar" class="tagbar" aria-label="태그 필터"></div>
         <div class="list-tools">
-          <label class="sort-label">정렬
-            <select id="sortSelect">
+          <div class="menu-field">
+            <button id="sortBtn" class="field-shell" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="sortMenu">
+              <span>정렬</span><strong id="sortLabel">수동 순서</strong>
+            </button>
+            <select id="sortSelect" class="native-hidden" tabindex="-1" aria-hidden="true">
               <option value="manual">수동 순서</option>
               <option value="category">카테고리</option>
               <option value="priority">우선순위</option>
               <option value="due">기한</option>
               <option value="created">생성일</option>
             </select>
-          </label>
+            <div id="sortMenu" class="popover glass" role="listbox" hidden></div>
+          </div>
           <button id="groupBtn" class="text-toggle" type="button" aria-pressed="false">카테고리로 묶기</button>
           <button id="overdueBtn" class="text-toggle" type="button" aria-pressed="false">지난 기한</button>
-          <button id="hideDoneBtn" class="text-toggle" type="button" aria-pressed="false">완료 항목 숨기기</button>
+          <button id="hideDoneBtn" class="switch-row" type="button" aria-pressed="false"><span>완료 숨기기</span><span class="switch" aria-hidden="true"></span></button>
         </div>
         <div class="list-panel glass">
           <div id="list" role="tabpanel" aria-labelledby="tab-today"></div>
@@ -234,11 +253,28 @@
           <label><input type="radio" name="modeChoice" value="light"> 라이트</label>
           <label><input type="radio" name="modeChoice" value="dark"> 다크</label>
         </div>
+        <div class="bg-swatches" role="radiogroup" aria-label="배경">
+          <button type="button" class="bg-swatch s-lavender" data-bg-set="lavender">새벽 라벤더</button>
+          <button type="button" class="bg-swatch s-mint" data-bg-set="mint">민트 오로라</button>
+          <button type="button" class="bg-swatch s-peach" data-bg-set="peach">피치 선셋</button>
+          <button type="button" class="bg-swatch s-cream" data-bg-set="cream">크림 페이퍼</button>
+          <button type="button" class="bg-swatch s-ocean" data-bg-set="ocean">딥 오션</button>
+          <button type="button" class="bg-swatch s-mono" data-bg-set="mono">모노 글래스</button>
+        </div>
       </fieldset>
       <fieldset class="notify-box">
         <legend>알림</legend>
         <label class="checkline" for="notifyToggle"><input id="notifyToggle" type="checkbox"> 브라우저 알림 사용</label>
-        <label>아침 브리핑 <input id="briefingTime" class="field" type="time" value="09:00"></label>
+        <div class="setting-row">
+          <span>아침 브리핑</span>
+          <div class="time-chips" id="briefChips">
+            <button type="button" data-brief="09:00">09:00</button>
+            <button type="button" data-brief="12:00">12:00</button>
+            <button type="button" data-brief="15:00">15:00</button>
+            <button type="button" data-brief="18:00">18:00</button>
+          </div>
+          <input id="briefingTime" class="native-hidden" type="text" value="09:00" inputmode="numeric" aria-label="아침 브리핑 시각">
+        </div>
         <p id="notifyState" class="note">알림은 이 브라우저나 설치한 앱이 실행 중일 때만 울립니다. 푸시 서버는 없습니다.</p>
       </fieldset>
       <p class="note">soondooop.github.io는 공개 저장소라 할 일을 두면 안 됩니다. 기본 위치는 비공개 저장소 <strong>soondooop/todo-data</strong>의 <strong>main</strong> 브랜치, <strong>todos.json</strong> 입니다. 파일이 없으면 처음 저장할 때 만듭니다.</p>
@@ -277,10 +313,28 @@
         <button class="btn" type="button" data-due-quick="friday">이번 주 금요일</button>
         <button class="btn" type="button" data-due-quick="nextMonday">다음 주 월요일</button>
       </div>
-      <label>날짜 <input id="dueDate" class="field" type="date"></label>
-      <label>시간 <input id="dueTime" class="field" type="time"></label>
-      <label>알림
-        <select id="dueReminder" class="field">
+      <div class="picker-grid">
+        <div>
+          <p class="field-label">날짜</p>
+          <input id="dueDate" class="native-hidden" type="text" inputmode="numeric" aria-label="기한 날짜">
+          <div id="dueCal" class="due-cal"></div>
+        </div>
+        <div>
+          <p class="field-label">시간</p>
+          <input id="dueTime" class="native-hidden" type="text" inputmode="numeric" aria-label="기한 시간">
+          <div class="time-chips">
+            <button type="button" data-due-time="09:00">09:00</button>
+            <button type="button" data-due-time="12:00">12:00</button>
+            <button type="button" data-due-time="15:00">15:00</button>
+            <button type="button" data-due-time="18:00">18:00</button>
+          </div>
+          <div class="time-cols" id="dueTimeCols" tabindex="0" aria-label="시간 선택"></div>
+        </div>
+      </div>
+      <div class="menu-field">
+        <p class="field-label">알림</p>
+        <button id="dueReminderBtn" class="field-shell" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="dueReminderMenu">없음</button>
+        <select id="dueReminder" class="native-hidden" tabindex="-1" aria-hidden="true">
           <option value="">없음</option>
           <option value="at">정시</option>
           <option value="10m">10분 전</option>
@@ -288,7 +342,8 @@
           <option value="1h">1시간 전</option>
           <option value="1d9">하루 전 09:00</option>
         </select>
-      </label>
+        <div id="dueReminderMenu" class="popover glass" role="listbox" hidden></div>
+      </div>
       <div class="dialog-actions">
         <button id="dueClear" class="btn" type="button">지우기</button>
         <button class="btn" type="button" data-close-dialog>닫기</button>
