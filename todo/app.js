@@ -19,7 +19,9 @@ import {
   seoulDate,
   thisWeekday,
   nextWeekMonday,
+  weekday,
 } from './model.js';
+import { holidayLabel } from './holidays.js';
 
 export { parseQuickAdd };
 
@@ -1155,11 +1157,13 @@ function renderCalendar(list) {
   wrap.append(bar);
   const weekdays = document.createElement('div');
   weekdays.className = 'cal-weekdays';
-  for (const name of ['월', '화', '수', '목', '금', '토', '일']) {
+  ['일', '월', '화', '수', '목', '금', '토'].forEach((name, index) => {
     const cell = document.createElement('span');
     cell.textContent = name;
+    if (index === 0) cell.classList.add('is-sun');
+    if (index === 6) cell.classList.add('is-sat');
     weekdays.append(cell);
-  }
+  });
   wrap.append(weekdays);
   const grid = document.createElement('div');
   grid.className = 'cal-grid';
@@ -1169,6 +1173,8 @@ function renderCalendar(list) {
     const inMonth = Number(day.slice(5, 7)) === month;
     const entry = calendarEntries(day, today, projections);
     const lines = calendarLines(entry, state.calendarMode);
+    const holiday = holidayLabel(day);
+    const dow = weekday(day);
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'cal-day';
@@ -1176,14 +1182,23 @@ function renderCalendar(list) {
     if (day === today) button.classList.add('is-today');
     if (day > today) button.classList.add('is-future');
     if (day === state.calendarDay) button.classList.add('is-selected');
+    if (dow === 0) button.classList.add('is-sun');
+    if (dow === 6) button.classList.add('is-sat');
+    if (holiday) button.classList.add('is-holiday');
     const heat = entry.done.length === 0 ? 0 : entry.done.length === 1 ? 1 : entry.done.length < 4 ? 2 : 3;
     button.dataset.heat = String(heat);
     button.setAttribute('aria-pressed', day === state.calendarDay ? 'true' : 'false');
-    button.setAttribute('aria-label', `${day} 할 일 ${entry.open.length + entry.planned.length}개, 완료 ${entry.done.length}개`);
+    button.setAttribute('aria-label', `${day}${holiday ? ` ${holiday}` : ''} 할 일 ${entry.open.length + entry.planned.length}개, 완료 ${entry.done.length}개`);
     const num = document.createElement('span');
     num.className = 'cal-num';
     num.textContent = String(Number(day.slice(8, 10)));
     button.append(num);
+    if (holiday) {
+      const name = document.createElement('span');
+      name.className = 'cal-holiday';
+      name.textContent = holiday;
+      button.append(name);
+    }
     const summary = document.createElement('span');
     summary.className = 'cal-summary';
     if (entry.open.length) summary.append(dotCount('open-dot', entry.open.length));
@@ -1269,6 +1284,13 @@ function renderDayDetail(day, projections) {
   panel.className = 'day-detail';
   const heading = document.createElement('h3');
   heading.textContent = groupLabel(day);
+  const holiday = holidayLabel(day);
+  if (holiday) {
+    const mark = document.createElement('span');
+    mark.className = 'day-holiday';
+    mark.textContent = ` · ${holiday}`;
+    heading.append(mark);
+  }
   panel.append(heading);
   const entry = calendarEntries(day, todayKey(), projections);
   const showOpen = state.calendarMode !== 'done';
