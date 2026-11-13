@@ -35,6 +35,8 @@ const PERSIST_KEY = 'todo.auth.persist';
 const SETTINGS_KEY = 'todo.settings';
 const THEME_KEY = 'todo.theme';
 const SKIN_KEY = 'todo.skin';
+const BG_KEY = 'todo.bg';
+const BG_CUSTOM_KEY = 'todo.bgCustom';
 const HIDE_DONE_KEY = 'todo.hideCompleted';
 const SORT_KEY = 'todo.sort';
 const GROUP_KEY = 'todo.groupCategory';
@@ -63,6 +65,8 @@ const THEME_ORDER = ['system', 'light', 'dark'];
 const THEME_LABEL = { system: '시스템', light: '라이트', dark: '다크' };
 const SKINS = ['paper', 'pastel', 'focus'];
 const SKIN_LABEL = { paper: '페이퍼', pastel: '파스텔', focus: '다크 포커스' };
+const BG_IDS = ['lavender', 'mint', 'peach', 'cream', 'ocean', 'mono'];
+const SKIN_BG = { pastel: 'lavender', paper: 'cream', focus: 'ocean' };
 
 const state = {
   token: '',
@@ -76,6 +80,8 @@ const state = {
   ready: false,
   view: 'today',
   skin: 'pastel',
+  bg: 'lavender',
+  bgCustom: false,
   hideCompleted: false,
   sort: 'manual',
   groupByCategory: false,
@@ -631,8 +637,8 @@ function applyTheme(pref) {
   const resolved = resolvedTheme(pref);
   document.documentElement.dataset.theme = resolved;
   document.documentElement.dataset.themePref = pref;
-  document.documentElement.style.colorScheme = resolved;
   state.theme = pref;
+  document.documentElement.style.colorScheme = document.documentElement.dataset.bg === 'ocean' ? 'dark' : resolved;
   document.querySelectorAll('input[name="modeChoice"]').forEach((input) => {
     input.checked = input.value === pref;
   });
@@ -647,6 +653,17 @@ function applySkin(skin) {
   });
   document.querySelectorAll('input[name="skinChoice"]').forEach((input) => {
     input.checked = input.value === next;
+  });
+  if (!state.bgCustom) applyBg(SKIN_BG[next] || 'lavender');
+}
+
+function applyBg(id) {
+  const next = BG_IDS.includes(id) ? id : (SKIN_BG[state.skin] || 'lavender');
+  state.bg = next;
+  document.documentElement.dataset.bg = next;
+  document.documentElement.style.colorScheme = next === 'ocean' ? 'dark' : (document.documentElement.dataset.theme || 'light');
+  document.querySelectorAll('[data-bg-set]').forEach((button) => {
+    button.setAttribute('aria-pressed', button.dataset.bgSet === next ? 'true' : 'false');
   });
 }
 
@@ -3166,6 +3183,14 @@ function bind() {
       applySkin(input.value);
     });
   });
+  document.querySelectorAll('[data-bg-set]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.bgCustom = true;
+      localStorage.setItem(BG_CUSTOM_KEY, '1');
+      localStorage.setItem(BG_KEY, button.dataset.bgSet);
+      applyBg(button.dataset.bgSet);
+    });
+  });
   document.querySelectorAll('input[name="modeChoice"]').forEach((input) => {
     input.addEventListener('change', () => {
       if (!input.checked) return;
@@ -3717,7 +3742,10 @@ function boot() {
   bind();
   const pref = localStorage.getItem(THEME_KEY) || 'system';
   const skin = localStorage.getItem(SKIN_KEY) || 'pastel';
+  state.bgCustom = localStorage.getItem(BG_CUSTOM_KEY) === '1';
+  const storedBg = localStorage.getItem(BG_KEY);
   applySkin(skin);
+  if (state.bgCustom && BG_IDS.includes(storedBg)) applyBg(storedBg);
   applyTheme(THEME_ORDER.includes(pref) ? pref : 'system');
   renderThemeButton();
   requestAnimationFrame(() => document.documentElement.classList.add('theme-ready'));

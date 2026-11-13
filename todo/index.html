@@ -19,11 +19,17 @@
         var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         var resolved = pref === 'dark' || (pref !== 'light' && dark) ? 'dark' : 'light';
         if (pref === 'light') resolved = 'light';
+        var defaults = { pastel: 'lavender', paper: 'cream', focus: 'ocean' };
+        var allowed = { lavender: 1, mint: 1, peach: 1, cream: 1, ocean: 1, mono: 1 };
+        var custom = localStorage.getItem('todo.bgCustom') === '1';
+        var bg = localStorage.getItem('todo.bg');
+        if (!custom || !allowed[bg]) bg = defaults[skin] || 'lavender';
         var root = document.documentElement;
         root.setAttribute('data-skin', skin);
         root.setAttribute('data-theme', resolved);
         root.setAttribute('data-theme-pref', pref);
-        root.style.colorScheme = resolved;
+        root.setAttribute('data-bg', bg);
+        root.style.colorScheme = bg === 'ocean' ? 'dark' : resolved;
       } catch (e) {}
     })();
   </script>
@@ -34,7 +40,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="ambient" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+  <div class="ambient" aria-hidden="true"><span class="mesh a"></span><span class="mesh b"></span><span class="mesh c"></span></div>
   <a class="skip" href="#list">할 일 목록으로 건너뛰기</a>
 
   <section id="login" class="login" hidden>
@@ -233,6 +239,14 @@
           <label><input type="radio" name="modeChoice" value="system"> 시스템</label>
           <label><input type="radio" name="modeChoice" value="light"> 라이트</label>
           <label><input type="radio" name="modeChoice" value="dark"> 다크</label>
+        </div>
+        <div class="bg-swatches" role="radiogroup" aria-label="배경">
+          <button type="button" class="bg-swatch s-lavender" data-bg-set="lavender">새벽 라벤더</button>
+          <button type="button" class="bg-swatch s-mint" data-bg-set="mint">민트 오로라</button>
+          <button type="button" class="bg-swatch s-peach" data-bg-set="peach">피치 선셋</button>
+          <button type="button" class="bg-swatch s-cream" data-bg-set="cream">크림 페이퍼</button>
+          <button type="button" class="bg-swatch s-ocean" data-bg-set="ocean">딥 오션</button>
+          <button type="button" class="bg-swatch s-mono" data-bg-set="mono">모노 글래스</button>
         </div>
       </fieldset>
       <fieldset class="notify-box">
