@@ -876,7 +876,9 @@ function fillDate() {
 
 function renderDataLoc() {
   const settings = state.settings;
-  $('dataLoc').textContent = `${settings.owner}/${settings.repo}@${settings.branch} · ${settings.path} · 비공개 저장소에만 저장하세요`;
+  const node = $('dataLoc');
+  if (!node) return;
+  node.textContent = `저장 위치 ${settings.owner}/${settings.repo} · ${settings.branch} · ${settings.path}`;
 }
 
 function renderUser() {
@@ -977,9 +979,16 @@ function renderTagBar() {
   }
   if (state.tag) tags.add(state.tag);
   const sorted = [...tags].sort((a, b) => a.localeCompare(b, 'ko'));
+  if (sorted.length) {
+    const label = document.createElement('span');
+    label.className = 'tag-label';
+    label.textContent = '태그';
+    bar.append(label);
+  }
   for (const tag of sorted) {
     const button = document.createElement('button');
     button.type = 'button';
+    button.className = 'tag-chip';
     button.textContent = `#${tag}`;
     button.setAttribute('aria-pressed', state.tag === tag ? 'true' : 'false');
     button.addEventListener('click', () => {
@@ -992,11 +1001,13 @@ function renderTagBar() {
   if (state.tag || state.query.trim()) {
     const clear = document.createElement('button');
     clear.type = 'button';
+    clear.className = 'tag-chip';
     clear.textContent = '필터 해제';
     clear.addEventListener('click', () => {
       state.tag = null;
       state.query = '';
       $('search').value = '';
+      if ($('searchClear')) $('searchClear').hidden = true;
       renderTagBar();
       renderList();
     });
@@ -2651,6 +2662,7 @@ function submitComposer() {
   state.focusId = task.id;
   if (state.view === 'done') state.view = 'today';
   $('composer').value = '';
+  renderComposerMirror();
   markDirty();
   renderDynamic();
   announce('할 일을 추가했습니다.');
@@ -3030,6 +3042,18 @@ function onKeyDown(event) {
   if ($('main').hidden) return;
   if (document.querySelector('dialog[open]')) return;
   if (event.key === 'Escape') {
+    const sortMenu = $('sortMenu');
+    const reminderMenu = $('dueReminderMenu');
+    if (sortMenu && !sortMenu.hidden) {
+      sortMenu.hidden = true;
+      $('sortBtn')?.setAttribute('aria-expanded', 'false');
+      return;
+    }
+    if (reminderMenu && !reminderMenu.hidden) {
+      reminderMenu.hidden = true;
+      $('dueReminderBtn')?.setAttribute('aria-expanded', 'false');
+      return;
+    }
     if (state.menu || state.dueId || state.cardId) {
       state.menu = null;
       state.dueId = null;
@@ -3430,6 +3454,16 @@ function bind() {
     });
   });
   document.addEventListener('click', (event) => {
+    const sortMenu = $('sortMenu');
+    if (sortMenu && !sortMenu.hidden && !event.target.closest?.('#sortBtn') && !event.target.closest?.('#sortMenu')) {
+      sortMenu.hidden = true;
+      $('sortBtn')?.setAttribute('aria-expanded', 'false');
+    }
+    const reminderMenu = $('dueReminderMenu');
+    if (reminderMenu && !reminderMenu.hidden && !event.target.closest?.('#dueReminderBtn') && !event.target.closest?.('#dueReminderMenu')) {
+      reminderMenu.hidden = true;
+      $('dueReminderBtn')?.setAttribute('aria-expanded', 'false');
+    }
     if (!state.menu) return;
     if (event.target.closest?.('.menu') || event.target.closest?.('[data-opens-menu]')) return;
     state.menu = null;
@@ -3460,7 +3494,10 @@ function renderCategoryBar() {
   const all = document.createElement('button');
   all.type = 'button';
   all.className = 'side-cat';
-  all.textContent = '전체';
+  const allMark = document.createElement('span');
+  allMark.className = 'pie-slot';
+  allMark.setAttribute('aria-hidden', 'true');
+  all.append(allMark, document.createTextNode('전체'));
   all.setAttribute('aria-pressed', state.categoryFilter ? 'false' : 'true');
   all.addEventListener('click', () => {
     state.categoryFilter = null;
@@ -3484,7 +3521,10 @@ function renderCategoryBar() {
   const manage = document.createElement('button');
   manage.type = 'button';
   manage.className = 'side-cat side-manage';
-  manage.textContent = '관리';
+  const manageMark = document.createElement('span');
+  manageMark.className = 'pie-slot';
+  manageMark.setAttribute('aria-hidden', 'true');
+  manage.append(manageMark, document.createTextNode('관리'));
   manage.setAttribute('aria-label', '카테고리 관리');
   manage.addEventListener('click', openCategoryDialog);
   bar.append(manage);
@@ -4034,6 +4074,13 @@ function boot() {
     window.__todo = { checkNotifications, planNotifications };
   }
   if ('serviceWorker' in navigator) {
+    const hadController = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadController) return;
+      const banner = $('updateBanner');
+      if (banner) banner.hidden = false;
+    });
+    $('updateBtn')?.addEventListener('click', () => location.reload());
     navigator.serviceWorker.register('/todo/sw.js', { scope: '/todo/' }).catch(() => {});
   }
   window.setInterval(checkNotifications, 30000);

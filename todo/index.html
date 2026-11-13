@@ -50,7 +50,7 @@
       <p class="lede">오늘의 할 일을 차분히 남깁니다. 목록은 비공개 GitHub 저장소에만 저장되고, 이 페이지 저장소에는 올라가지 않습니다.</p>
       <form id="loginForm">
         <label for="token">Fine-grained Personal Access Token</label>
-        <input id="token" name="token" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="500" required aria-describedby="loginError tokenHelp">
+        <input id="token" class="field" name="token" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="500" required aria-describedby="loginError tokenHelp">
         <label class="checkline" for="persist">
           <input id="persist" type="checkbox" checked>
           <span>이 기기에서 로그인 유지</span>
@@ -181,7 +181,6 @@
         <div class="list-panel glass">
           <div id="list" role="tabpanel" aria-labelledby="tab-today"></div>
         </div>
-        <p id="dataLoc" class="footnote"></p>
         <div id="live" class="sr-only" aria-live="polite"></div>
       </div>
       <aside id="rail" class="rail glass" aria-label="이번 달">
@@ -197,6 +196,10 @@
     </nav>
   </main>
 
+  <div id="updateBanner" class="update-banner glass" hidden>
+    <span>새 버전이 있습니다.</span>
+    <button id="updateBtn" class="btn-primary" type="button">새로고침</button>
+  </div>
   <div id="notice" class="toast notice" hidden role="status"></div>
   <div id="toast" class="toast" hidden role="status">
     <span id="toastText"></span>
@@ -277,7 +280,8 @@
         </div>
         <p id="notifyState" class="note">알림은 이 브라우저나 설치한 앱이 실행 중일 때만 울립니다. 푸시 서버는 없습니다.</p>
       </fieldset>
-      <p class="note">soondooop.github.io는 공개 저장소라 할 일을 두면 안 됩니다. 기본 위치는 비공개 저장소 <strong>soondooop/todo-data</strong>의 <strong>main</strong> 브랜치, <strong>todos.json</strong> 입니다. 파일이 없으면 처음 저장할 때 만듭니다.</p>
+      <p class="note">이 사이트 저장소는 공개라 할 일을 두면 안 됩니다. 기본 위치는 비공개 저장소입니다. 파일이 없으면 처음 저장할 때 만듭니다.</p>
+      <p id="dataLoc" class="note"></p>
       <p id="settingsError" class="error" role="alert"></p>
       <div class="dialog-actions">
         <button id="exportBtn" class="btn" type="button">JSON 내보내기</button>
