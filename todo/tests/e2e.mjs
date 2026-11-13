@@ -261,8 +261,8 @@ try {
   const progress = await page.$eval('#progressLabel', (el) => el.textContent);
   if (progress !== '1/8') throw new Error(`진행률 ${progress}, 기대 1/8`);
   if (!(await bodyHas(page, '제안서 초안'))) throw new Error('마감 임박에 제안서가 없다');
-  const barOn = await page.$eval('#weekChart .bars i.on', (el) => el.style.height);
-  if (!barOn || barOn === '0px') throw new Error('이번 주 완료 막대가 비었다');
+  const barOn = await page.$eval('#weekChart .bars i.on', (el) => el.style.getPropertyValue('--bar'));
+  if (!barOn || Number(barOn) < 8) throw new Error('이번 주 완료 막대가 비었다');
   pass('진행률, 마감 임박, 이번 주 완료가 맞다');
 
   await page.type('#composer', '보고서 @회의 #제안 내일 모레 금요일 11/20 오후 3시');
@@ -355,13 +355,13 @@ try {
   pass('Alt+아래 키로 순서를 바꾼다');
 
   const beforeDrag = await page.$$eval('#list .task', (nodes) => nodes.map((node) => node.dataset.id));
-  const rows = await page.$$('#list .task');
-  if (rows.length < 2) throw new Error('드래그할 항목이 부족하다');
-  const first = await rows[0].boundingBox();
-  const second = await rows[1].boundingBox();
-  await page.mouse.move(first.x + 80, first.y + 18);
+  const dragRows = await page.$$('#list .task');
+  if (dragRows.length < 2) throw new Error('드래그할 항목이 부족하다');
+  const first = await dragRows[0].boundingBox();
+  const second = await dragRows[1].boundingBox();
+  await page.mouse.move(first.x + 36, first.y + 14);
   await page.mouse.down();
-  await page.mouse.move(second.x + 80, second.y + second.height - 6, { steps: 12 });
+  await page.mouse.move(second.x + 36, second.y + second.height - 8, { steps: 15 });
   await page.mouse.up();
   await page.waitForFunction((ids) => {
     const now = [...document.querySelectorAll('#list .task')].map((node) => node.dataset.id);
@@ -435,7 +435,7 @@ try {
   if (!store.files.get('todos.json').doc.categories.some((item) => item.name === '운영' && item.color === 'teal')) throw new Error('카테고리 추가 실패');
   await page.evaluate(() => {
     const row = [...document.querySelectorAll('#catManager .cat-edit')].find((el) => el.querySelector('input').value === '운영');
-    row.querySelector('[aria-label="gold"]').click();
+    row.querySelector('.cat-dot-btn').click();
   });
   await saved(page);
   if (store.files.get('todos.json').doc.categories.find((item) => item.name === '운영').color !== 'gold') throw new Error('색 변경 실패');

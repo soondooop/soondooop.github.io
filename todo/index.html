@@ -400,18 +400,24 @@
   <dialog id="categoryDialog" aria-labelledby="catTitle">
     <form id="categoryForm" class="sheet">
       <h2 id="catTitle">카테고리</h2>
-      <label class="sheet-field">이름
-        <input id="newCatName" class="field" maxlength="24" autocomplete="off">
-      </label>
-      <div class="swatches" role="radiogroup" aria-label="색">
-        <label class="swatch cat-blue"><input type="radio" name="newCatColor" value="blue" checked><span class="sr-only">파랑</span></label>
-        <label class="swatch cat-teal"><input type="radio" name="newCatColor" value="teal"><span class="sr-only">청록</span></label>
-        <label class="swatch cat-gold"><input type="radio" name="newCatColor" value="gold"><span class="sr-only">금색</span></label>
-        <label class="swatch cat-green"><input type="radio" name="newCatColor" value="green"><span class="sr-only">초록</span></label>
-        <label class="swatch cat-plum"><input type="radio" name="newCatColor" value="plum"><span class="sr-only">보라</span></label>
-        <label class="swatch cat-clay"><input type="radio" name="newCatColor" value="clay"><span class="sr-only">벽돌</span></label>
-      </div>
-      <div id="catManager" class="cat-manager"></div>
+      <section class="sheet-block">
+        <h3>새 카테고리</h3>
+        <label class="sheet-field">이름
+          <input id="newCatName" class="field" maxlength="24" autocomplete="off">
+        </label>
+        <div class="swatches" role="radiogroup" aria-label="색">
+          <label class="swatch cat-blue"><input type="radio" name="newCatColor" value="blue" checked><span class="sr-only">파랑</span></label>
+          <label class="swatch cat-teal"><input type="radio" name="newCatColor" value="teal"><span class="sr-only">청록</span></label>
+          <label class="swatch cat-gold"><input type="radio" name="newCatColor" value="gold"><span class="sr-only">금색</span></label>
+          <label class="swatch cat-green"><input type="radio" name="newCatColor" value="green"><span class="sr-only">초록</span></label>
+          <label class="swatch cat-plum"><input type="radio" name="newCatColor" value="plum"><span class="sr-only">보라</span></label>
+          <label class="swatch cat-clay"><input type="radio" name="newCatColor" value="clay"><span class="sr-only">벽돌</span></label>
+        </div>
+      </section>
+      <section class="sheet-block">
+        <h3>내 카테고리</h3>
+        <div id="catManager" class="cat-manager"></div>
+      </section>
       <div class="dialog-actions">
         <button class="btn" type="button" data-close-dialog>취소</button>
         <button id="addCatBtn" class="btn-primary" type="button">추가</button>

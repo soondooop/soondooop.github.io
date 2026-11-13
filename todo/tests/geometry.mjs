@@ -72,15 +72,17 @@ async function measure(width) {
       const title = task.querySelector('.title');
       const rail = task.querySelector('.meta-rail');
       if (!check || !title || !rail) continue;
-      const cy = center(check).y;
-      if (Math.abs(center(title).y - cy) > 1) out.issues.push(`title vs check y ${title.textContent}`);
-      if (Math.abs(center(rail).y - cy) > 1) out.issues.push(`rail vs check y ${title.textContent}`);
+      const main = task.querySelector('.task-main');
+      const my = center(main).y;
+      if (Math.abs(center(check).y - my) > 1.5) out.issues.push(`check vs row y ${title.textContent}`);
+      if (Math.abs(center(rail).y - my) > 1.5) out.issues.push(`rail vs row y ${title.textContent}`);
+      const titleWidth = box(title).width;
+      if (titleWidth < box(main).width * 0.28 && title.textContent.length > 8) out.issues.push(`title too narrow ${titleWidth.toFixed(0)}`);
     }
-    const times = [...document.querySelectorAll('#list .meta-time')].map((el) => box(el).left);
     const flags = [...document.querySelectorAll('#list .flag')].map((el) => box(el).left);
     const memos = [...document.querySelectorAll('#list .memo-slot')].map((el) => box(el).left);
     const mores = [...document.querySelectorAll('#list [aria-label="더보기"]')].map((el) => box(el).left);
-    for (const [name, xs] of [['time', times], ['flag', flags], ['memo', memos], ['more', mores]]) {
+    for (const [name, xs] of [['flag', flags], ['memo', memos], ['more', mores]]) {
       if (xs.length > 1 && Math.max(...xs) - Math.min(...xs) > 0.5) out.issues.push(`${name} column spread ${(Math.max(...xs) - Math.min(...xs)).toFixed(2)}`);
     }
     const bars = document.querySelector('.bars');
@@ -156,6 +158,20 @@ await page.screenshot({ path: `${ART}/layout-1050.png` });
 await page.setViewport({ width: 1440, height: 900 });
 await page.evaluate(() => document.getElementById('categoryDialog').close());
 await page.screenshot({ path: `${ART}/layout-1440.png` });
+await page.setViewport({ width: 1024, height: 900 });
+const rowClip = await page.evaluate(() => {
+  const row = document.querySelector('#list .task');
+  const r = row.getBoundingClientRect();
+  return { x: Math.max(0, r.x - 4), y: Math.max(0, r.y - 8), width: Math.min(r.width + 8, 900), height: r.height + 16 };
+});
+await page.screenshot({ path: `${ART}/layout-task-1024.png`, clip: rowClip });
+await page.setViewport({ width: 390, height: 844 });
+const rowClipNarrow = await page.evaluate(() => {
+  const row = document.querySelector('#list .task');
+  const r = row.getBoundingClientRect();
+  return { x: 0, y: Math.max(0, r.y - 8), width: 390, height: Math.min(r.height + 16, 200) };
+});
+await page.screenshot({ path: `${ART}/layout-task-390.png`, clip: rowClipNarrow });
 
 console.log(fails.length ? `FAILED ${fails.length}` : 'GEOMETRY OK');
 if (fails.length) console.log(fails.join('\n'));

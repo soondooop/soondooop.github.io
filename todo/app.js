@@ -1822,6 +1822,8 @@ function renderTask(task) {
   }
   if (state.cardId === task.id) li.classList.add('is-card');
 
+  const chipLine = document.createElement('div');
+  chipLine.className = 'chip-line';
   const shown = task.tags.slice(0, 2);
   for (const tag of shown) {
     const chip = document.createElement('button');
@@ -1836,13 +1838,13 @@ function renderTask(task) {
       renderTagBar();
       renderList();
     });
-    titleLine.append(chip);
+    chipLine.append(chip);
   }
   if (task.tags.length > shown.length) {
     const moreTags = document.createElement('span');
     moreTags.className = 'chip';
     moreTags.textContent = `+${task.tags.length - shown.length}`;
-    titleLine.append(moreTags);
+    chipLine.append(moreTags);
   }
 
   const category = categoryById(task.categoryId);
@@ -1858,7 +1860,7 @@ function renderTask(task) {
       state.focusId = task.id;
       openCategoryPicker(task.id);
     });
-    titleLine.append(label);
+    chipLine.append(label);
   }
   if (task.repeat) {
     const repeat = document.createElement('button');
@@ -1870,19 +1872,14 @@ function renderTask(task) {
       event.stopPropagation();
       openRepeatDialog(task.id);
     });
-    titleLine.append(repeat);
+    chipLine.append(repeat);
   }
-  const rail = document.createElement('div');
-  rail.className = 'meta-rail';
-  const timeSlot = document.createElement('span');
-  timeSlot.className = 'meta-time';
   if (task.status === 'done' && task.completedAt) {
     const doneAt = document.createElement('span');
     doneAt.className = 'done-time';
     doneAt.textContent = formatDoneTime(task.completedAt);
-    timeSlot.append(doneAt);
-    rail.append(timeSlot);
-  } else {
+    chipLine.append(doneAt);
+  }
   const due = document.createElement('button');
   due.type = 'button';
   due.className = dueClass(task, today);
@@ -1894,10 +1891,19 @@ function renderTask(task) {
     event.stopPropagation();
     openDueDialog(task.id);
   });
-  timeSlot.append(due);
-  rail.append(timeSlot);
+  if (task.status !== 'done' && task.due) chipLine.append(due);
+
+  const body = document.createElement('div');
+  body.className = 'task-body';
+  body.append(titleLine);
+  if (chipLine.childElementCount) body.append(chipLine);
+  if (state.expandedIds.has(task.id) && task.memo) {
+    const memoRead = titleLine.querySelector('.memo-read');
+    if (memoRead) body.append(memoRead);
   }
 
+  const rail = document.createElement('div');
+  rail.className = 'meta-rail';
   const flag = document.createElement('button');
   flag.type = 'button';
   flag.className = `flag p-${task.priority}`;
@@ -1944,7 +1950,7 @@ function renderTask(task) {
   });
   rail.append(more);
 
-  main.append(check, titleLine, rail);
+  main.append(check, body, rail);
   li.append(main);
 
   if (state.cardId === task.id) li.append(renderTaskCard(task));
@@ -2197,7 +2203,13 @@ function renderDueSoon() {
     const item = document.createElement('li');
     const button = document.createElement('button');
     button.type = 'button';
-    button.textContent = `${task.title} · ${formatDue(task, today)}`;
+    const soonTitle = document.createElement('span');
+    soonTitle.className = 'soon-title';
+    soonTitle.textContent = task.title;
+    const soonWhen = document.createElement('span');
+    soonWhen.className = 'soon-when';
+    soonWhen.textContent = formatDue(task, today);
+    button.append(soonTitle, soonWhen);
     if (isOverdue(task, appNow()) || task.due < today) button.classList.add('is-overdue');
     button.addEventListener('click', () => openTaskFromWidget(task));
     item.append(button);
@@ -2233,9 +2245,11 @@ function renderWeekChart() {
   counts.forEach((count, index) => {
     const cell = document.createElement('span');
     const bar = document.createElement('i');
-    bar.style.height = `${Math.max(8, Math.round((count / max) * 48))}px`;
+    bar.style.setProperty('--bar', count === 0 ? '6' : String(Math.max(18, Math.round((count / max) * 100))));
     if (index === todayIndex) bar.className = 'on';
-    cell.append(bar, document.createTextNode(labels[index]));
+    const name = document.createElement('em');
+    name.textContent = labels[index];
+    cell.append(bar, name);
     bars.append(cell);
   });
   host.append(heading, bars);
@@ -4012,29 +4026,25 @@ function renderCategoryManager() {
     const row = document.createElement('div');
     row.className = 'cat-edit';
     const input = document.createElement('input');
+    input.className = 'field';
     input.value = category.name;
     input.maxLength = 24;
     input.setAttribute('aria-label', `${category.name} 이름`);
-    const colors = document.createElement('div');
-    colors.className = 'swatches';
-    for (const color of CATEGORY_COLORS) {
-      const swatch = document.createElement('button');
-      swatch.type = 'button';
-      swatch.className = `swatch cat-${color}`;
-      swatch.setAttribute('aria-label', color);
-      swatch.setAttribute('aria-pressed', category.color === color ? 'true' : 'false');
-      swatch.addEventListener('click', () => {
-        category.color = color;
-        markDirty();
-        renderCategoryManager();
-        renderDynamic();
-      });
-      colors.append(swatch);
-    }
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = `cat-dot-btn cat-${category.color}`;
+    dot.setAttribute('aria-label', `${category.name} 색, ${category.color}`);
+    dot.addEventListener('click', () => {
+      const index = CATEGORY_COLORS.indexOf(category.color);
+      category.color = CATEGORY_COLORS[(index + 1) % CATEGORY_COLORS.length];
+      markDirty();
+      renderCategoryManager();
+      renderDynamic();
+    });
     const save = document.createElement('button');
     save.type = 'button';
     save.className = 'btn';
-    save.textContent = '이름 저장';
+    save.textContent = '저장';
     save.addEventListener('click', () => {
       const name = input.value.replace(/\s+/g, ' ').trim().slice(0, 24);
       if (!name) return;
@@ -4045,7 +4055,7 @@ function renderCategoryManager() {
     });
     const remove = document.createElement('button');
     remove.type = 'button';
-    remove.className = 'btn';
+    remove.className = 'btn btn-quiet';
     remove.textContent = '삭제';
     remove.addEventListener('click', () => {
       state.doc.categories = state.doc.categories.filter((item) => item.id !== category.id);
@@ -4055,7 +4065,7 @@ function renderCategoryManager() {
       renderCategoryManager();
       renderDynamic();
     });
-    row.append(input, colors, save, remove);
+    row.append(dot, input, save, remove);
     list.append(row);
   }
 }
