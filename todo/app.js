@@ -81,6 +81,7 @@ const state = {
   calendarDay: null,
   calendarMode: 'all',
   expandedIds: new Set(),
+  cardId: null,
   notifyEnabled: false,
   briefingTime: '09:00',
   query: '',
@@ -861,6 +862,16 @@ function renderTabs() {
     tab.tabIndex = selected ? 0 : -1;
   }
   $('list').setAttribute('aria-labelledby', `tab-${state.view}`);
+  const titles = { today: '오늘', calendar: '예정', backlog: '백로그', done: '완료' };
+  const marks = { today: '★', calendar: '▦', backlog: '▢', done: '✓' };
+  const name = $('viewName');
+  const icon = $('viewIcon');
+  if (name) name.textContent = titles[state.view] || '오늘';
+  if (icon) {
+    icon.textContent = marks[state.view] || '★';
+    icon.dataset.view = state.view;
+  }
+  document.querySelector('.workspace')?.setAttribute('data-view', state.view);
   const composer = $('composer');
   composer.placeholder = state.view === 'backlog'
     ? '백로그에 추가  ·  @카테고리  #태그  내일 오후 3시'
@@ -1634,7 +1645,15 @@ function renderTask(task) {
       titleLine.append(memoRead);
     }
     if (state.expandedIds.has(task.id)) li.classList.add('is-expanded');
+    title.addEventListener('click', (event) => {
+      if (event.detail > 1) return;
+      event.stopPropagation();
+      state.cardId = state.cardId === task.id ? null : task.id;
+      state.focusId = task.id;
+      renderList();
+    });
   }
+  if (state.cardId === task.id) li.classList.add('is-card');
 
   const meta = document.createElement('div');
   meta.className = 'meta';
@@ -1752,7 +1771,8 @@ function renderTask(task) {
   main.append(check, titleLine, meta);
   li.append(main);
 
-  if (state.memoId === task.id) li.append(renderMemo(task));
+  if (state.cardId === task.id) li.append(renderTaskCard(task));
+  else if (state.memoId === task.id) li.append(renderMemo(task));
   if (state.menu?.id === task.id) li.append(renderMenu(task));
 
   li.addEventListener('mousedown', (event) => {
@@ -1765,6 +1785,46 @@ function renderTask(task) {
   });
   bindDrag(li, task);
   return li;
+}
+
+function renderTaskCard(task) {
+  const card = document.createElement('div');
+  card.className = 'task-card';
+  const notes = document.createElement('textarea');
+  notes.className = 'card-notes';
+  notes.value = task.memo || '';
+  notes.placeholder = '메모';
+  notes.setAttribute('aria-label', `${task.title} 메모`);
+  notes.addEventListener('blur', () => {
+    const value = notes.value;
+    window.setTimeout(() => commitMemo(task.id, value), 0);
+  });
+  const foot = document.createElement('div');
+  foot.className = 'card-foot';
+  for (const tag of task.tags) {
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.textContent = `#${tag}`;
+    foot.append(chip);
+  }
+  const when = document.createElement('button');
+  when.type = 'button';
+  when.className = 'card-meta';
+  when.textContent = task.list === 'backlog' ? '백로그' : '오늘';
+  when.addEventListener('click', () => moveToList(task.id, task.list === 'backlog' ? 'today' : 'backlog'));
+  const due = document.createElement('button');
+  due.type = 'button';
+  due.className = 'card-meta';
+  due.textContent = task.due ? `마감 ${formatDue(task, todayKey())}` : '마감';
+  due.addEventListener('click', () => openDueDialog(task.id));
+  const repeat = document.createElement('button');
+  repeat.type = 'button';
+  repeat.className = 'card-meta';
+  repeat.textContent = task.repeat ? ruleLabel(task.repeat) : '반복';
+  repeat.addEventListener('click', () => openRepeatDialog(task.id));
+  foot.append(when, due, repeat);
+  card.append(notes, foot);
+  return card;
 }
 
 function renderMemo(task) {
@@ -2632,6 +2692,7 @@ function setView(view) {
   state.editingId = null;
   state.menu = null;
   state.dueId = null;
+  closeSidebar();
   renderDynamic();
 }
 
@@ -2755,9 +2816,10 @@ function onKeyDown(event) {
   if ($('main').hidden) return;
   if (document.querySelector('dialog[open]')) return;
   if (event.key === 'Escape') {
-    if (state.menu || state.dueId) {
+    if (state.menu || state.dueId || state.cardId) {
       state.menu = null;
       state.dueId = null;
+      state.cardId = null;
       renderList();
     }
     return;
@@ -2972,6 +3034,15 @@ function bind() {
     localStorage.setItem(BRIEF_KEY, state.briefingTime);
   });
   $('helpBtn').addEventListener('click', () => $('helpDialog').showModal());
+  $('magicPlus')?.addEventListener('click', focusComposer);
+  $('sideQuick')?.addEventListener('click', focusComposer);
+  $('navToggle')?.addEventListener('click', () => {
+    const sidebar = $('sidebar');
+    const open = sidebar.classList.toggle('is-open');
+    $('navToggle').setAttribute('aria-expanded', open ? 'true' : 'false');
+    $('navBackdrop').hidden = !open;
+  });
+  $('navBackdrop')?.addEventListener('click', closeSidebar);
   $('settingsForm').addEventListener('submit', (event) => { void applySettings(event); });
   $('exportBtn').addEventListener('click', exportJson);
   $('importBtn').addEventListener('click', () => $('importFile').click());
@@ -3103,6 +3174,7 @@ function renderCategoryBar() {
   bar.replaceChildren();
   const all = document.createElement('button');
   all.type = 'button';
+  all.className = 'side-cat';
   all.textContent = '전체';
   all.setAttribute('aria-pressed', state.categoryFilter ? 'false' : 'true');
   all.addEventListener('click', () => {
@@ -3113,8 +3185,10 @@ function renderCategoryBar() {
   for (const category of state.doc.categories || []) {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = `cat-${category.color}`;
-    button.textContent = category.name;
+    button.className = `side-cat cat-${category.color}`;
+    const tasks = state.doc.tasks.filter((task) => task.categoryId === category.id);
+    const done = tasks.filter((task) => task.status === 'done').length;
+    button.append(categoryPie(done, tasks.length), document.createTextNode(category.name));
     button.setAttribute('aria-pressed', state.categoryFilter === category.id ? 'true' : 'false');
     button.addEventListener('click', () => {
       state.categoryFilter = state.categoryFilter === category.id ? null : category.id;
@@ -3124,9 +3198,57 @@ function renderCategoryBar() {
   }
   const manage = document.createElement('button');
   manage.type = 'button';
-  manage.textContent = '카테고리';
+  manage.className = 'side-cat side-manage';
+  manage.textContent = '관리';
+  manage.setAttribute('aria-label', '카테고리 관리');
   manage.addEventListener('click', openCategoryDialog);
   bar.append(manage);
+}
+
+function categoryPie(done, total) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 16 16');
+  svg.setAttribute('width', '14');
+  svg.setAttribute('height', '14');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.classList.add('pie');
+  const track = document.createElementNS(svg.namespaceURI, 'circle');
+  track.setAttribute('cx', '8');
+  track.setAttribute('cy', '8');
+  track.setAttribute('r', '6');
+  track.setAttribute('fill', 'none');
+  track.setAttribute('stroke', 'currentColor');
+  track.setAttribute('stroke-opacity', '0.25');
+  track.setAttribute('stroke-width', '2.4');
+  const arc = document.createElementNS(svg.namespaceURI, 'circle');
+  const length = 2 * Math.PI * 6;
+  const ratio = total ? done / total : 0;
+  arc.setAttribute('cx', '8');
+  arc.setAttribute('cy', '8');
+  arc.setAttribute('r', '6');
+  arc.setAttribute('fill', 'none');
+  arc.setAttribute('stroke', 'currentColor');
+  arc.setAttribute('stroke-width', '2.4');
+  arc.setAttribute('stroke-linecap', 'round');
+  arc.setAttribute('stroke-dasharray', `${length * ratio} ${length}`);
+  arc.setAttribute('transform', 'rotate(-90 8 8)');
+  svg.append(track, arc);
+  return svg;
+}
+
+function closeSidebar() {
+  $('sidebar')?.classList.remove('is-open');
+  const toggle = $('navToggle');
+  if (toggle) toggle.setAttribute('aria-expanded', 'false');
+  const backdrop = $('navBackdrop');
+  if (backdrop) backdrop.hidden = true;
+}
+
+function focusComposer() {
+  const input = $('composer');
+  input?.scrollIntoView({ block: 'center' });
+  input?.focus();
+  closeSidebar();
 }
 
 function renderViewControls() {

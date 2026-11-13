@@ -7,8 +7,8 @@
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
   <meta name="description" content="오늘의 할 일을 정리하는 개인 업무 체크. 데이터는 비공개 GitHub 저장소에 저장됩니다.">
-  <meta name="theme-color" content="#f3f1eb" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#131311" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)">
   <title>오늘 · 업무 체크</title>
   <link rel="manifest" href="/todo/manifest.json">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%232f6fed'/%3E%3Cpath d='M4 8.2 6.6 11 12 5' fill='none' stroke='white' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -58,39 +58,42 @@
     </div>
   </section>
 
-  <main id="main" class="app" hidden>
-    <header class="hero">
-      <div class="hero-top">
-        <p class="eyebrow">업무 체크</p>
-        <div class="userbox">
-          <span id="avatarSlot" class="avatar-slot"></span>
-          <span id="username"></span>
-          <button id="logoutBtn" type="button">로그아웃</button>
-        </div>
+  <main id="main" class="shell" hidden>
+    <button id="navToggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="sidebar">목록</button>
+    <div id="navBackdrop" class="nav-backdrop" hidden></div>
+    <aside id="sidebar" class="sidebar">
+      <div class="side-user">
+        <span id="avatarSlot" class="avatar-slot"></span>
+        <span id="username"></span>
+        <button id="logoutBtn" type="button">로그아웃</button>
       </div>
-      <h1 id="todayDate"></h1>
-      <div
-        id="progress"
-        class="progress"
-        role="progressbar"
-        aria-valuemin="0"
-        aria-valuemax="0"
-        aria-valuenow="0"
-        aria-label="오늘 진행률"
-      >
-        <span id="progressFill"></span>
-      </div>
-      <p id="progressLabel" class="progress-label"></p>
-    </header>
-
-    <div class="toolbar">
+      <button id="sideQuick" class="side-item side-quick" type="button">
+        <span class="side-ico ico-inbox" aria-hidden="true"></span>
+        <span>새 할 일</span>
+      </button>
       <div class="views" role="tablist" aria-label="목록">
-        <button type="button" role="tab" id="tab-today" data-view="today" aria-selected="true" aria-controls="list" tabindex="0">오늘 <span id="count-today" class="count"></span></button>
-        <button type="button" role="tab" id="tab-backlog" data-view="backlog" aria-selected="false" aria-controls="list" tabindex="-1">백로그 <span id="count-backlog" class="count"></span></button>
-        <button type="button" role="tab" id="tab-done" data-view="done" aria-selected="false" aria-controls="list" tabindex="-1">완료</button>
-        <button type="button" role="tab" id="tab-calendar" data-view="calendar" aria-selected="false" aria-controls="list" tabindex="-1">달력</button>
+        <button type="button" role="tab" id="tab-today" class="side-item" data-view="today" aria-selected="true" aria-controls="list" tabindex="0">
+          <span class="side-ico ico-star" aria-hidden="true"></span>
+          <span>오늘</span>
+          <span id="count-today" class="count"></span>
+        </button>
+        <button type="button" role="tab" id="tab-calendar" class="side-item" data-view="calendar" aria-selected="false" aria-controls="list" tabindex="-1">
+          <span class="side-ico ico-cal" aria-hidden="true"></span>
+          <span>예정</span>
+        </button>
+        <button type="button" role="tab" id="tab-backlog" class="side-item" data-view="backlog" aria-selected="false" aria-controls="list" tabindex="-1">
+          <span class="side-ico ico-box" aria-hidden="true"></span>
+          <span>백로그</span>
+          <span id="count-backlog" class="count"></span>
+        </button>
+        <button type="button" role="tab" id="tab-done" class="side-item" data-view="done" aria-selected="false" aria-controls="list" tabindex="-1">
+          <span class="side-ico ico-check" aria-hidden="true"></span>
+          <span>완료</span>
+        </button>
       </div>
-      <div class="toolbar-actions">
+      <p class="side-label">카테고리</p>
+      <div id="catBar" class="side-cats" aria-label="카테고리 필터"></div>
+      <div class="side-tools">
         <label class="search">
           <span class="sr-only" id="searchLabel">검색</span>
           <input id="search" type="search" placeholder="검색" autocomplete="off" enterkeyhint="search" aria-labelledby="searchLabel">
@@ -101,34 +104,44 @@
         <button id="settingsBtn" class="btn" type="button">설정</button>
         <button id="helpBtn" class="btn" type="button" aria-label="단축키 도움말">?</button>
       </div>
+    </aside>
+    <div class="workspace">
+      <div class="column">
+        <header class="hero">
+          <h1 id="viewTitle"><span id="viewIcon" class="hero-mark" aria-hidden="true">★</span> <span id="viewName">오늘</span></h1>
+          <p id="todayDate" class="view-sub"></p>
+          <div id="progress" class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" aria-label="오늘 진행률">
+            <span id="progressFill"></span>
+          </div>
+          <p id="progressLabel" class="progress-label"></p>
+        </header>
+        <p id="syncDetail" class="sync-detail" aria-live="polite"></p>
+        <form id="composerForm" class="composer" autocomplete="off">
+          <label class="sr-only" for="composer">할 일 추가</label>
+          <input id="composer" type="text" maxlength="500" placeholder="새 할 일  ·  @카테고리  #태그  내일 오후 3시" enterkeyhint="done" autocomplete="off">
+          <button class="btn-primary" type="submit">추가</button>
+        </form>
+        <div id="tagBar" class="tagbar" aria-label="태그 필터"></div>
+        <div class="list-tools">
+          <label class="sort-label">정렬
+            <select id="sortSelect">
+              <option value="manual">수동 순서</option>
+              <option value="category">카테고리</option>
+              <option value="priority">우선순위</option>
+              <option value="due">기한</option>
+              <option value="created">생성일</option>
+            </select>
+          </label>
+          <button id="groupBtn" class="text-toggle" type="button" aria-pressed="false">카테고리로 묶기</button>
+          <button id="overdueBtn" class="text-toggle" type="button" aria-pressed="false">지난 기한</button>
+          <button id="hideDoneBtn" class="text-toggle" type="button" aria-pressed="false">완료 항목 숨기기</button>
+        </div>
+        <div id="list" role="tabpanel" aria-labelledby="tab-today"></div>
+        <p id="dataLoc" class="footnote"></p>
+        <div id="live" class="sr-only" aria-live="polite"></div>
+      </div>
+      <button id="magicPlus" class="magic-plus" type="button" aria-label="새 할 일">+</button>
     </div>
-    <p id="syncDetail" class="sync-detail" aria-live="polite"></p>
-
-    <form id="composerForm" class="composer" autocomplete="off">
-      <label class="sr-only" for="composer">할 일 추가</label>
-      <input id="composer" type="text" maxlength="500" placeholder="오늘 할 일 추가  ·  #태그  !높음  2026-11-20" enterkeyhint="done" autocomplete="off">
-      <button class="btn-primary" type="submit">추가</button>
-    </form>
-
-    <div id="catBar" class="catbar" aria-label="카테고리 필터"></div>
-    <div id="tagBar" class="tagbar" aria-label="태그 필터"></div>
-    <div class="list-tools">
-      <label class="sort-label">정렬
-        <select id="sortSelect">
-          <option value="manual">수동 순서</option>
-          <option value="category">카테고리</option>
-          <option value="priority">우선순위</option>
-          <option value="due">기한</option>
-          <option value="created">생성일</option>
-        </select>
-      </label>
-      <button id="groupBtn" class="text-toggle" type="button" aria-pressed="false">카테고리로 묶기</button>
-      <button id="overdueBtn" class="text-toggle" type="button" aria-pressed="false">지난 기한</button>
-      <button id="hideDoneBtn" class="text-toggle" type="button" aria-pressed="false">완료 항목 숨기기</button>
-    </div>
-    <div id="list" role="tabpanel" aria-labelledby="tab-today"></div>
-    <p id="dataLoc" class="footnote"></p>
-    <div id="live" class="sr-only" aria-live="polite"></div>
   </main>
 
   <div id="notice" class="toast notice" hidden role="status"></div>
@@ -151,7 +164,7 @@
           <tr><th><kbd>X</kbd> <kbd>Space</kbd></th><td>완료 토글</td></tr>
           <tr><th><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd></th><td>우선순위 높음 / 보통 / 낮음</td></tr>
           <tr><th><kbd>T</kbd> <kbd>B</kbd></th><td>오늘 / 백로그로 이동</td></tr>
-          <tr><th><kbd>C</kbd></th><td>달력</td></tr>
+          <tr><th><kbd>C</kbd></th><td>예정</td></tr>
           <tr><th><kbd>D</kbd></th><td>기한</td></tr>
           <tr><th><kbd>R</kbd></th><td>반복</td></tr>
           <tr><th><kbd>Alt</kbd>+<kbd>↑</kbd> <kbd>↓</kbd></th><td>순서 변경 (Alt+J / Alt+K)</td></tr>
