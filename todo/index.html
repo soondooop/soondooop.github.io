@@ -10,6 +10,7 @@
   <meta name="theme-color" content="#f3f1eb" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#131311" media="(prefers-color-scheme: dark)">
   <title>오늘 · 업무 체크</title>
+  <link rel="manifest" href="/todo/manifest.json">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='4' fill='%232f6fed'/%3E%3Cpath d='M4 8.2 6.6 11 12 5' fill='none' stroke='white' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
   <script>
@@ -87,6 +88,7 @@
         <button type="button" role="tab" id="tab-today" data-view="today" aria-selected="true" aria-controls="list" tabindex="0">오늘 <span id="count-today" class="count"></span></button>
         <button type="button" role="tab" id="tab-backlog" data-view="backlog" aria-selected="false" aria-controls="list" tabindex="-1">백로그 <span id="count-backlog" class="count"></span></button>
         <button type="button" role="tab" id="tab-done" data-view="done" aria-selected="false" aria-controls="list" tabindex="-1">완료</button>
+        <button type="button" role="tab" id="tab-calendar" data-view="calendar" aria-selected="false" aria-controls="list" tabindex="-1">달력</button>
       </div>
       <div class="toolbar-actions">
         <label class="search">
@@ -108,8 +110,20 @@
       <button class="btn-primary" type="submit">추가</button>
     </form>
 
+    <div id="catBar" class="catbar" aria-label="카테고리 필터"></div>
     <div id="tagBar" class="tagbar" aria-label="태그 필터"></div>
     <div class="list-tools">
+      <label class="sort-label">정렬
+        <select id="sortSelect">
+          <option value="manual">수동 순서</option>
+          <option value="category">카테고리</option>
+          <option value="priority">우선순위</option>
+          <option value="due">기한</option>
+          <option value="created">생성일</option>
+        </select>
+      </label>
+      <button id="groupBtn" class="text-toggle" type="button" aria-pressed="false">카테고리로 묶기</button>
+      <button id="overdueBtn" class="text-toggle" type="button" aria-pressed="false">지난 기한</button>
       <button id="hideDoneBtn" class="text-toggle" type="button" aria-pressed="false">완료 항목 숨기기</button>
     </div>
     <div id="list" role="tabpanel" aria-labelledby="tab-today"></div>
@@ -117,6 +131,7 @@
     <div id="live" class="sr-only" aria-live="polite"></div>
   </main>
 
+  <div id="notice" class="toast notice" hidden role="status"></div>
   <div id="toast" class="toast" hidden role="status">
     <span id="toastText"></span>
     <button id="undoBtn" type="button">실행 취소</button>
@@ -136,6 +151,9 @@
           <tr><th><kbd>X</kbd> <kbd>Space</kbd></th><td>완료 토글</td></tr>
           <tr><th><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd></th><td>우선순위 높음 / 보통 / 낮음</td></tr>
           <tr><th><kbd>T</kbd> <kbd>B</kbd></th><td>오늘 / 백로그로 이동</td></tr>
+          <tr><th><kbd>C</kbd></th><td>달력</td></tr>
+          <tr><th><kbd>D</kbd></th><td>기한</td></tr>
+          <tr><th><kbd>R</kbd></th><td>반복</td></tr>
           <tr><th><kbd>Alt</kbd>+<kbd>↑</kbd> <kbd>↓</kbd></th><td>순서 변경 (Alt+J / Alt+K)</td></tr>
           <tr><th><kbd>Delete</kbd></th><td>삭제 (실행 취소 가능)</td></tr>
           <tr><th><kbd>?</kbd></th><td>이 도움말</td></tr>
@@ -157,6 +175,12 @@
         <label>브랜치 <input id="setBranch" class="field" autocomplete="off" spellcheck="false" required></label>
         <label>경로 <input id="setPath" class="field" autocomplete="off" spellcheck="false" required></label>
       </div>
+      <fieldset class="notify-box">
+        <legend>알림</legend>
+        <label class="checkline" for="notifyToggle"><input id="notifyToggle" type="checkbox"> 브라우저 알림 사용</label>
+        <label>아침 브리핑 <input id="briefingTime" class="field" type="time" value="09:00"></label>
+        <p id="notifyState" class="note">알림은 이 브라우저나 설치한 앱이 실행 중일 때만 울립니다. 푸시 서버는 없습니다.</p>
+      </fieldset>
       <p class="note">soondooop.github.io는 공개 저장소라 할 일을 두면 안 됩니다. 기본 위치는 비공개 저장소 <strong>soondooop/todo-data</strong>의 <strong>main</strong> 브랜치, <strong>todos.json</strong> 입니다. 파일이 없으면 처음 저장할 때 만듭니다.</p>
       <p id="settingsError" class="error" role="alert"></p>
       <div class="dialog-actions">
@@ -182,6 +206,94 @@
   </dialog>
 
   <input id="importFile" type="file" accept="application/json,.json" hidden>
+
+  <dialog id="dueDialog" aria-labelledby="dueTitle">
+    <form id="dueForm">
+      <h2 id="dueTitle">기한</h2>
+      <input id="dueTaskId" type="hidden">
+      <div class="quick-row">
+        <button class="btn" type="button" data-due-quick="today">오늘</button>
+        <button class="btn" type="button" data-due-quick="tomorrow">내일</button>
+        <button class="btn" type="button" data-due-quick="friday">이번 주 금요일</button>
+        <button class="btn" type="button" data-due-quick="nextMonday">다음 주 월요일</button>
+      </div>
+      <label>날짜 <input id="dueDate" class="field" type="date"></label>
+      <label>시간 <input id="dueTime" class="field" type="time"></label>
+      <label>알림
+        <select id="dueReminder" class="field">
+          <option value="">없음</option>
+          <option value="at">정시</option>
+          <option value="10m">10분 전</option>
+          <option value="30m">30분 전</option>
+          <option value="1h">1시간 전</option>
+          <option value="1d9">하루 전 09:00</option>
+        </select>
+      </label>
+      <div class="dialog-actions">
+        <button id="dueClear" class="btn" type="button">지우기</button>
+        <button class="btn" type="button" data-close-dialog>닫기</button>
+        <button class="btn-primary" type="submit">저장</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="repeatDialog" aria-labelledby="repeatTitle">
+    <form id="repeatForm">
+      <h2 id="repeatTitle">반복</h2>
+      <input id="repeatTaskId" type="hidden">
+      <div class="repeat-options">
+        <label><input type="radio" name="repeatFreq" value="daily" checked> 매일</label>
+        <label><input type="radio" name="repeatFreq" value="weekdays"> 평일 (월~금)</label>
+        <label><input type="radio" name="repeatFreq" value="weekly"> 매주</label>
+        <label><input type="radio" name="repeatFreq" value="monthly"> 매월</label>
+        <label><input type="radio" name="repeatFreq" value="yearly"> 매년</label>
+        <label><input type="radio" name="repeatFreq" value="interval"> N일마다</label>
+      </div>
+      <div id="repeatWeekly" class="weekday-picks" hidden>
+        <label><input type="checkbox" name="repeatWeekday" value="1"> 월</label>
+        <label><input type="checkbox" name="repeatWeekday" value="2"> 화</label>
+        <label><input type="checkbox" name="repeatWeekday" value="3"> 수</label>
+        <label><input type="checkbox" name="repeatWeekday" value="4"> 목</label>
+        <label><input type="checkbox" name="repeatWeekday" value="5"> 금</label>
+        <label><input type="checkbox" name="repeatWeekday" value="6"> 토</label>
+        <label><input type="checkbox" name="repeatWeekday" value="0"> 일</label>
+      </div>
+      <div id="repeatMonthly" hidden>
+        <label>날짜 <input id="repeatMonthDay" class="field" type="number" min="1" max="31" inputmode="numeric"></label>
+        <label class="checkline"><input id="repeatLastDay" type="checkbox"> 말일</label>
+      </div>
+      <div id="repeatEvery" hidden>
+        <label>간격(일) <input id="repeatInterval" class="field" type="number" min="1" max="366" value="2"></label>
+      </div>
+      <div class="dialog-actions">
+        <button id="repeatStop" class="btn" type="button" hidden>반복 멈추기</button>
+        <button class="btn" type="button" data-close-dialog>닫기</button>
+        <button class="btn-primary" type="submit">저장</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="categoryDialog" aria-labelledby="catTitle">
+    <form id="categoryForm">
+      <h2 id="catTitle">카테고리</h2>
+      <div class="cat-create">
+        <label>이름 <input id="newCatName" class="field" maxlength="24" autocomplete="off"></label>
+        <div class="swatches" role="radiogroup" aria-label="색">
+          <label class="swatch cat-blue"><input type="radio" name="newCatColor" value="blue" checked><span class="sr-only">파랑</span></label>
+          <label class="swatch cat-teal"><input type="radio" name="newCatColor" value="teal"><span class="sr-only">청록</span></label>
+          <label class="swatch cat-gold"><input type="radio" name="newCatColor" value="gold"><span class="sr-only">금색</span></label>
+          <label class="swatch cat-green"><input type="radio" name="newCatColor" value="green"><span class="sr-only">초록</span></label>
+          <label class="swatch cat-plum"><input type="radio" name="newCatColor" value="plum"><span class="sr-only">보라</span></label>
+          <label class="swatch cat-clay"><input type="radio" name="newCatColor" value="clay"><span class="sr-only">벽돌</span></label>
+        </div>
+        <button id="addCatBtn" class="btn" type="button">추가</button>
+      </div>
+      <div id="catManager"></div>
+      <div class="dialog-actions">
+        <button class="btn-primary" type="button" data-close-dialog>닫기</button>
+      </div>
+    </form>
+  </dialog>
 
   <noscript><p class="noscript">이 앱은 자바스크립트가 필요합니다.</p></noscript>
   <script type="module" src="app.js"></script>
