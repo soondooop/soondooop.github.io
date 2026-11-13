@@ -367,7 +367,7 @@ export function parseQuickAdd(text, today = seoulDate(new Date())) {
 
 export function monthGrid(year, month) {
   const first = ymd(year, month, 1);
-  const start = addDays(first, -((weekday(first) + 6) % 7));
+  const start = addDays(first, -weekday(first));
   const days = [];
   for (let i = 0; i < 42; i += 1) days.push(addDays(start, i));
   return days;
