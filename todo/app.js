@@ -79,6 +79,7 @@ const state = {
   calendarYear: null,
   calendarMonth: null,
   calendarDay: null,
+  calendarMode: 'all',
   expandedIds: new Set(),
   notifyEnabled: false,
   briefingTime: '09:00',
@@ -1051,6 +1052,41 @@ function renderGrouped(list, tasks) {
   if (!any) list.append(emptyNode(emptyMessage()));
 }
 
+function calendarEntries(day, today, projections) {
+  const open = [];
+  const done = [];
+  for (const task of state.doc.tasks) {
+    if (!passesCalendarFilter(task)) continue;
+    if (task.status === 'done') {
+      if (task.completedAt && seoulDate(task.completedAt) === day) done.push(task);
+      continue;
+    }
+    const onDue = task.due === day;
+    const undatedToday = !task.due && task.list === 'today' && day === today;
+    const carriedToday = day === today && !!task.due && task.due < today;
+    if (!onDue && !undatedToday && !carriedToday) continue;
+    open.push({
+      task,
+      overdue: isOverdue(task, appNow()) || carriedToday,
+      carried: carriedToday,
+    });
+  }
+  const planned = (projections || []).filter((item) => item.date === day && passesCalendarFilter(item));
+  return { open, done, planned };
+}
+
+function calendarLines(entry, mode) {
+  const lines = [];
+  if (mode !== 'done') {
+    for (const item of entry.open) lines.push({ kind: 'open', title: item.task.title, categoryId: item.task.categoryId, overdue: item.overdue });
+    for (const item of entry.planned) lines.push({ kind: 'plan', title: item.title, categoryId: item.categoryId, overdue: false });
+  }
+  if (mode !== 'open') {
+    for (const task of entry.done) lines.push({ kind: 'done', title: task.title, categoryId: task.categoryId, overdue: false });
+  }
+  return lines;
+}
+
 function renderCalendar(list) {
   const today = todayKey();
   if (!state.calendarYear) {
@@ -1088,7 +1124,23 @@ function renderCalendar(list) {
     state.calendarDay = today;
     renderList();
   });
-  bar.append(prev, title, next, jump);
+  const filter = document.createElement('div');
+  filter.className = 'cal-filter';
+  filter.setAttribute('role', 'group');
+  filter.setAttribute('aria-label', '달력에 표시할 일');
+  for (const [mode, label] of [['all', '모두'], ['open', '할 일 보기'], ['done', '완료 보기']]) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = label;
+    button.setAttribute('aria-pressed', state.calendarMode === mode ? 'true' : 'false');
+    button.addEventListener('click', () => {
+      state.calendarMode = mode;
+      localStorage.setItem('todo.calendarMode', mode);
+      renderList();
+    });
+    filter.append(button);
+  }
+  bar.append(prev, title, next, jump, filter);
   wrap.append(bar);
   const weekdays = document.createElement('div');
   weekdays.className = 'cal-weekdays';
@@ -1100,14 +1152,12 @@ function renderCalendar(list) {
   wrap.append(weekdays);
   const grid = document.createElement('div');
   grid.className = 'cal-grid';
-  const rangeStart = days[0];
   const rangeEnd = days[days.length - 1];
   const projections = projectOccurrences(state.doc.tasks, today, rangeEnd).filter((item) => item.date > today);
   for (const day of days) {
     const inMonth = Number(day.slice(5, 7)) === month;
-    const completed = state.doc.tasks.filter((task) => task.status === 'done' && task.completedAt && seoulDate(task.completedAt) === day && passesCalendarFilter(task));
-    const due = state.doc.tasks.filter((task) => task.status !== 'done' && task.due === day && passesCalendarFilter(task));
-    const planned = projections.filter((item) => item.date === day && passesCalendarFilter(item));
+    const entry = calendarEntries(day, today, projections);
+    const lines = calendarLines(entry, state.calendarMode);
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'cal-day';
@@ -1115,33 +1165,32 @@ function renderCalendar(list) {
     if (day === today) button.classList.add('is-today');
     if (day > today) button.classList.add('is-future');
     if (day === state.calendarDay) button.classList.add('is-selected');
-    const heat = completed.length === 0 ? 0 : completed.length === 1 ? 1 : completed.length < 4 ? 2 : 3;
+    const heat = entry.done.length === 0 ? 0 : entry.done.length === 1 ? 1 : entry.done.length < 4 ? 2 : 3;
     button.dataset.heat = String(heat);
     button.setAttribute('aria-pressed', day === state.calendarDay ? 'true' : 'false');
-    button.setAttribute('aria-label', `${day} 완료 ${completed.length}개`);
+    button.setAttribute('aria-label', `${day} 할 일 ${entry.open.length + entry.planned.length}개, 완료 ${entry.done.length}개`);
     const num = document.createElement('span');
     num.className = 'cal-num';
     num.textContent = String(Number(day.slice(8, 10)));
     button.append(num);
-    if (completed.length) {
-      const count = document.createElement('span');
-      count.className = 'cal-count';
-      count.textContent = String(completed.length);
-      button.append(count);
+    const summary = document.createElement('span');
+    summary.className = 'cal-summary';
+    if (entry.open.length) summary.append(dotCount('open-dot', entry.open.length));
+    if (entry.open.some((item) => item.overdue)) summary.append(dotCount('overdue-dot', ''));
+    if (entry.planned.length) summary.append(dotCount('plan-dot', entry.planned.length));
+    if (entry.done.length) summary.append(dotCount('done-dot', entry.done.length));
+    button.append(summary);
+    const items = document.createElement('span');
+    items.className = 'cal-items';
+    const shown = previewLines(lines);
+    for (const line of shown) items.append(calendarChip(line));
+    if (lines.length > shown.length) {
+      const more = document.createElement('span');
+      more.className = 'cal-more';
+      more.textContent = `+${lines.length - shown.length}개 더`;
+      items.append(more);
     }
-    const dots = document.createElement('span');
-    dots.className = 'cal-dots';
-    if (due.length) {
-      const dot = document.createElement('span');
-      dot.className = 'dot due-dot';
-      dots.append(dot);
-    }
-    if (planned.length) {
-      const dot = document.createElement('span');
-      dot.className = 'dot plan-dot';
-      dots.append(dot);
-    }
-    button.append(dots);
+    button.append(items);
     button.addEventListener('click', () => {
       state.calendarDay = day;
       renderList();
@@ -1151,6 +1200,51 @@ function renderCalendar(list) {
   wrap.append(grid);
   if (state.calendarDay) wrap.append(renderDayDetail(state.calendarDay, projections));
   list.append(wrap);
+}
+
+function dotCount(kind, count) {
+  const wrap = document.createElement('span');
+  wrap.className = 'sum-bit';
+  const dot = document.createElement('span');
+  dot.className = `dot ${kind}`;
+  wrap.append(dot);
+  if (count !== '') {
+    const num = document.createElement('span');
+    num.textContent = String(count);
+    wrap.append(num);
+  }
+  return wrap;
+}
+
+function previewLines(lines) {
+  if (lines.length <= 3) return lines;
+  const openish = lines.filter((line) => line.kind !== 'done');
+  const done = lines.filter((line) => line.kind === 'done');
+  if (openish.length && done.length) return [...openish.slice(0, 2), done[0]];
+  return lines.slice(0, 3);
+}
+
+function calendarChip(line) {
+  const row = document.createElement('span');
+  row.className = `cal-item is-${line.kind}`;
+  if (line.overdue) row.classList.add('is-overdue');
+  const category = categoryById(line.categoryId);
+  if (category) {
+    const dot = document.createElement('span');
+    dot.className = `cat-dot cat-${category.color}`;
+    row.append(dot);
+  }
+  if (line.kind === 'open') {
+    const mark = document.createElement('span');
+    mark.className = 'cal-box';
+    mark.setAttribute('aria-hidden', 'true');
+    row.append(mark);
+  }
+  const text = document.createElement('span');
+  text.className = 'cal-item-title';
+  text.textContent = line.title;
+  row.append(text);
+  return row;
 }
 
 function passesCalendarFilter(task) {
@@ -1165,19 +1259,169 @@ function renderDayDetail(day, projections) {
   const heading = document.createElement('h3');
   heading.textContent = groupLabel(day);
   panel.append(heading);
-  const completed = state.doc.tasks.filter((task) => task.status === 'done' && task.completedAt && seoulDate(task.completedAt) === day && passesCalendarFilter(task));
-  const due = state.doc.tasks.filter((task) => task.status !== 'done' && task.due === day && passesCalendarFilter(task));
-  const planned = projections.filter((item) => item.date === day && passesCalendarFilter(item));
-  if (completed.length) panel.append(detailBlock('완료', completed.map((task) => detailLine(task.title, `${formatDoneTime(task.completedAt)}${categorySuffix(task)}`, false))));
-  if (due.length) panel.append(detailBlock('기한', due.map((task) => detailLine(task.title, `${task.dueTime || '시간 없음'}${categorySuffix(task)}`, isOverdue(task, appNow())))));
-  if (planned.length) panel.append(detailBlock('예정 반복', planned.map((item) => detailLine(item.title, `${ruleLabel(item.rule) || '반복'}${categorySuffix(item)}`, false, true))));
-  if (!completed.length && !due.length && !planned.length) {
+  const entry = calendarEntries(day, todayKey(), projections);
+  const showOpen = state.calendarMode !== 'done';
+  const showDone = state.calendarMode !== 'open';
+  if (showOpen) panel.append(detailSection('해야 할 일', entry.open.map((item) => detailTaskRow(item.task, item.overdue)), entry.planned.map((item) => detailPlanRow(item))));
+  if (showDone) panel.append(detailSection('완료', entry.done.map((task) => detailTaskRow(task, false)), []));
+  if ((!showOpen || (!entry.open.length && !entry.planned.length)) && (!showDone || !entry.done.length)) {
     const empty = document.createElement('p');
     empty.className = 'empty';
     empty.textContent = '이 날짜에 표시할 일이 없습니다.';
     panel.append(empty);
   }
+  const form = document.createElement('form');
+  form.className = 'day-add';
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.maxLength = 500;
+  input.placeholder = '이 날짜에 할 일 추가';
+  input.setAttribute('aria-label', `${day} 할 일 추가`);
+  const submit = document.createElement('button');
+  submit.type = 'submit';
+  submit.className = 'btn-primary';
+  submit.textContent = '추가';
+  form.append(input, submit);
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const title = input.value.replace(/\s+/g, ' ').trim();
+    if (!title) return;
+    addTaskOnDay(day, title);
+  });
+  panel.append(form);
   return panel;
+}
+
+function detailSection(label, rows, plans) {
+  const section = document.createElement('section');
+  const title = document.createElement('h4');
+  title.textContent = label;
+  section.append(title);
+  if (!rows.length && !plans.length) return section;
+  const ul = document.createElement('ul');
+  ul.className = 'detail-list';
+  for (const row of rows) ul.append(row);
+  for (const row of plans) ul.append(row);
+  section.append(ul);
+  return section;
+}
+
+function detailTaskRow(task, overdue) {
+  const li = document.createElement('li');
+  if (task.status === 'done') li.classList.add('is-done');
+  if (overdue) li.classList.add('is-overdue');
+  const check = document.createElement('input');
+  check.type = 'checkbox';
+  check.className = 'check';
+  check.checked = task.status === 'done';
+  check.setAttribute('aria-label', `완료 표시: ${task.title}`);
+  check.addEventListener('change', () => toggleComplete(task.id));
+  li.append(check);
+  const category = categoryById(task.categoryId);
+  if (category) {
+    const dot = document.createElement('span');
+    dot.className = `cat-dot cat-${category.color}`;
+    li.append(dot);
+  }
+  if (state.editingId === task.id && state.view === 'calendar') {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'title-input';
+    input.value = task.title;
+    input.setAttribute('aria-label', '할 일 제목');
+    input.addEventListener('keydown', (event) => {
+      if (event.isComposing || event.keyCode === 229) return;
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        commitTitle(task.id, input.value);
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        state.editingId = null;
+        renderList();
+      }
+    });
+    input.addEventListener('blur', () => {
+      const value = input.value;
+      window.setTimeout(() => {
+        if (state.editingId === task.id) commitTitle(task.id, value);
+      }, 0);
+    });
+    li.append(input);
+    window.setTimeout(() => input.focus(), 0);
+  } else {
+    const text = document.createElement('span');
+    text.className = 'detail-title';
+    text.textContent = task.title;
+    li.append(text);
+  }
+  const meta = document.createElement('span');
+  meta.className = 'detail-meta';
+  meta.textContent = task.status === 'done'
+    ? formatDoneTime(task.completedAt)
+    : `${task.dueTime || ''}${task.carriedDays ? ` 이월 ${task.carriedDays}` : ''}`.trim();
+  li.append(meta);
+  const edit = document.createElement('button');
+  edit.type = 'button';
+  edit.className = 'btn';
+  edit.textContent = '편집';
+  edit.setAttribute('aria-label', `${task.title} 편집`);
+  edit.addEventListener('click', () => {
+    state.focusId = task.id;
+    state.editingId = task.id;
+    renderList();
+  });
+  li.append(edit);
+  return li;
+}
+
+function detailPlanRow(item) {
+  const li = document.createElement('li');
+  li.classList.add('is-projection');
+  const category = categoryById(item.categoryId);
+  if (category) {
+    const dot = document.createElement('span');
+    dot.className = `cat-dot cat-${category.color}`;
+    li.append(dot);
+  }
+  const text = document.createElement('span');
+  text.className = 'detail-title';
+  text.textContent = item.title;
+  const meta = document.createElement('span');
+  meta.className = 'detail-meta';
+  meta.textContent = `예정 · ${ruleLabel(item.rule) || '반복'}`;
+  li.append(text, meta);
+  return li;
+}
+
+function addTaskOnDay(day, title) {
+  const now = new Date().toISOString();
+  const today = todayKey();
+  const task = {
+    id: newId(),
+    title,
+    memo: '',
+    priority: 'medium',
+    due: day,
+    dueTime: null,
+    tags: [],
+    list: day <= today ? 'today' : 'backlog',
+    status: 'open',
+    order: 0,
+    createdAt: now,
+    updatedAt: now,
+    completedAt: null,
+    carriedDays: 0,
+    repeat: null,
+    seriesId: null,
+    occurrenceDate: day,
+    reminder: null,
+    categoryId: state.categoryFilter && state.categoryFilter !== 'none' ? state.categoryFilter : null,
+  };
+  state.doc.tasks.push(task);
+  state.focusId = task.id;
+  markDirty();
+  renderDynamic();
+  announce('할 일을 추가했습니다.');
 }
 
 function categorySuffix(task) {
@@ -3142,6 +3386,8 @@ function boot() {
   if (['manual', 'category', 'priority', 'due', 'created'].includes(sort)) state.sort = sort;
   state.groupByCategory = localStorage.getItem(GROUP_KEY) === '1';
   state.dueOnlyOverdue = localStorage.getItem(OVERDUE_KEY) === '1';
+  const calendarMode = localStorage.getItem('todo.calendarMode');
+  if (['all', 'open', 'done'].includes(calendarMode)) state.calendarMode = calendarMode;
   state.notifyEnabled = localStorage.getItem(NOTIFY_KEY) === '1' && typeof Notification !== 'undefined' && Notification.permission === 'granted';
   const brief = localStorage.getItem(BRIEF_KEY);
   if (brief && /^\d{2}:\d{2}$/.test(brief)) state.briefingTime = brief;
