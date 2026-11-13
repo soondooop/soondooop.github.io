@@ -605,11 +605,49 @@ html[data-theme="dark"] .views button[aria-selected="true"] {
   padding: 0;
 }
 
+.task.is-done {
+  color: var(--ink-soft);
+}
+
 .task.is-done .title,
 .task.is-completing .title {
   color: var(--ink-soft);
   text-decoration: line-through;
   text-decoration-color: color-mix(in srgb, var(--ink-soft) 55%, transparent);
+}
+
+.done-time {
+  color: var(--ink-soft);
+  font-size: 12px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  padding: 0 4px;
+}
+
+.done-split {
+  margin: 18px 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.list-tools {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 4px;
+}
+
+.text-toggle {
+  color: var(--ink-soft);
+  font-size: 13px;
+  border-radius: 999px;
+  padding: 4px 8px;
+}
+
+.text-toggle[aria-pressed="true"] {
+  background: var(--chip);
+  color: var(--ink);
+  font-weight: 600;
 }
 
 .carry {

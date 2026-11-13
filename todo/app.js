@@ -13,6 +13,7 @@ const USER_KEY = 'todo.auth.user';
 const PERSIST_KEY = 'todo.auth.persist';
 const SETTINGS_KEY = 'todo.settings';
 const THEME_KEY = 'todo.theme';
+const HIDE_DONE_KEY = 'todo.hideCompleted';
 
 export const DEFAULT_SETTINGS = Object.freeze({
   owner: 'soondooop',
@@ -44,6 +45,7 @@ const state = {
   dirty: false,
   ready: false,
   view: 'today',
+  hideCompleted: false,
   query: '',
   tag: null,
   focusId: null,
@@ -615,7 +617,15 @@ function renderThemeButton() {
 
 function inView(task, view) {
   if (view === 'done') return task.status === 'done';
-  return task.status === 'open' && task.list === view;
+  if (task.list !== view) return false;
+  if (task.status === 'open') return true;
+  if (task.status !== 'done') return false;
+  if (view === 'today') return Boolean(task.completedAt && seoulDate(task.completedAt) === seoulDate(new Date()));
+  return true;
+}
+
+function hideDoneInList() {
+  return state.hideCompleted && state.view !== 'done';
 }
 
 function matchesFilter(task) {
@@ -630,13 +640,20 @@ function matchesFilter(task) {
   return hay.includes(query);
 }
 
+function byOrder(a, b) {
+  return a.order - b.order || String(a.createdAt).localeCompare(String(b.createdAt));
+}
+
 function orderedVisibleTasks() {
   if (!state.doc) return [];
-  const tasks = state.doc.tasks.filter((task) => inView(task, state.view) && matchesFilter(task));
+  let tasks = state.doc.tasks.filter((task) => inView(task, state.view) && matchesFilter(task));
   if (state.view === 'done') {
     return tasks.sort((a, b) => String(b.completedAt || '').localeCompare(String(a.completedAt || '')));
   }
-  return tasks.sort((a, b) => a.order - b.order || String(a.createdAt).localeCompare(String(b.createdAt)));
+  if (hideDoneInList()) tasks = tasks.filter((task) => task.status !== 'done');
+  const open = tasks.filter((task) => task.status !== 'done').sort(byOrder);
+  const done = tasks.filter((task) => task.status === 'done').sort(byOrder);
+  return [...open, ...done];
 }
 
 function groupLabel(ymd) {
@@ -668,6 +685,18 @@ function dueClass(ymd, today, status) {
   if (status === 'open' && ymd < today) return 'due is-overdue';
   if (ymd === today) return 'due is-today';
   return 'due';
+}
+
+function formatDoneTime(iso) {
+  if (!iso || Number.isNaN(Date.parse(iso))) return '';
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: TZ,
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(new Date(iso));
+  const map = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `완료 ${String(map.hour ?? '00').padStart(2, '0')}:${String(map.minute ?? '00').padStart(2, '0')}`;
 }
 
 function progressText(done, total) {
@@ -755,8 +784,9 @@ function renderTabs() {
 
 function renderCounts() {
   const tasks = state.doc?.tasks || [];
-  $('count-today').textContent = String(tasks.filter((task) => inView(task, 'today')).length);
-  $('count-backlog').textContent = String(tasks.filter((task) => inView(task, 'backlog')).length);
+  const count = (view) => tasks.filter((task) => inView(task, view) && !(state.hideCompleted && task.status === 'done')).length;
+  $('count-today').textContent = String(count('today'));
+  $('count-backlog').textContent = String(count('backlog'));
 }
 
 function renderProgress() {
@@ -778,6 +808,7 @@ function renderTagBar() {
   const tags = new Set();
   for (const task of state.doc.tasks) {
     if (!inView(task, state.view)) continue;
+    if (hideDoneInList() && task.status === 'done') continue;
     for (const tag of task.tags) tags.add(tag);
   }
   if (state.tag) tags.add(state.tag);
@@ -843,11 +874,17 @@ function renderList() {
       list.append(section);
     }
   } else {
-    const ul = document.createElement('ul');
-    ul.className = 'tasks';
-    ul.setAttribute('aria-label', state.view === 'today' ? '오늘 할 일' : '백로그');
-    for (const task of tasks) ul.append(renderTask(task));
-    list.append(ul);
+    const open = tasks.filter((task) => task.status !== 'done');
+    const done = tasks.filter((task) => task.status === 'done');
+    const label = state.view === 'today' ? '오늘 할 일' : '백로그';
+    if (open.length) list.append(taskList(label, open));
+    if (done.length) {
+      const split = document.createElement('h2');
+      split.className = 'done-split';
+      split.textContent = `완료 ${done.length}`;
+      list.append(split);
+      list.append(taskList('완료한 할 일', done));
+    }
   }
   if (state.editingId) {
     const input = list.querySelector('.title-input');
@@ -864,6 +901,14 @@ function renderList() {
     if (!restoreKind || restoreKind === 'row') row.focus();
     else row.querySelector(`[data-restore="${CSS.escape(restoreKind)}"]`)?.focus();
   }
+}
+
+function taskList(label, tasks) {
+  const ul = document.createElement('ul');
+  ul.className = 'tasks';
+  ul.setAttribute('aria-label', label);
+  for (const task of tasks) ul.append(renderTask(task));
+  return ul;
 }
 
 function emptyNode(text) {
@@ -997,6 +1042,12 @@ function renderTask(task) {
 
   const meta = document.createElement('div');
   meta.className = 'meta';
+  if (task.status === 'done' && task.completedAt) {
+    const doneAt = document.createElement('span');
+    doneAt.className = 'done-time';
+    doneAt.textContent = formatDoneTime(task.completedAt);
+    meta.append(doneAt);
+  }
   const shown = task.tags.slice(0, 2);
   for (const tag of shown) {
     const chip = document.createElement('button');
@@ -1241,11 +1292,18 @@ function bindDrag(li, task) {
   });
 }
 
+function renderHideButton() {
+  const button = $('hideDoneBtn');
+  if (!button) return;
+  button.setAttribute('aria-pressed', state.hideCompleted ? 'true' : 'false');
+}
+
 function renderDynamic() {
   renderTabs();
   renderCounts();
   renderProgress();
   renderTagBar();
+  renderHideButton();
   renderList();
   renderDataLoc();
 }
@@ -1883,7 +1941,7 @@ function moveTask(id, delta) {
     renderList();
     return;
   }
-  const items = orderedVisibleTasks();
+  const items = orderedVisibleTasks().filter((item) => (item.status === 'done') === (findTask(id)?.status === 'done'));
   const index = items.findIndex((task) => task.id === id);
   const next = index + delta;
   if (index < 0 || next < 0 || next >= items.length) {
@@ -1898,7 +1956,10 @@ function moveTask(id, delta) {
 
 function reorderTo(fromId, toId, after) {
   if (state.view === 'done' || state.query.trim() || state.tag) return;
-  const ids = orderedVisibleTasks().map((task) => task.id);
+  const fromTask = findTask(fromId);
+  const toTask = findTask(toId);
+  if (!fromTask || !toTask || (fromTask.status === 'done') !== (toTask.status === 'done')) return;
+  const ids = orderedVisibleTasks().filter((task) => (task.status === 'done') === (fromTask.status === 'done')).map((task) => task.id);
   const from = ids.indexOf(fromId);
   if (from < 0) return;
   ids.splice(from, 1);
@@ -2160,6 +2221,12 @@ function bind() {
     renderThemeButton();
   });
   $('settingsBtn').addEventListener('click', openSettings);
+  $('hideDoneBtn').addEventListener('click', () => {
+    state.hideCompleted = !state.hideCompleted;
+    localStorage.setItem(HIDE_DONE_KEY, state.hideCompleted ? '1' : '0');
+    renderDynamic();
+    announce(state.hideCompleted ? '완료한 항목을 숨겼습니다.' : '완료한 항목을 표시합니다.');
+  });
   $('helpBtn').addEventListener('click', () => $('helpDialog').showModal());
   $('settingsForm').addEventListener('submit', (event) => { void applySettings(event); });
   $('exportBtn').addEventListener('click', exportJson);
@@ -2292,6 +2359,8 @@ function boot() {
   applyTheme(THEME_ORDER.includes(pref) ? pref : 'system');
   renderThemeButton();
   state.settings = loadSettings();
+  state.hideCompleted = localStorage.getItem(HIDE_DONE_KEY) === '1';
+  renderHideButton();
   const persisted = localStorage.getItem(PERSIST_KEY);
   $('persist').checked = persisted !== '0';
   const token = readToken();
