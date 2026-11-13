@@ -439,7 +439,7 @@ try {
   });
   await saved(page);
   if (store.files.get('todos.json').doc.categories.find((item) => item.name === '운영').color !== 'gold') throw new Error('색 변경 실패');
-  await clickButton(page, '닫기', '#categoryDialog');
+  await clickButton(page, '취소', '#categoryDialog');
   const pie = await page.$eval('.side-cat.cat-plum .pie circle:last-child', (el) => el.getAttribute('stroke-dasharray'));
   if (!pie || pie.startsWith('0 ')) throw new Error(`카테고리 진행 원 ${pie}`);
   pass('카테고리를 추가하고 색과 진행률을 보여 준다');

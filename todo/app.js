@@ -621,7 +621,12 @@ function setSync(name, detail = '') {
   const pill = $('syncPill');
   if (!pill) return;
   pill.dataset.state = name;
-  pill.textContent = SYNC_LABEL[name] || name;
+  const label = SYNC_LABEL[name] || name;
+  const text = pill.querySelector('.sync-text');
+  const when = pill.querySelector('.sync-when');
+  if (text) text.textContent = label;
+  else pill.textContent = label;
+  if (when) when.textContent = name === 'saved' ? ' · 방금' : '';
   setDetail(detail);
 }
 
@@ -732,9 +737,9 @@ function renderThemeButton() {
   const button = $('themeBtn');
   if (!button) return;
   const label = THEME_LABEL[state.theme] || '시스템';
-  const text = button.querySelector('.btn-label');
-  if (text) text.textContent = label;
-  else button.textContent = label;
+  const dark = document.documentElement.dataset.theme === 'dark';
+  button.querySelector('.icon-sun')?.toggleAttribute('hidden', dark);
+  button.querySelector('.icon-moon')?.toggleAttribute('hidden', !dark);
   button.dataset.tip = `밝기 · ${label}`;
   button.setAttribute('aria-label', `밝기 ${label}. 클릭하면 바뀝니다.`);
 }
@@ -1817,14 +1822,6 @@ function renderTask(task) {
   }
   if (state.cardId === task.id) li.classList.add('is-card');
 
-  const meta = document.createElement('div');
-  meta.className = 'meta';
-  if (task.status === 'done' && task.completedAt) {
-    const doneAt = document.createElement('span');
-    doneAt.className = 'done-time';
-    doneAt.textContent = formatDoneTime(task.completedAt);
-    meta.append(doneAt);
-  }
   const shown = task.tags.slice(0, 2);
   for (const tag of shown) {
     const chip = document.createElement('button');
@@ -1839,13 +1836,13 @@ function renderTask(task) {
       renderTagBar();
       renderList();
     });
-    meta.append(chip);
+    titleLine.append(chip);
   }
   if (task.tags.length > shown.length) {
     const moreTags = document.createElement('span');
     moreTags.className = 'chip';
     moreTags.textContent = `+${task.tags.length - shown.length}`;
-    meta.append(moreTags);
+    titleLine.append(moreTags);
   }
 
   const category = categoryById(task.categoryId);
@@ -1861,7 +1858,7 @@ function renderTask(task) {
       state.focusId = task.id;
       openCategoryPicker(task.id);
     });
-    meta.append(label);
+    titleLine.append(label);
   }
   if (task.repeat) {
     const repeat = document.createElement('button');
@@ -1873,8 +1870,19 @@ function renderTask(task) {
       event.stopPropagation();
       openRepeatDialog(task.id);
     });
-    meta.append(repeat);
+    titleLine.append(repeat);
   }
+  const rail = document.createElement('div');
+  rail.className = 'meta-rail';
+  const timeSlot = document.createElement('span');
+  timeSlot.className = 'meta-time';
+  if (task.status === 'done' && task.completedAt) {
+    const doneAt = document.createElement('span');
+    doneAt.className = 'done-time';
+    doneAt.textContent = formatDoneTime(task.completedAt);
+    timeSlot.append(doneAt);
+    rail.append(timeSlot);
+  } else {
   const due = document.createElement('button');
   due.type = 'button';
   due.className = dueClass(task, today);
@@ -1886,7 +1894,9 @@ function renderTask(task) {
     event.stopPropagation();
     openDueDialog(task.id);
   });
-  meta.append(due);
+  timeSlot.append(due);
+  rail.append(timeSlot);
+  }
 
   const flag = document.createElement('button');
   flag.type = 'button';
@@ -1900,8 +1910,10 @@ function renderTask(task) {
     event.stopPropagation();
     toggleMenu(task.id, 'priority');
   });
-  meta.append(flag);
+  rail.append(flag);
 
+  const memoSlot = document.createElement('span');
+  memoSlot.className = 'memo-slot';
   if (task.memo) {
     const memoBtn = document.createElement('button');
     memoBtn.type = 'button';
@@ -1914,8 +1926,9 @@ function renderTask(task) {
       event.stopPropagation();
       toggleMemo(task.id);
     });
-    meta.append(memoBtn);
+    memoSlot.append(memoBtn);
   }
+  rail.append(memoSlot);
 
   const more = document.createElement('button');
   more.type = 'button';
@@ -1929,9 +1942,9 @@ function renderTask(task) {
     event.stopPropagation();
     toggleMenu(task.id, 'more');
   });
-  meta.append(more);
+  rail.append(more);
 
-  main.append(check, titleLine, meta);
+  main.append(check, titleLine, rail);
   li.append(main);
 
   if (state.cardId === task.id) li.append(renderTaskCard(task));
@@ -3568,6 +3581,17 @@ function bind() {
   });
 }
 
+function navGlyph(d) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.classList.add('nav-ico');
+  const path = document.createElementNS(svg.namespaceURI, 'path');
+  path.setAttribute('d', d);
+  svg.append(path);
+  return svg;
+}
+
 function renderCategoryBar() {
   const bar = $('catBar');
   if (!bar || !state.doc) return;
@@ -3575,10 +3599,8 @@ function renderCategoryBar() {
   const all = document.createElement('button');
   all.type = 'button';
   all.className = 'side-cat';
-  const allMark = document.createElement('span');
-  allMark.className = 'pie-slot';
-  allMark.setAttribute('aria-hidden', 'true');
-  all.append(allMark, document.createTextNode('전체'));
+  all.append(navGlyph('M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z'), document.createElement('span'));
+  all.lastChild.textContent = '전체';
   all.setAttribute('aria-pressed', state.categoryFilter ? 'false' : 'true');
   all.addEventListener('click', () => {
     state.categoryFilter = null;
@@ -3602,10 +3624,8 @@ function renderCategoryBar() {
   const manage = document.createElement('button');
   manage.type = 'button';
   manage.className = 'side-cat side-manage';
-  const manageMark = document.createElement('span');
-  manageMark.className = 'pie-slot';
-  manageMark.setAttribute('aria-hidden', 'true');
-  manage.append(manageMark, document.createTextNode('관리'));
+  manage.append(navGlyph('M4 20h4l10.2-10.2-4-4L4 16v4zM13.2 6.8l4 4'), document.createElement('span'));
+  manage.lastChild.textContent = '관리';
   manage.setAttribute('aria-label', '카테고리 관리');
   manage.addEventListener('click', openCategoryDialog);
   bar.append(manage);
@@ -3614,8 +3634,8 @@ function renderCategoryBar() {
 function categoryPie(done, total) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('viewBox', '0 0 16 16');
-  svg.setAttribute('width', '14');
-  svg.setAttribute('height', '14');
+  svg.setAttribute('width', '20');
+  svg.setAttribute('height', '20');
   svg.setAttribute('aria-hidden', 'true');
   svg.classList.add('pie');
   const track = document.createElementNS(svg.namespaceURI, 'circle');
