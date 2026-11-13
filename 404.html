@@ -3,32 +3,141 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Redirecting...</title>
+    <title>페이지를 찾을 수 없습니다</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #12140f;
+        --paper: #1c1f18;
+        --ink: #f4f1e8;
+        --muted: #b7b2a6;
+        --line: #34382e;
+        --accent: #d7ff4a;
+      }
+      * { box-sizing: border-box; }
+      html:not(.is-404) body { display: none; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Figtree, "Segoe UI", sans-serif;
+      }
+      main {
+        width: min(32rem, calc(100% - 2rem));
+        padding: 2rem 1.5rem;
+        border: 1px solid var(--line);
+        border-radius: 1.25rem;
+        background: var(--paper);
+      }
+      p { margin: 0; }
+      .eyebrow {
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+      h1 {
+        margin: 0.6rem 0 0;
+        font-family: "Archivo Narrow", "Segoe UI", sans-serif;
+        font-size: 2rem;
+        line-height: 1.15;
+      }
+      .lead { margin-top: 0.9rem; color: var(--muted); line-height: 1.55; }
+      code {
+        display: block;
+        margin-top: 1rem;
+        padding: 0.75rem 0.85rem;
+        overflow-wrap: anywhere;
+        border-radius: 0.75rem;
+        background: #10130e;
+        color: var(--ink);
+        font-size: 0.92rem;
+      }
+      a {
+        display: inline-block;
+        margin-top: 1.25rem;
+        padding: 0.7rem 1rem;
+        border-radius: 999px;
+        background: var(--accent);
+        color: #17190f;
+        font-weight: 700;
+        text-decoration: none;
+      }
+    </style>
     <script>
-      // Single Page Application routing support for GitHub Pages
-      // https://github.com/rafgraph/spa-github-pages
+      // GitHub Pages has no SPA fallback. Only hand the root app paths it
+      // actually routes; anything else (unknown URLs and other folders)
+      // stays on this page. spa404.count stops a redirect from repeating.
       (function () {
-        var redirect = sessionStorage.redirect
-        delete sessionStorage.redirect
-        if (redirect && redirect !== location.href) {
-          history.replaceState(null, null, redirect)
+        var COUNT_KEY = 'spa404.count'
+        var REDIRECT_KEY = 'redirect'
+        var MAX_REDIRECTS = 1
+        var SPA_ROUTES = {
+          '/overview': true,
+          '/experience': true,
+          '/skills': true,
+          '/projects': true,
+          '/contact': true,
+          '/club-desk': true,
+          '/club-desk/login': true,
+          '/club-desk/squad': true,
+          '/club-desk/inbox': true
+        }
+
+        function isSpaPath(pathname) {
+          var path = pathname || '/'
+          if (path.length > 1 && path.charAt(path.length - 1) === '/') {
+            path = path.slice(0, -1)
+          }
+          return !!SPA_ROUTES[path]
+        }
+
+        function readCount() {
+          try {
+            return parseInt(sessionStorage.getItem(COUNT_KEY) || '0', 10) || 0
+          } catch (e) {
+            return MAX_REDIRECTS
+          }
+        }
+
+        var pathname = location.pathname || '/'
+        var target = pathname + location.search + location.hash
+        var count = readCount()
+
+        if (isSpaPath(pathname) && count < MAX_REDIRECTS) {
+          try {
+            sessionStorage.setItem(COUNT_KEY, String(count + 1))
+            sessionStorage.setItem(REDIRECT_KEY, target)
+          } catch (e) {}
+          location.replace('/')
+          return
+        }
+
+        try { sessionStorage.removeItem(REDIRECT_KEY) } catch (e) {}
+        document.documentElement.classList.add('is-404')
+        function showPath() {
+          var slot = document.getElementById('missing-path')
+          if (slot) slot.textContent = target
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', showPath)
+        } else {
+          showPath()
         }
       })()
     </script>
   </head>
   <body>
-    <div id="root"></div>
-    <script>
-      // Redirect to index.html with path preserved
-      var path = window.location.pathname
-      var query = window.location.search
-      var hash = window.location.hash
-      
-      // Store the current path for restoration after redirect
-      sessionStorage.redirect = path + query + hash
-      
-      // Redirect to index.html (GitHub Pages will serve this from root)
-      window.location.replace('/')
-    </script>
+    <main>
+      <p class="eyebrow">404</p>
+      <h1>페이지를 찾을 수 없습니다</h1>
+      <p class="lead">요청하신 주소는 이 사이트에 없습니다. 홈으로 이동해 주세요.</p>
+      <code id="missing-path"></code>
+      <a href="/">홈으로 이동</a>
+    </main>
   </body>
 </html>

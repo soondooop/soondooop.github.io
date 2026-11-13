@@ -9,13 +9,39 @@
       content="Kim Seungdo — 웹 퍼블리셔 / 프론트엔드 포트폴리오"
     />
     <script>
-      // SPA routing support - restore path from 404.html redirect
+      // Restore a GitHub Pages 404 handoff only for routes this SPA handles.
       (function () {
-        var redirect = sessionStorage.redirect
-        delete sessionStorage.redirect
-        if (redirect && redirect !== location.href) {
-          history.replaceState(null, null, redirect)
+        var COUNT_KEY = 'spa404.count'
+        var REDIRECT_KEY = 'redirect'
+        var SPA_ROUTES = {
+          '/overview': true,
+          '/experience': true,
+          '/skills': true,
+          '/projects': true,
+          '/contact': true,
+          '/club-desk': true,
+          '/club-desk/login': true,
+          '/club-desk/squad': true,
+          '/club-desk/inbox': true
         }
+
+        try { sessionStorage.removeItem(COUNT_KEY) } catch (e) {}
+
+        var redirect
+        try { redirect = sessionStorage.getItem(REDIRECT_KEY) } catch (e) {}
+        try { sessionStorage.removeItem(REDIRECT_KEY) } catch (e) {}
+        if (!redirect || redirect.charAt(0) !== '/') return
+
+        var hashAt = redirect.indexOf('#')
+        var beforeHash = hashAt >= 0 ? redirect.slice(0, hashAt) : redirect
+        var queryAt = beforeHash.indexOf('?')
+        var pathname = queryAt >= 0 ? beforeHash.slice(0, queryAt) : beforeHash
+        if (pathname.length > 1 && pathname.charAt(pathname.length - 1) === '/') {
+          pathname = pathname.slice(0, -1)
+        }
+        if (!SPA_ROUTES[pathname]) return
+        if (redirect === location.pathname + location.search + location.hash) return
+        history.replaceState(null, '', redirect)
       })()
     </script>
     <script>
