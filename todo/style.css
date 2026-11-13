@@ -623,7 +623,7 @@ html.theme-ready dialog {
     display: flex; position: fixed; z-index: 20; left: 10px; right: 10px; bottom: 10px; padding: 6px; gap: 4px;
   }
   .tabbar button { flex: 1; padding: 8px 0; color: var(--soft); font-size: 12px; font-weight: 700; }
-  .magic-plus { display: none; }
+  .magic-plus { display: grid; right: 16px; bottom: 84px; }
   .composer input { text-overflow: ellipsis; }
   .meta { max-width: none; }
   .task-main { flex-wrap: wrap; }
