@@ -2139,9 +2139,10 @@ function measureOverflow(row) {
     button.hidden = false;
     return;
   }
+  const line = row.querySelector('.title-line');
   const memo = row.querySelector('.memo-measure');
   const titleOverflow = title.scrollWidth > title.clientWidth + 1;
-  const memoOverflow = memo ? memo.scrollWidth > memo.clientWidth + 1 : false;
+  const memoOverflow = memo && line ? memo.scrollWidth > line.clientWidth + 1 : false;
   button.hidden = !(titleOverflow || memoOverflow);
 }
 
@@ -3156,10 +3157,16 @@ function onKeyDown(event) {
     $('composer').focus();
     return;
   }
-  if (event.code === 'Slash') {
+  if (event.key === '/' || event.key === '?' || event.code === 'Slash' || event.code === 'NumpadDivide') {
     event.preventDefault();
-    if (event.shiftKey) $('helpDialog').showModal();
+    if (event.shiftKey || event.key === '?') $('helpDialog').showModal();
     else {
+      const sidebar = $('sidebar');
+      if (sidebar && getComputedStyle(sidebar).display === 'none') {
+        sidebar.classList.add('is-open');
+        $('navToggle')?.setAttribute('aria-expanded', 'true');
+        if ($('navBackdrop')) $('navBackdrop').hidden = false;
+      }
       $('search').focus();
       $('search').select();
     }
@@ -3644,10 +3651,11 @@ function closeSidebar() {
 }
 
 function focusComposer() {
+  if (state.view === 'calendar' || state.view === 'done') setView('today');
+  closeSidebar();
   const input = $('composer');
   input?.scrollIntoView({ block: 'center' });
   input?.focus();
-  closeSidebar();
 }
 
 function renderViewControls() {
