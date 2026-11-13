@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark" data-view="today">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C · 다크 포커스</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <style>
+    :root {
+      --bg: #0c0d11;
+      --ink: #f3f4f6;
+      --soft: #9398a8;
+      --line: rgba(255,255,255,.08);
+      --glass: rgba(22, 24, 32, .72);
+      --accent: #9aa6ff;
+      --sun: #ff6b6b;
+      --sat: #7eb6ff;
+      --ok: #3dd68c;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; color: var(--ink);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      font-size: 14px;
+      background:
+        radial-gradient(900px 420px at 0% -10%, rgba(120, 134, 255, .22), transparent 55%),
+        radial-gradient(700px 380px at 100% 0%, rgba(70, 190, 170, .12), transparent 50%),
+        var(--bg);
+    }
+    button, input { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+    svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    kbd {
+      font-family: inherit; font-size: 11px; color: var(--soft);
+      border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px; padding: 0 5px;
+    }
+    .app { display: grid; grid-template-columns: 228px minmax(0, 1fr); height: 100%; }
+    .side {
+      margin: 12px; padding: 14px 10px;
+      background: var(--glass); border: 1px solid var(--line); border-radius: 18px;
+      backdrop-filter: blur(18px);
+    }
+    .who { display: flex; gap: 10px; align-items: center; padding: 4px 8px 16px; }
+    .avatar { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; background: linear-gradient(140deg, #8ea2ff, #46c7b0); color: #0c0d11; font-weight: 800; font-size: 13px; }
+    .who b { display: block; font-size: 13px; }
+    .who span { color: var(--soft); font-size: 11px; }
+    .nav { display: flex; flex-direction: column; gap: 2px; }
+    .nav button { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; padding: 7px 8px; border-radius: 8px; color: #d5d8e2; }
+    .nav button[aria-current="true"] { background: rgba(255,255,255,.06); color: white; }
+    .nav .k, .nav .n { margin-left: auto; }
+    .nav .n { color: var(--soft); font-variant-numeric: tabular-nums; font-size: 12px; }
+    .label { margin: 18px 8px 6px; color: var(--soft); font-size: 11px; letter-spacing: .08em; }
+    .cat { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 8px; color: #d5d8e2; }
+    .pip { width: 8px; height: 8px; border-radius: 2px; }
+    .cat small { margin-left: auto; color: var(--soft); }
+    .stage { display: flex; flex-direction: column; min-width: 0; padding: 12px 12px 12px 0; gap: 12px; }
+    .palette {
+      display: flex; flex-direction: column; gap: 2px;
+      background: var(--glass); border: 1px solid var(--line); border-radius: 16px;
+      backdrop-filter: blur(18px); box-shadow: 0 20px 60px rgba(0,0,0,.28); padding: 10px;
+    }
+    .search { display: flex; align-items: center; gap: 8px; padding: 6px 8px 8px; color: var(--soft); }
+    .search input { flex: 1; outline: none; color: white; }
+    .caret { width: 1px; height: 16px; background: var(--accent); display: inline-block; }
+    .hit { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 8px; color: #e6e8ee; }
+    .hit.on { background: rgba(154, 166, 255, .14); }
+    .hit span { color: var(--soft); font-size: 12px; }
+    .hit kbd { margin-left: auto; }
+    .body { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 12px; min-height: 0; flex: 1; align-items: start; }
+    .list, .inspector {
+      background: rgba(18, 19, 26, .8); border: 1px solid var(--line); border-radius: 16px; padding: 16px;
+      min-width: 0;
+    }
+    .head { display: flex; align-items: baseline; gap: 10px; }
+    h1 { margin: 0; font-size: 22px; letter-spacing: -.04em; }
+    .head p { margin: 0; color: var(--soft); }
+    .meter { margin: 12px 0; height: 3px; background: rgba(255,255,255,.08); border-radius: 99px; }
+    .meter span { display: block; width: 25%; height: 100%; background: linear-gradient(90deg, #8ea2ff, #46c7b0); }
+    .row { display: grid; grid-template-columns: 16px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 8px; border-radius: 8px; }
+    .row:hover { background: rgba(255,255,255,.03); }
+    .tick { width: 15px; height: 15px; border-radius: 4px; border: 1px solid rgba(255,255,255,.28); }
+    .tick.on { background: var(--ok); border-color: var(--ok); }
+    .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .row.done .name { color: var(--soft); text-decoration: line-through; }
+    .meta { display: flex; gap: 6px; align-items: center; color: var(--soft); font-size: 12px; }
+    .hot { color: var(--sun); }
+    .pri { width: 6px; height: 6px; border-radius: 50%; background: var(--sun); display: inline-block; }
+    .card {
+      margin-top: 8px; padding: 14px; border-radius: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid var(--line);
+    }
+    .card h2 { margin: 0 0 8px; font-size: 16px; letter-spacing: -.03em; }
+    .card p { margin: 0 0 12px; color: #c5c8d4; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+    .chip { border-radius: 999px; padding: 3px 8px; background: rgba(255,255,255,.05); color: var(--soft); font-size: 12px; }
+    .chip.hot { color: var(--sun); }
+    .split { margin: 12px 8px 4px; color: var(--accent); font-size: 12px; font-weight: 700; }
+    .empty { margin: 8px; color: var(--soft); font-size: 13px; }
+    .inspector h3 { margin: 0 0 8px; font-size: 13px; color: var(--soft); font-weight: 600; }
+    .week, .grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+    .week span { text-align: center; font-size: 10px; color: var(--soft); font-weight: 700; }
+    .week .su { color: var(--sun); } .week .sa { color: var(--sat); }
+    .cell { min-height: 34px; border-radius: 7px; color: #d7dae4; font-size: 11px; font-weight: 650; display: grid; place-items: center; }
+    .cell.su, .cell.ho { color: var(--sun); }
+    .cell.sa:not(.ho) { color: var(--sat); }
+    .cell.out { opacity: .3; }
+    .cell.tod { background: var(--accent); color: #0c0d11; }
+    .full { display: none; }
+    .full .cell { min-height: 72px; background: rgba(255,255,255,.03); text-align: left; padding: 6px; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; }
+    .full .cell em { display: block; font-style: normal; font-size: 10px; color: var(--sun); }
+    html[data-view="calendar"] .body { grid-template-columns: 1fr; }
+    html[data-view="calendar"] .inspector, html[data-view="calendar"] .today-only, html[data-view="today"] .full { display: none; }
+    html[data-view="calendar"] .full { display: block; }
+    .month[data-month="10"] [data-m="11"], .month[data-month="11"] [data-m="10"] { display: none; }
+    .calbar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .calbar h2 { margin: 0; flex: 1; font-size: 18px; }
+    .icon { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--line); display: grid; place-items: center; }
+    .tabbar { display: none; }
+    @media (max-width: 800px) {
+      .app { display: block; height: auto; }
+      .side { display: none; }
+      .stage { padding: 12px 12px 88px; }
+      .body { display: block; }
+      .inspector { display: none; }
+      .palette .hit:nth-child(n+4) { display: none; }
+      .tabbar {
+        position: fixed; left: 10px; right: 10px; bottom: 10px; display: flex;
+        background: rgba(20,22,30,.9); border: 1px solid var(--line); backdrop-filter: blur(16px);
+        border-radius: 16px; padding: 6px;
+      }
+      .tabbar button { flex: 1; border-radius: 10px; padding: 8px 0; color: var(--soft); font-size: 12px; }
+      .tabbar button[aria-current="true"] { background: rgba(255,255,255,.06); color: white; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="side">
+      <div class="who"><div class="avatar">순</div><div><b>순두부</b><span>포커스 · 저장됨</span></div></div>
+      <nav class="nav">
+        <button data-view-set="today" aria-current="true"><svg viewBox="0 0 24 24"><path d="m12 3 2.2 6.2L21 10l-5 4 1.4 6.4L12 17.2 6.6 20.4 8 14 3 10l6.8-.8Z"/></svg>오늘 <span class="n">4</span></button>
+        <button data-view-set="calendar"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>예정 <span class="k"><kbd>C</kbd></span></button>
+        <button><svg viewBox="0 0 24 24"><path d="M4 7h16v12H4z"/><path d="M8 7V5h8v2"/></svg>언젠가 <span class="n">0</span></button>
+        <button><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg>완료</button>
+      </nav>
+      <p class="label">AREAS</p>
+      <button class="cat"><i class="pip" style="background:#9aa6ff"></i>회의<small>2/3</small></button>
+      <button class="cat"><i class="pip" style="background:#3dd68c"></i>운영<small>0/2</small></button>
+      <button class="cat"><i class="pip" style="background:#e2b15a"></i>개인<small>비어 있음</small></button>
+    </aside>
+    <div class="stage">
+      <section class="palette" aria-label="명령 팔레트">
+        <div class="search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-3.5-3.5"/></svg>
+          <input value="" placeholder="할 일, 명령어 검색" aria-label="명령 검색">
+          <span class="caret"></span>
+          <kbd>⌘K</kbd>
+        </div>
+        <button class="hit on">오늘로 이동 <span>목록</span><kbd>1</kbd></button>
+        <button class="hit" data-view-set="calendar">예정 달력 <span>보기</span><kbd>C</kbd></button>
+        <button class="hit">새 할 일 <span>만들기</span><kbd>N</kbd></button>
+        <button class="hit">제안서 초안 검토 <span>할 일 · 높음</span></button>
+      </section>
+      <div class="body">
+        <section class="list">
+          <div class="today-only">
+            <div class="head"><h1>오늘</h1><p>좋은 아침이에요, 순두부님 · 11월 13일</p></div>
+            <div class="meter" aria-label="진행률 25%"><span></span></div>
+            <article class="card">
+              <div class="row" style="padding:0 0 8px">
+                <span class="tick"></span>
+                <h2>제안서 초안 검토</h2>
+                <span class="meta"><i class="pri"></i> 높음 <kbd>D</kbd></span>
+              </div>
+              <p>2페이지로 가격과 일정을 정리한다. 오후에 김 팀장 의견을 반영.</p>
+              <div class="chips">
+                <span class="chip">#제안</span><span class="chip">회의</span><span class="chip hot">오늘 15:00</span>
+              </div>
+            </article>
+            <div class="row">
+              <span class="tick"></span>
+              <span class="name">고객 메일 회신</span>
+              <span class="meta">↻ 매주 월 <span class="hot">오늘</span> <kbd>X</kbd></span>
+            </div>
+            <div class="row">
+              <span class="tick"></span>
+              <span class="name">지난 견적 정리</span>
+              <span class="meta hot">11월 10일 <kbd>X</kbd></span>
+            </div>
+            <p class="split">완료 1</p>
+            <div class="row done">
+              <span class="tick on"></span>
+              <span class="name">회의록 정리</span>
+              <span class="meta">10:00</span>
+            </div>
+            <p class="empty">언젠가 · 비어 있음. N 으로 바로 추가할 수 있어요.</p>
+          </div>
+          <div class="full month" data-month="10">
+            <div class="calbar">
+              <button class="icon" data-month-set="10" aria-label="이전"><svg viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></svg></button>
+              <h2><span data-m="10">2026년 10월</span><span data-m="11">2026년 11월</span></h2>
+              <button class="icon" data-month-set="11" aria-label="다음"><svg viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></svg></button>
+            </div>
+            <div class="week"><span class="su">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="sa">토</span></div>
+            <div class="grid" id="full"></div>
+          </div>
+        </section>
+        <aside class="inspector">
+          <h3>11월 · 오늘 13일</h3>
+          <div class="week"><span class="su">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="sa">토</span></div>
+          <div class="grid" id="mini"></div>
+          <p class="empty">선택한 날의 할 일이 여기 붙습니다. 단축키 J K 로 이동합니다.</p>
+        </aside>
+      </div>
+    </div>
+  </div>
+  <nav class="tabbar">
+    <button data-view-set="today" aria-current="true">오늘</button>
+    <button data-view-set="calendar">예정</button>
+    <button type="button">검색</button>
+    <button type="button">완료</button>
+  </nav>
+  <script>
+    function paint(host, year, month, marks, rich) {
+      const first = new Date(Date.UTC(year, month - 1, 1));
+      const start = new Date(first);
+      start.setUTCDate(1 - first.getUTCDay());
+      host.replaceChildren();
+      for (let i = 0; i < (rich ? 35 : 35); i++) {
+        const d = new Date(start);
+        d.setUTCDate(start.getUTCDate() + i);
+        const inMonth = d.getUTCMonth() === month - 1;
+        const date = d.getUTCDate();
+        const dow = d.getUTCDay();
+        const btn = document.createElement('button');
+        btn.className = 'cell' + (!inMonth ? ' out' : '') + (dow === 0 ? ' su' : '') + (dow === 6 ? ' sa' : '') + (inMonth && marks[date] ? ' ho' : '') + (inMonth && marks.today === date ? ' tod' : '');
+        btn.textContent = date;
+        if (rich && inMonth && marks[date]) {
+          const em = document.createElement('em');
+          em.textContent = marks[date];
+          btn.append(em);
+        }
+        host.append(btn);
+      }
+    }
+    const mini = document.getElementById('mini');
+    const full = document.getElementById('full');
+    paint(mini, 2026, 11, { today: 13 }, false);
+    const months = { 10: { 3: '개천절', 5: '대체공휴일', 9: '한글날' }, 11: { today: 13 } };
+    const draw = (m) => paint(full, 2026, m, months[m], true);
+    draw(10);
+    const root = document.documentElement;
+    const sync = () => document.querySelectorAll('[data-view-set]').forEach((b) => b.setAttribute('aria-current', b.dataset.viewSet === root.dataset.view ? 'true' : 'false'));
+    document.querySelectorAll('[data-view-set]').forEach((b) => b.addEventListener('click', () => { root.dataset.view = b.dataset.viewSet; sync(); }));
+    document.querySelectorAll('[data-month-set]').forEach((b) => b.addEventListener('click', () => {
+      document.querySelector('.month').dataset.month = b.dataset.monthSet;
+      draw(Number(b.dataset.monthSet));
+    }));
+  </script>
+</body>
+</html>

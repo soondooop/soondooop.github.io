@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light" data-view="today">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A · 차분한 페이퍼</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap">
+  <style>
+    :root {
+      --bg: #f3eee4;
+      --sidebar: #e9e2d4;
+      --card: #fffdf8;
+      --ink: #2c261f;
+      --soft: #8b8174;
+      --line: rgba(44, 38, 31, 0.08);
+      --accent: #c4553a;
+      --sun: #d24b3a;
+      --sat: #2f62b5;
+      --gold: #c8922a;
+      --sage: #3f7d68;
+      --shadow: 0 18px 50px rgba(72, 48, 20, 0.08);
+      color-scheme: light;
+    }
+    html[data-theme="dark"] {
+      --bg: #1b1814;
+      --sidebar: #141210;
+      --card: #26211c;
+      --ink: #f4eee6;
+      --soft: #a89b8c;
+      --line: rgba(244, 238, 230, 0.08);
+      --accent: #e07a62;
+      --sun: #ff7d6e;
+      --sat: #8eb6ff;
+      --gold: #e2b15a;
+      --sage: #7dceB0;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    button, input { font: inherit; color: inherit; }
+    button { background: none; border: 0; padding: 0; cursor: pointer; }
+    svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .shell { display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: 100%; }
+    .sidebar {
+      padding: 28px 16px 24px;
+      background: color-mix(in srgb, var(--sidebar) 88%, transparent);
+      border-right: 1px solid var(--line);
+    }
+    .who { display: flex; gap: 10px; align-items: center; padding: 0 8px 22px; }
+    .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: #e7d3bf; color: #6a432c; font-weight: 700; font-size: 14px;
+    }
+    html[data-theme="dark"] .avatar { background: #3a2e26; color: #f0d2bc; }
+    .who strong { display: block; font-size: 14px; }
+    .who span { color: var(--soft); font-size: 12px; }
+    .nav-btn, .cat {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; text-align: left;
+      padding: 8px 10px; border-radius: 10px; color: var(--ink);
+    }
+    .nav-btn[aria-current="true"], .cat[aria-pressed="true"] { background: rgba(44, 38, 31, 0.06); }
+    html[data-theme="dark"] .nav-btn[aria-current="true"],
+    html[data-theme="dark"] .cat[aria-pressed="true"] { background: rgba(255, 248, 240, 0.06); }
+    .nav-btn .count { margin-left: auto; color: var(--soft); font-size: 12px; font-variant-numeric: tabular-nums; }
+    .ico { width: 16px; height: 16px; display: grid; place-items: center; }
+    .ico.star { color: var(--gold); }
+    .ico.star svg { fill: currentColor; stroke: none; }
+    .ico-cal { color: var(--sun); }
+    .ico.box { color: #c4a574; }
+    .ico.done { color: var(--sage); }
+    .side-label { margin: 22px 10px 6px; color: var(--soft); font-size: 12px; font-weight: 650; }
+    .cat small { margin-left: auto; color: var(--soft); font-size: 12px; }
+    .ring { width: 16px; height: 16px; }
+    .side-foot { display: flex; gap: 8px; margin-top: 28px; padding: 0 8px; }
+    .ghost {
+      border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; color: var(--soft); font-size: 12px;
+    }
+    .stage { min-width: 0; }
+    .column { width: min(720px, calc(100% - 80px)); margin: 0 auto; padding: 48px 0 96px; }
+    .hello { margin: 0; color: var(--soft); font-size: 14px; }
+    h1 {
+      margin: 8px 0 0;
+      font-family: "Instrument Serif", "Iowan Old Style", Palatino, "Apple SD Gothic Neo", serif;
+      font-size: 56px; font-weight: 400; letter-spacing: -0.03em; line-height: 1.05;
+    }
+    h1 em { font-style: italic; }
+    .date { margin: 8px 0 0; color: var(--soft); }
+    .progress { margin-top: 22px; }
+    .bar { height: 3px; border-radius: 99px; background: var(--line); overflow: hidden; }
+    .bar span { display: block; width: 25%; height: 100%; background: var(--accent); }
+    .progress p { margin: 8px 0 0; color: var(--soft); font-size: 13px; }
+    .composer {
+      display: flex; align-items: center; gap: 10px;
+      margin: 28px 0 8px; padding: 4px 4px 4px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .composer input {
+      flex: 1; border: 0; background: transparent; padding: 12px 0; outline: none;
+    }
+    .composer input::placeholder { color: var(--soft); }
+    .add {
+      background: var(--ink); color: var(--bg); border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 650;
+      white-space: nowrap; flex: 0 0 auto;
+    }
+    .group {
+      display: flex; align-items: center; gap: 12px;
+      margin: 28px 0 8px; color: #3d6294; font-size: 13px; font-weight: 700;
+    }
+    html[data-theme="dark"] .group { color: #9eb6e2; }
+    .group:after { content: ""; flex: 1; height: 1px; background: color-mix(in srgb, #3d6294 28%, transparent); }
+    .task { display: flex; gap: 12px; align-items: flex-start; padding: 11px 8px; border-radius: 12px; }
+    .task:hover { background: rgba(44, 38, 31, 0.035); }
+    .check {
+      width: 18px; height: 18px; margin-top: 2px; flex: 0 0 auto;
+      border: 1.5px solid color-mix(in srgb, var(--ink) 35%, transparent);
+      border-radius: 5px; display: grid; place-items: center;
+    }
+    .check.on { background: var(--sage); border-color: var(--sage); color: white; }
+    .check.on svg { width: 12px; height: 12px; stroke: white; }
+    .task .body { flex: 1; min-width: 0; }
+    .title-row { display: flex; gap: 8px; align-items: baseline; }
+    .title { font-size: 15px; }
+    .task.done .title { color: var(--soft); text-decoration: line-through; }
+    .meta { margin-left: auto; display: flex; gap: 6px; align-items: center; color: var(--soft); font-size: 12px; white-space: nowrap; }
+    .pill { border-radius: 999px; background: rgba(44, 38, 31, 0.05); padding: 2px 8px; }
+    html[data-theme="dark"] .pill { background: rgba(255,255,255,0.06); }
+    .pill.meet { color: var(--accent); }
+    .pill.ops { color: var(--sage); }
+    .due { display: inline-flex; align-items: center; gap: 4px; }
+    .due.hot, .due.late { color: var(--sun); font-weight: 650; }
+    .card {
+      margin: 8px 0 12px; padding: 18px 18px 14px;
+      background: var(--card); border-radius: 18px; box-shadow: var(--shadow);
+    }
+    .card h2 { margin: 0; font-size: 18px; letter-spacing: -0.03em; }
+    .note {
+      margin: 12px 0 16px;
+      font-family: "Instrument Serif", Palatino, serif;
+      font-size: 18px; line-height: 1.45; color: color-mix(in srgb, var(--ink) 78%, var(--soft));
+    }
+    .card-foot { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; align-items: center; }
+    .chip {
+      border-radius: 999px; background: var(--bg); padding: 6px 10px; font-size: 12px; color: var(--soft);
+    }
+    .empty {
+      margin: 8px 8px 0; color: var(--soft); font-size: 14px;
+    }
+    .plus {
+      position: fixed; right: 32px; bottom: 28px; z-index: 5;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--accent); color: white;
+      display: grid; place-items: center;
+      box-shadow: 0 12px 28px color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+    .plus svg { width: 26px; height: 26px; stroke: white; }
+    .tabbar { display: none; }
+    .cal-head { display: flex; align-items: center; gap: 8px; margin: 28px 0 12px; }
+    .cal-head h2 {
+      margin: 0; flex: 1;
+      font-family: "Instrument Serif", Palatino, serif;
+      font-size: 32px; font-weight: 400;
+    }
+    .round {
+      width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line);
+      display: grid; place-items: center;
+    }
+    .week, .grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+    .week span { text-align: center; font-size: 12px; font-weight: 700; color: var(--soft); padding-bottom: 6px; }
+    .week .sun { color: var(--sun); }
+    .week .sat { color: var(--sat); }
+    .day {
+      min-height: 78px; padding: 6px; border-radius: 12px; text-align: left; color: var(--ink);
+    }
+    .day:hover { background: rgba(44, 38, 31, 0.04); }
+    .num {
+      width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%;
+      font-size: 13px; font-weight: 650;
+    }
+    .day.sun .num, .day.holiday .num { color: var(--sun); }
+    .day.sat:not(.holiday) .num { color: var(--sat); }
+    .day.out { opacity: 0.38; }
+    .day.today .num { background: var(--ink); color: var(--bg); }
+    .day.on { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+    .hname { display: block; margin-top: 2px; color: var(--sun); font-size: 10px; font-weight: 700; letter-spacing: -0.03em; }
+    .dotline { display: block; margin-top: 4px; font-size: 11px; color: var(--soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    html[data-view="today"] .view-cal, html[data-view="calendar"] .view-today { display: none; }
+    .cal[data-month="11"] [data-m="10"], .cal[data-month="10"] [data-m="11"] { display: none; }
+    @media (max-width: 800px) {
+      .shell { display: block; }
+      .sidebar { display: none; }
+      .column { width: min(100% - 32px, 560px); padding-top: 24px; padding-bottom: 108px; }
+      .group { margin: 16px 0 4px; }
+      .card { padding: 14px 14px 12px; }
+      .note { margin: 8px 0 10px; font-size: 17px; }
+      h1 { font-size: 40px; }
+      .tabbar {
+        display: flex; position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 6;
+        background: color-mix(in srgb, var(--card) 92%, transparent);
+        backdrop-filter: blur(16px);
+        border-radius: 18px; box-shadow: var(--shadow); padding: 6px;
+      }
+      .tabbar button { flex: 1; border-radius: 12px; padding: 8px 0 6px; font-size: 11px; color: var(--soft); }
+      .tabbar button[aria-current="true"] { background: rgba(44,38,31,.06); color: var(--ink); }
+      .plus { display: none; }
+      .day { min-height: 58px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="who">
+        <div class="avatar">순</div>
+        <div><strong>순두부</strong><span>개인 · 저장됨</span></div>
+      </div>
+      <button class="nav-btn" data-view-set="today" aria-current="true">
+        <span class="ico star"><svg viewBox="0 0 24 24"><path d="m12 3 2.4 6.4L21 10l-5 4.2L17.5 21 12 17.6 6.5 21 8 14.2 3 10l6.6-.6Z"/></svg></span>
+        오늘 <span class="count">4</span>
+      </button>
+      <button class="nav-btn" data-view-set="calendar">
+        <span class="ico ico-cal"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span>
+        예정
+      </button>
+      <button class="nav-btn">
+        <span class="ico box"><svg viewBox="0 0 24 24"><path d="M4 8h16v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z"/><path d="M4 8 7 4h10l3 4"/></svg></span>
+        언젠가 <span class="count">0</span>
+      </button>
+      <button class="nav-btn">
+        <span class="ico done"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></svg></span>
+        완료
+      </button>
+      <p class="side-label">영역</p>
+      <button class="cat" aria-pressed="true"><svg class="ring" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" stroke="#c4553a" stroke-opacity=".25" stroke-width="2.2" fill="none"/><circle cx="8" cy="8" r="6" stroke="#c4553a" stroke-width="2.2" fill="none" stroke-dasharray="25 38" transform="rotate(-90 8 8)"/></svg>회의<small>2/3</small></button>
+      <button class="cat"><svg class="ring" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" stroke="#3f7d68" stroke-opacity=".3" stroke-width="2.2" fill="none"/></svg>운영<small>0/2</small></button>
+      <button class="cat"><svg class="ring" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" stroke="#c8922a" stroke-opacity=".35" stroke-width="2.2" fill="none"/></svg>개인<small>비어 있음</small></button>
+      <div class="side-foot">
+        <button class="ghost" id="themeBtn" type="button">다크</button>
+        <button class="ghost" type="button">이번 주</button>
+      </div>
+    </aside>
+    <div class="stage">
+      <div class="column">
+        <p class="hello">좋은 아침이에요, 순두부님</p>
+        <section class="view-today">
+          <h1><em>오늘</em></h1>
+          <p class="date">2026년 11월 13일 금요일</p>
+          <div class="progress"><div class="bar"><span></span></div><p>4개 중 1개 완료 · 오늘은 가볍게 시작해도 좋아요</p></div>
+          <form class="composer" action="#">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            <input placeholder="할 일을 적어 보세요" aria-label="할 일 추가">
+            <button class="add" type="submit">추가</button>
+          </form>
+          <div class="group">회의</div>
+          <article class="card">
+            <div class="task" style="padding:0">
+              <span class="check"></span>
+              <div class="body">
+                <div class="title-row"><h2>제안서 초안 검토</h2><span class="meta">높음</span></div>
+              </div>
+            </div>
+            <p class="note">2페이지로 가격과 일정을 정리한다. 오후에 김 팀장 의견을 반영한다.</p>
+            <div class="card-foot">
+              <span class="chip">#제안</span>
+              <span class="chip">회의</span>
+              <span class="chip">오늘</span>
+              <span class="chip due hot">⚑ 오늘 15:00</span>
+            </div>
+          </article>
+          <div class="task">
+            <span class="check"></span>
+            <div class="body">
+              <div class="title-row">
+                <span class="title">고객 메일 회신</span>
+                <span class="meta">
+                  <span class="pill ops">운영</span>
+                  <span class="due"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4"/></svg> 매주 월</span>
+                  <span class="due hot">⚑ 오늘</span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="group">운영</div>
+          <div class="task">
+            <span class="check"></span>
+            <div class="body">
+              <div class="title-row">
+                <span class="title">지난 견적 정리</span>
+                <span class="meta"><span class="pill ops">운영</span><span class="due late">⚑ 11월 10일</span></span>
+              </div>
+            </div>
+          </div>
+          <div class="group">완료 1</div>
+          <div class="task done">
+            <span class="check on"><svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg></span>
+            <div class="body">
+              <div class="title-row">
+                <span class="title">회의록 정리</span>
+                <span class="meta">완료 10:00 · 회의</span>
+              </div>
+            </div>
+          </div>
+          <div class="group">언젠가</div>
+          <p class="empty">아직 비어 있어요. 나중에 볼 일을 여기에 남겨 두세요.</p>
+        </section>
+        <section class="view-cal cal" data-month="11">
+          <h1><em>예정</em></h1>
+          <p class="date">일요일부터 · 공휴일은 빨강, 토요일은 파랑</p>
+          <div class="cal-head">
+            <button class="round" data-month-set="10" aria-label="이전 달"><svg viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></svg></button>
+            <h2><span data-m="11">2026년 11월</span><span data-m="10">2026년 10월</span></h2>
+            <button class="round" data-month-set="11" aria-label="다음 달"><svg viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></svg></button>
+          </div>
+          <div class="week"><span class="sun">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="sat">토</span></div>
+          <div class="grid" data-m="11">
+            <button class="day sun"><span class="num">1</span></button>
+            <button class="day"><span class="num">2</span></button>
+            <button class="day"><span class="num">3</span></button>
+            <button class="day"><span class="num">4</span></button>
+            <button class="day"><span class="num">5</span></button>
+            <button class="day"><span class="num">6</span></button>
+            <button class="day sat"><span class="num">7</span></button>
+            <button class="day sun"><span class="num">8</span></button>
+            <button class="day"><span class="num">9</span></button>
+            <button class="day"><span class="num">10</span><span class="dotline">견적</span></button>
+            <button class="day"><span class="num">11</span></button>
+            <button class="day"><span class="num">12</span></button>
+            <button class="day today on"><span class="num">13</span><span class="dotline">제안서</span></button>
+            <button class="day sat"><span class="num">14</span></button>
+            <button class="day sun"><span class="num">15</span></button>
+            <button class="day"><span class="num">16</span><span class="dotline">메일</span></button>
+            <button class="day"><span class="num">17</span></button>
+            <button class="day"><span class="num">18</span></button>
+            <button class="day"><span class="num">19</span></button>
+            <button class="day"><span class="num">20</span></button>
+            <button class="day sat"><span class="num">21</span></button>
+            <button class="day sun"><span class="num">22</span></button>
+            <button class="day"><span class="num">23</span></button>
+            <button class="day"><span class="num">24</span></button>
+            <button class="day"><span class="num">25</span></button>
+            <button class="day"><span class="num">26</span></button>
+            <button class="day"><span class="num">27</span></button>
+            <button class="day sat"><span class="num">28</span></button>
+            <button class="day sun"><span class="num">29</span></button>
+            <button class="day"><span class="num">30</span></button>
+            <button class="day out"><span class="num">1</span></button>
+            <button class="day out"><span class="num">2</span></button>
+            <button class="day out"><span class="num">3</span></button>
+            <button class="day out"><span class="num">4</span></button>
+            <button class="day out"><span class="num">5</span></button>
+          </div>
+          <div class="grid" data-m="10">
+            <button class="day out sun"><span class="num">27</span></button>
+            <button class="day out"><span class="num">28</span></button>
+            <button class="day out"><span class="num">29</span></button>
+            <button class="day out"><span class="num">30</span></button>
+            <button class="day"><span class="num">1</span></button>
+            <button class="day"><span class="num">2</span></button>
+            <button class="day sat holiday"><span class="num">3</span><span class="hname">개천절</span></button>
+            <button class="day sun"><span class="num">4</span></button>
+            <button class="day holiday"><span class="num">5</span><span class="hname">개천절 대체</span></button>
+            <button class="day"><span class="num">6</span></button>
+            <button class="day"><span class="num">7</span></button>
+            <button class="day"><span class="num">8</span></button>
+            <button class="day holiday on"><span class="num">9</span><span class="hname">한글날</span></button>
+            <button class="day sat"><span class="num">10</span></button>
+            <button class="day sun"><span class="num">11</span></button>
+            <button class="day"><span class="num">12</span></button>
+            <button class="day"><span class="num">13</span></button>
+            <button class="day"><span class="num">14</span></button>
+            <button class="day"><span class="num">15</span><span class="dotline">디자인 리뷰</span></button>
+            <button class="day sat"><span class="num">16</span></button>
+            <button class="day sun"><span class="num">17</span></button>
+            <button class="day"><span class="num">18</span></button>
+            <button class="day"><span class="num">19</span></button>
+            <button class="day"><span class="num">20</span><span class="dotline">고객 미팅</span></button>
+            <button class="day"><span class="num">21</span></button>
+            <button class="day"><span class="num">22</span></button>
+            <button class="day"><span class="num">23</span></button>
+            <button class="day sat"><span class="num">24</span></button>
+            <button class="day sun"><span class="num">25</span></button>
+            <button class="day"><span class="num">26</span></button>
+            <button class="day"><span class="num">27</span><span class="dotline">보고서</span></button>
+            <button class="day"><span class="num">28</span></button>
+            <button class="day"><span class="num">29</span></button>
+            <button class="day"><span class="num">30</span></button>
+            <button class="day sat"><span class="num">31</span></button>
+          </div>
+        </section>
+      </div>
+      <button class="plus" type="button" aria-label="새 할 일"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+  </div>
+  <nav class="tabbar" aria-label="목록">
+    <button data-view-set="today" aria-current="true">오늘</button>
+    <button data-view-set="calendar">예정</button>
+    <button type="button">언젠가</button>
+    <button type="button">완료</button>
+  </nav>
+  <script>
+    const root = document.documentElement;
+    const syncNav = () => {
+      document.querySelectorAll('[data-view-set]').forEach((btn) => {
+        btn.setAttribute('aria-current', btn.dataset.viewSet === root.dataset.view ? 'true' : 'false');
+      });
+    };
+    document.querySelectorAll('[data-view-set]').forEach((btn) => {
+      btn.addEventListener('click', () => { root.dataset.view = btn.dataset.viewSet; syncNav(); });
+    });
+    document.querySelectorAll('[data-month-set]').forEach((btn) => {
+      btn.addEventListener('click', () => { document.querySelector('section.cal').dataset.month = btn.dataset.monthSet; });
+    });
+    document.getElementById('themeBtn').addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      document.getElementById('themeBtn').textContent = next === 'dark' ? '라이트' : '다크';
+    });
+  </script>
+</body>
+</html>

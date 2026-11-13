@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>할 일 시안</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background: #f4f1ea;
+      color: #241f1a;
+    }
+    main { width: min(1080px, calc(100% - 48px)); margin: 0 auto; padding: 72px 0 96px; }
+    .eyebrow { margin: 0 0 12px; color: #8a8175; font-size: 13px; letter-spacing: 0.08em; }
+    h1 { margin: 0; font-size: 44px; letter-spacing: -0.04em; line-height: 1.15; font-weight: 650; }
+    .lead { max-width: 42rem; margin: 16px 0 40px; color: #5e564c; font-size: 17px; line-height: 1.6; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    a.card {
+      display: flex; flex-direction: column; gap: 14px;
+      min-height: 280px; padding: 22px;
+      border-radius: 22px; text-decoration: none; color: inherit;
+      background: #fffdf9; box-shadow: 0 16px 40px rgba(60, 40, 20, 0.06);
+    }
+    a.card:hover { transform: translateY(-2px); }
+    .swatch { height: 92px; border-radius: 16px; }
+    .a { background: linear-gradient(160deg, #f7f1e6, #e7d3c0 60%, #c4553a); }
+    .b { background: linear-gradient(160deg, #eef1ff, #e7f6ee 50%, #ffd9c8); }
+    .c { background: linear-gradient(160deg, #16181f, #2a3148 55%, #8ea2ff); }
+    h2 { margin: 0; font-size: 22px; letter-spacing: -0.03em; }
+    p { margin: 0; color: #655d53; line-height: 1.55; font-size: 14px; }
+    .go { margin-top: auto; font-size: 13px; font-weight: 650; }
+    @media (max-width: 800px) {
+      main { width: min(100% - 32px, 560px); padding-top: 40px; }
+      h1 { font-size: 32px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">STATIC MOCKUPS</p>
+    <h1>할 일 앱, 세 가지 시안</h1>
+    <p class="lead">동작하는 앱은 그대로 두고 화면만 비교합니다. 예시 데이터이며 저장되거나 동기화되지 않습니다.</p>
+    <div class="grid">
+      <a class="card" href="a/">
+        <div class="swatch a"></div>
+        <h2>A · 차분한 페이퍼</h2>
+        <p>따뜻한 종이 배경, 세리프 제목, 넓은 여백. Things와 Craft에 가까운 목록.</p>
+        <span class="go">시안 열기</span>
+      </a>
+      <a class="card" href="b/">
+        <div class="swatch b"></div>
+        <h2>B · 소프트 파스텔</h2>
+        <p>둥근 카드와 파스텔 영역, 진행 링과 이번 주 차트, 오른쪽 달력.</p>
+        <span class="go">시안 열기</span>
+      </a>
+      <a class="card" href="c/">
+        <div class="swatch c"></div>
+        <h2>C · 다크 포커스</h2>
+        <p>어두운 유리 표면, 명령 팔레트, 단축키. 밤에 쓰는 집중 화면.</p>
+        <span class="go">시안 열기</span>
+      </a>
+    </div>
+  </main>
+</body>
+</html>
