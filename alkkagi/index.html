@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#2a160e">
+  <meta name="description" content="알까기 — 바둑알을 튕겨 상대 알을 떨어뜨리는 2인·컴퓨터 대전 게임">
+  <title>알까기</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23c4894a' width='32' height='32' rx='6'/%3E%3Ccircle cx='12' cy='17' r='7' fill='%23111'/%3E%3Ccircle cx='21' cy='15' r='7' fill='%23f6f1e6' stroke='%23b7b1a4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header class="top">
+      <div class="brand">
+        <h1>알까기</h1>
+        <p id="mode-label">바둑알 튕기기</p>
+      </div>
+      <button id="mute" type="button" aria-pressed="false">소리 켜짐</button>
+    </header>
+
+    <div class="scoreboard">
+      <div class="side side-black">
+        <span class="dot dot-black" aria-hidden="true"></span>
+        <span class="side-copy">
+          <span class="side-name">흑 <b id="count-black">8</b></span>
+          <span class="side-sub" id="sub-black">아래</span>
+        </span>
+      </div>
+      <div id="turn" class="turn" role="status">알까기</div>
+      <div class="side side-white">
+        <span class="side-copy">
+          <span class="side-name">백 <b id="count-white">8</b></span>
+          <span class="side-sub" id="sub-white">위</span>
+        </span>
+        <span class="dot dot-white" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <canvas id="board" width="800" height="800" aria-label="알까기 바둑판">알까기 바둑판</canvas>
+      <div id="overlay" class="overlay">
+        <section id="menu" class="panel">
+          <h2><i class="mini mini-black" aria-hidden="true"></i>알까기<i class="mini mini-white" aria-hidden="true"></i></h2>
+          <p>자기 알을 뒤로 끌어당긴 뒤 놓으세요. 당긴 반대 방향으로 날아가고, 중심이 판 밖으로 나가면 떨어집니다. 알이 남은 쪽이 이깁니다.</p>
+          <div class="stack">
+            <button id="mode-2p" class="primary" type="button">두 명이 하기</button>
+            <button id="mode-1p" class="primary" type="button">컴퓨터와 하기</button>
+          </div>
+          <div class="diff" role="group" aria-label="컴퓨터 난이도">
+            <span>난이도</span>
+            <button id="diff-easy" type="button" aria-pressed="false">쉬움</button>
+            <button id="diff-normal" type="button" class="is-on" aria-pressed="true">보통</button>
+          </div>
+        </section>
+        <section id="win" class="panel" hidden>
+          <h2 id="win-title">흑 승리</h2>
+          <p id="win-sub"></p>
+          <div class="stack">
+            <button id="win-restart" class="primary" type="button">다시하기</button>
+            <button id="win-menu" class="ghost" type="button">처음으로</button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <footer class="bottom">
+      <p id="hint">방식을 고르면 판이 시작됩니다</p>
+      <button id="restart" class="footer-btn" type="button" hidden>다시하기</button>
+    </footer>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
