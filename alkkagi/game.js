@@ -1,18 +1,20 @@
 (() => {
   const WORLD = 1000;
-  const FRAME = 34;
-  const RADIUS = 60;
-  const HIT_EXTRA = 28;
-  const COLS = [188, 396, 604, 812];
-  const ROW_GAP = 146;
+  const FRAME = 26;
+  const LINES = 19;
+  const MARGIN_CELLS = 0.75;
+  const STEP = (WORLD - FRAME * 2) / ((LINES - 1) + MARGIN_CELLS * 2);
+  const GRID0 = FRAME + MARGIN_CELLS * STEP;
+  const RADIUS = STEP * 0.95 * 0.5;
+  const HIT_REACH = STEP * 1.25;
   const RESTITUTION = 0.92;
-  const DECEL = 260;
-  const DRAG = 0.55;
-  const SLEEP = 22;
-  const MIN_SPEED = 360;
+  const DECEL = 240;
+  const DRAG = 0.48;
+  const SLEEP = 18;
+  const MIN_SPEED = 420;
   const MAX_SPEED = 1280;
-  const MIN_DRAG = 42;
-  const FULL_DRAG = 188;
+  const MIN_DRAG = STEP * 0.72;
+  const FULL_DRAG = STEP * 3.5;
   const SIM_LIMIT = 8;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const FALL_TIME = reduceMotion ? 0.12 : 0.42;
@@ -158,15 +160,25 @@
     };
   }
 
+  function gridPoint(col, row) {
+    return {
+      x: GRID0 + col * STEP,
+      y: GRID0 + row * STEP
+    };
+  }
+
   function placeStones() {
-    const back = FRAME + RADIUS + 26;
-    const front = back + ROW_GAP;
+    const cols = [6, 8, 10, 12];
     stones = [];
-    COLS.forEach((x) => {
-      stones.push(makeStone("white", x, back));
-      stones.push(makeStone("white", x, front));
-      stones.push(makeStone("black", x, WORLD - front));
-      stones.push(makeStone("black", x, WORLD - back));
+    cols.forEach((col) => {
+      [0, 1].forEach((row) => {
+        const point = gridPoint(col, row);
+        stones.push(makeStone("white", point.x, point.y));
+      });
+      [17, 18].forEach((row) => {
+        const point = gridPoint(col, row);
+        stones.push(makeStone("black", point.x, point.y));
+      });
     });
   }
 
@@ -424,11 +436,12 @@
     }
 
     let ang = Math.atan2(pick.target.y - pick.stone.y, pick.target.x - pick.stone.x);
-    const noise = easy ? 0.5 : 0.12;
+    const aimWidth = Math.atan2(RADIUS, Math.max(pick.d, RADIUS));
+    const noise = easy ? aimWidth * 2.6 : aimWidth * 0.72;
     ang += (Math.random() * 2 - 1) * noise;
-    const want = pick.d + (easy ? 30 : 150);
+    const want = pick.d + (easy ? RADIUS : RADIUS * 4 + STEP);
     let speed = speedForDistance(want);
-    speed *= easy ? 0.55 + Math.random() * 0.45 : 0.88 + Math.random() * 0.2;
+    speed *= easy ? 0.58 + Math.random() * 0.42 : 0.9 + Math.random() * 0.16;
     speed = clamp(speed, 300, MAX_SPEED);
     return {
       stone: pick.stone,
@@ -550,7 +563,7 @@
       if (!s.alive || s.falling) continue;
       maxSp = Math.max(maxSp, Math.hypot(s.vx, s.vy));
     }
-    const steps = Math.min(8, Math.max(1, Math.ceil((maxSp * dt) / 36)));
+    const steps = Math.min(10, Math.max(1, Math.ceil((maxSp * dt) / (RADIUS * 0.8))));
     const h = dt / steps;
     for (let n = 0; n < steps; n += 1) {
       integrate(h);
@@ -663,7 +676,7 @@
   }
 
   function pickStone(x, y, side) {
-    const reach = RADIUS + HIT_EXTRA;
+    const reach = HIT_REACH;
     let best = null;
     let bestD = Infinity;
     for (let i = 0; i < stones.length; i += 1) {
@@ -756,17 +769,14 @@
     ctx.fillRect(FRAME, FRAME, WORLD - FRAME * 2, WORLD - FRAME * 2);
     ctx.restore();
 
-    const lines = 13;
-    const pad = 48;
-    const x0 = FRAME + pad;
-    const x1 = WORLD - FRAME - pad;
-    const step = (x1 - x0) / (lines - 1);
+    const x0 = GRID0;
+    const x1 = GRID0 + (LINES - 1) * STEP;
     ctx.save();
-    ctx.strokeStyle = "rgba(48, 26, 12, 0.78)";
-    ctx.lineWidth = 2.4;
+    ctx.strokeStyle = "rgba(42, 22, 12, 0.88)";
     ctx.lineCap = "square";
-    for (let i = 0; i < lines; i += 1) {
-      const p = x0 + step * i;
+    ctx.lineWidth = 1.35;
+    for (let i = 0; i < LINES; i += 1) {
+      const p = x0 + STEP * i;
       ctx.beginPath();
       ctx.moveTo(p, x0);
       ctx.lineTo(p, x1);
@@ -774,13 +784,15 @@
       ctx.lineTo(x1, p);
       ctx.stroke();
     }
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 2.4;
     ctx.strokeRect(x0, x0, x1 - x0, x1 - x0);
-    [[3, 3], [3, 9], [6, 6], [9, 3], [9, 9]].forEach(([sx, sy]) => {
-      ctx.beginPath();
-      ctx.arc(x0 + step * sx, x0 + step * sy, 6.2, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(42, 22, 10, 0.86)";
-      ctx.fill();
+    ctx.fillStyle = "rgba(36, 18, 8, 0.9)";
+    [3, 9, 15].forEach((sx) => {
+      [3, 9, 15].forEach((sy) => {
+        ctx.beginPath();
+        ctx.arc(x0 + STEP * sx, x0 + STEP * sy, STEP * 0.085, 0, Math.PI * 2);
+        ctx.fill();
+      });
     });
     ctx.restore();
 
@@ -797,7 +809,7 @@
         grd.addColorStop(1, fade[1]);
       }
       ctx.fillStyle = grd;
-      ctx.fillRect(FRAME, current === "black" ? WORLD - FRAME - 70 : FRAME, WORLD - FRAME * 2, 70);
+      ctx.fillRect(FRAME, current === "black" ? WORLD - FRAME - STEP * 1.3 : FRAME, WORLD - FRAME * 2, STEP * 1.3);
     }
   }
 
@@ -807,13 +819,13 @@
     const falling = s.falling;
     const t = falling ? clamp(s.fallT / FALL_TIME, 0, 1) : 0;
     const shift = t * t;
-    ctx.translate(s.x + s.fallX * 78 * shift, s.y + s.fallY * 78 * shift + 26 * shift);
+    ctx.translate(s.x + s.fallX * STEP * 1.35 * shift, s.y + s.fallY * STEP * 1.35 * shift + STEP * 0.45 * shift);
     ctx.rotate(shift * 0.9);
     const scale = 1 - 0.38 * shift;
     ctx.scale(scale, scale);
 
     ctx.save();
-    ctx.translate(6, 10);
+    ctx.translate(s.r * 0.14, s.r * 0.22);
     ctx.scale(1, 0.4);
     ctx.beginPath();
     ctx.arc(0, 0, s.r * 0.92, 0, Math.PI * 2);
@@ -838,7 +850,7 @@
     ctx.arc(0, 0, s.r, 0, Math.PI * 2);
     ctx.fillStyle = g;
     ctx.fill();
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = Math.max(1.15, s.r * 0.07);
     ctx.strokeStyle = black ? "rgba(255,255,255,0.16)" : "rgba(70, 60, 46, 0.4)";
     ctx.stroke();
 
@@ -854,8 +866,8 @@
     const s = dragging.stone;
     if (!s.alive) return;
     ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r + 8, 0, Math.PI * 2);
-    ctx.lineWidth = 4;
+    ctx.arc(s.x, s.y, s.r + STEP * 0.1, 0, Math.PI * 2);
+    ctx.lineWidth = 1.8;
     ctx.strokeStyle = "rgba(255, 244, 214, 0.95)";
     ctx.stroke();
   }
@@ -866,43 +878,44 @@
     else if (dirx < -0.0001) max = Math.min(max, (FRAME - x) / dirx);
     if (diry > 0.0001) max = Math.min(max, (WORLD - FRAME - y) / diry);
     else if (diry < -0.0001) max = Math.min(max, (FRAME - y) / diry);
-    return Math.max(28, max);
+    return Math.max(STEP * 0.4, max);
   }
 
   function drawAim(x, y, dirx, diry, power, pull) {
     const speed = MIN_SPEED + Math.max(power, 0) * (MAX_SPEED - MIN_SPEED);
     const len = clipReach(x, y, dirx, diry, approxTravel(speed));
-    const x1 = x + dirx * (RADIUS + 8);
-    const y1 = y + diry * (RADIUS + 8);
-    const x2 = x + dirx * (RADIUS + 8 + len);
-    const y2 = y + diry * (RADIUS + 8 + len);
+    const x1 = x + dirx * (RADIUS + STEP * 0.12);
+    const y1 = y + diry * (RADIUS + STEP * 0.12);
+    const x2 = x + dirx * (RADIUS + STEP * 0.12 + len);
+    const y2 = y + diry * (RADIUS + STEP * 0.12 + len);
     ctx.save();
     ctx.lineCap = "round";
-    ctx.setLineDash([12, 10]);
+    ctx.setLineDash([STEP * 0.16, STEP * 0.14]);
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.strokeStyle = "rgba(32, 16, 8, 0.55)";
-    ctx.lineWidth = 8;
+    ctx.lineWidth = 3.2;
     ctx.stroke();
     ctx.strokeStyle = power > 0.82 ? "#ffb088" : "#fff6df";
-    ctx.lineWidth = 3.5;
+    ctx.lineWidth = 1.5;
     ctx.stroke();
     ctx.setLineDash([]);
     const ang = Math.atan2(diry, dirx);
+    const head = STEP * 0.28;
     ctx.beginPath();
     ctx.moveTo(x2, y2);
-    ctx.lineTo(x2 - Math.cos(ang - 0.42) * 20, y2 - Math.sin(ang - 0.42) * 20);
-    ctx.lineTo(x2 - Math.cos(ang + 0.42) * 20, y2 - Math.sin(ang + 0.42) * 20);
+    ctx.lineTo(x2 - Math.cos(ang - 0.42) * head, y2 - Math.sin(ang - 0.42) * head);
+    ctx.lineTo(x2 - Math.cos(ang + 0.42) * head, y2 - Math.sin(ang + 0.42) * head);
     ctx.closePath();
     ctx.fillStyle = power > 0.82 ? "#ffb088" : "#fff6df";
     ctx.fill();
 
     if (power > 0) {
       ctx.beginPath();
-      ctx.arc(x, y, RADIUS + 12, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * power);
+      ctx.arc(x, y, RADIUS + STEP * 0.18, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * power);
       ctx.strokeStyle = power > 0.82 ? "#e25a2a" : "#fff1cf";
-      ctx.lineWidth = 5;
+      ctx.lineWidth = 2.2;
       ctx.stroke();
     }
 
@@ -912,15 +925,15 @@
       ctx.moveTo(x, y);
       ctx.lineTo(pull.x, pull.y);
       ctx.strokeStyle = "rgba(150, 42, 24, 0.7)";
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 1.6;
       ctx.stroke();
       ctx.setLineDash([]);
       ctx.beginPath();
-      ctx.arc(pull.x, pull.y, 9, 0, Math.PI * 2);
+      ctx.arc(pull.x, pull.y, STEP * 0.16, 0, Math.PI * 2);
       ctx.fillStyle = "rgba(255, 246, 230, 0.95)";
       ctx.fill();
-      ctx.font = "700 36px sans-serif";
-      ctx.lineWidth = 6;
+      ctx.font = "700 28px sans-serif";
+      ctx.lineWidth = 4;
       ctx.strokeStyle = "rgba(40, 18, 8, 0.75)";
       ctx.fillStyle = "#fff8ee";
       const label = `${Math.round(power * 100)}%`;
